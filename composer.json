@@ -1,0 +1,33 @@
+{
+    "name": "udiko/sisukma",
+    "description": "Extensi LeazyCMS untuk Sistem Pelayanan",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["PHP"],
+    "autoload": {
+        "psr-4": {
+            "Sisukma\\V2\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Nurul Hudin",
+            "email": "m.nurul.hudin@gmail.com"
+        }
+    ],
+    "extra": {
+
+        "laravel": {
+            "providers": [
+                "Leazycms\\Simpel\\SimpelServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "require": {
+        "barryvdh/laravel-snappy": "*",
+        "h4cc/wkhtmltoimage-amd64": "*",
+        "h4cc/wkhtmltopdf-amd64": "*"
+    }
+
+}
