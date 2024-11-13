@@ -94,9 +94,15 @@
         <li class="nav-item" role="presentation">
           <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true"> <i class="fas fa-eye"></i> Detail</button>
         </li>
+        @if($type_unsur == 9)
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="ikm-kab-tab" data-bs-toggle="tab" data-bs-target="#ikm-kab" type="button" role="tab" aria-controls="ikm-kab" aria-selected="false"> <i class="fas fa-building"></i> IKM Kabupaten</button>
+          </li>
+          @endif
         <li class="nav-item" role="presentation">
           <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false"> <i class="fas fa-building"></i> IKM Perangkat Daerah</button>
         </li>
+
       </ul>
       <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active py-4" id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -112,7 +118,7 @@
                         </div>
                         <!-- Card Body -->
                         <div class="card-body">
-                        <table class="table table-striped">
+                        <table class="table table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -148,7 +154,7 @@
                         </div>
                         <!-- Card Body -->
                         <div class="card-body">
-                        <table class="table table-striped">
+                        <table class="table table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -180,7 +186,7 @@
                         </div>
                         <!-- Card Body -->
                         <div class="card-body">
-                        <table class="table table-striped">
+                        <table class="table table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -226,7 +232,7 @@
                         </div>
                         <!-- Card Body -->
                         <div class="card-body">
-                        <table class="table table-striped">
+                        <table class="table table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -260,7 +266,12 @@
         <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab" style="max-height: 75vh;overflow:auto">
             @include('sisukma::dashboard.ajax.ikm_skpd')
         </div>
-
+        @if($type_unsur == 9)
+        <div class="tab-pane fade pt-4" id="ikm-kab" role="tabpanel" aria-labelledby="ikm-kab-tab" style="max-height: 75vh;overflow:auto">
+            <button class="btn btn-warning btn-sm" onclick="cetak_rekap(null,$('.ajax_data').val(),'ikmkab')"> <i class="fas fa-print"></i> Cetak</button><br><br>
+            @include('sisukma::report.ikm_kabupaten')
+        </div>
+        @endif
       </div>
 
 </div>

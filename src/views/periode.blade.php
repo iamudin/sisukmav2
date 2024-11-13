@@ -15,7 +15,13 @@
                 <small>Type Kuisioner</small>
                 <select name="unsur_tambahan" class="form-control" id="type_unsur">
                   <option value="9">9 Kuisioner</option>
+                  @if(Auth::user()->isSkpd())
+                  @if(Auth::user()->skpd->total_unsur == 11)
                   <option value="11">11 Kuisioner</option>
+                  @endif
+                  @else
+                  <option value="11">11 Kuisioner</option>
+                @endif
                 </select>
               </div>
           <div class="form-group">

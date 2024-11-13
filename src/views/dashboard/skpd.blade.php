@@ -5,7 +5,7 @@
    <br>
    <h4 for="">Periode :</h4>
 
-   <p style="font-size:30px;border-left:5px solid orange;padding-left:10px"> <a href="{{$urlcetak ?? null}}" class="btn btn-sm btn-primary"><i class="fa fa-print" aria-hidden="true"> </i> Print</a> <b>{{ $periode }}</b> <button onclick="$('.periode').modal('show')" class="btn btn-sm btn-danger float-end"> <i class="fa fa-edit"></i> Ganti Periode</button></p>
+   <p style="font-size:30px;">Periode <b class="periode-title">{{ $periode }}</b> <button onclick="$('.periode').modal('show')" class="btn btn-sm btn-danger float-end mt-2"> <i class="fa fa-edit"></i> Ganti Periode</button></p>
    <center  id="spinner" style="display: none" >
     <div class="spinner-border text-primary" role="status">
 
@@ -28,7 +28,7 @@
             url: '{{ route('ajax.dashboard') }}',
             type: 'POST',
             data:
-                {!! $ajaxdata ?? '{"_token":"'.csrf_token().'"}'!!}
+            {!! $ajaxdata ?? '{"_token":"'.csrf_token().'","unsur_tambahan":"9"}'!!}
             ,
             success: function(response) {
         $('#spinner').hide();

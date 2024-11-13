@@ -22,7 +22,7 @@
     @endif
     <div class="form-group">
         <label for="">Unit Pelayanan</label>
-        <select class="form-control" name="unit_id" required>
+        <select class="form-control" name="unit_id">
             <option value="">--Pilih unit--</option>
             @if(!empty($edit->unit->id) || $unit)
             @foreach($unit as $i => $v)

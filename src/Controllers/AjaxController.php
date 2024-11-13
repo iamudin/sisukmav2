@@ -29,21 +29,36 @@ class AjaxController extends Controller  implements HasMiddleware
         return view('sisukma::dashboard.ajax.detail_ikm',compact('skpd_id','data','skpd','periode','alamat','telp','type_unsur'))->render();
     }
 
-    public function cetak_rekap_kabupaten(Request $request){
+    public function cetak_rekap_kabupaten($request){
 
     }
    public function cetak_rekap_skpd(Request $request){
-    $dskpd = Skpd::find($request->skpd_id);
-    $skpd = $dskpd->nama_skpd;
-    $skpd_id = $request->skpd_id;
-    $periode = (new IkmManager)->as_periode($request->from,$request->to).' '.$request->year;
-    $alamat = $dskpd->alamat;
-    $telp = $dskpd->telp;
+    $dskpd = Skpd::find($request->skpd_id) ?? null;
+    $skpd = $dskpd->nama_skpd ?? null;
+    $skpd_id = $request->skpd_id?? null;
+    $periode = (new IkmManager)->as_periode($request->from,$request->to).' '.($request->year ?? date('Y'));
+    $alamat = $dskpd->alamat?? null;
+    $telp = $dskpd->telp?? null;
     $type_unsur = $request->unsur_tambahan ?? 9;
-    $data = json_decode(json_encode((new IkmManager)->nilai_ikm_skpd($request->skpd_id,$request->unsur_tambahan ?? 9)));
+    $ikm = false;
 
-    $pdf = PDF::loadView('sisukma::report.pengolahan-data',compact('skpd_id','data','skpd','periode','alamat','telp','type_unsur'));
+    if($request->type=='ikm'){
+        $data = json_decode(json_encode((new IkmManager)->nilai_ikm_skpd($request->skpd_id,$request->unsur_tambahan ?? 9)));
+        $ikm = true;
+        $pdf = PDF::loadView('sisukma::report.ikm_skpd',compact('ikm','skpd_id','data','skpd','periode','alamat','telp','type_unsur'));
+        return $pdf->download('ikm-'.str($skpd.' '.$periode)->slug().'.pdf');
+
+    }elseif($request->type=='pengolahan'){
+        $data = json_decode(json_encode((new IkmManager)->nilai_ikm_skpd($request->skpd_id,$request->unsur_tambahan ?? 9)));
+    $pdf = PDF::loadView('sisukma::report.pengolahan-data',compact('ikm','skpd_id','data','skpd','periode','alamat','telp','type_unsur'));
     return $pdf->download('pengolahan-data-'.str($skpd.' '.$periode)->slug().'.pdf');
+}
+else{
+    $data = json_decode(json_encode((new IkmManager)->nilai_ikm_kabupaten($request->unsur_tambahan ?? 9)));
+    $pdf = PDF::loadView('sisukma::report.ikm_kabupaten',compact('ikm','skpd_id','data','skpd','periode','alamat','telp','type_unsur'));
+    return $pdf->download('ikm-kabupaten-'.str($periode)->slug().'.pdf');
+
+}
     }
     public function dashboard(Request $request){
         if($request->user()->isAdmin()){

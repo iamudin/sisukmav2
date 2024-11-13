@@ -45,7 +45,7 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                                 Total IKM</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ round($data->ikm,2) }}</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $data->ikm > 0 ? round($data->ikm,2) : 0}}</div>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -61,7 +61,7 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                                 Mutu Pelayanan</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ '('.prediket(round($data->ikm,2),true) .') '.prediket(round($data->ikm,2)) }}</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $data->ikm > 0 ? '('.prediket(round($data->ikm,2),true) .') '.prediket(round($data->ikm,2)) : 'N/A' }}</div>
                                         </div>
                                         <div class="col-auto">
 
@@ -131,12 +131,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($data->usia as $k=>$row)
+                    @foreach($data->usia ?? [] as $k=>$row)
                     <tr>
                         <td>{{$k+1}}</td>
                         <td>{{$row->range}}</td>
                         <td><b>{{$row->jumlah}}</b></td>
-                        <td><b>{{round($row->jumlah / array_sum(array_column($data->usia,'jumlah')) * 100,2)}}%</b></td>
+                        <td><b>{{ $row->jumlah > 0 ? round($row->jumlah / array_sum(array_column($data->usia,'jumlah')) * 100,2) : 0}}%</b></td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -179,8 +179,8 @@
                     <tr>
                         <td>{{$no+1}}</td>
                         <td>{{$r}}</td>
-                        <td><b>{{$data->pendidikan->$ld??0}}</b></td>
-                        <td><b>{{ round($data->pendidikan->$ld / $jlpendidikan*100,2)}}%</b></td>
+                        <td><b>{{$data->pendidikan?->$ld ?? 0}}</b></td>
+                        <td><b>{{ $data->pendidikan ? round($data->pendidikan->$ld / $jlpendidikan*100,2) : 0}}%</b></td>
                     </tr>
 
                  @php $no++; @endphp

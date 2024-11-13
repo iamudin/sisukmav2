@@ -39,8 +39,8 @@ endfor;
 <table border="1" style="border-collapse:collapse;width:100%;border-style:solid;border-color:#000;font-size:10px"
     class="table table-bordered">
     <tr>
-        <th rowspan="2" style="width:150px">No Res</th>
-        <th colspan="9 style="text-align:center">Nilai Unsur Pelayanan</th>
+        <th rowspan="2" style="width:140px">No Res</th>
+        <th colspan="{{ $type_unsur }}" style="text-align:center">Nilai Unsur Pelayanan</th>
         <th align="center" rowspan="{{ $respon + 4 }}"></th>
     </tr>
     <tr>
@@ -99,7 +99,7 @@ endfor;
         </tr>
 
         <tr>
-            <td colspan="10">Ikm Pelayanan</td>
+            <td colspan="{{ $type_unsur+1 }}">Ikm Pelayanan</td>
             @php $ikm =array_sum($total_unsur) * 25;
             @endphp
             <td align="center">**) <b>{{$ikm > 0? round($ikm,2) : 0}}</b></td>
@@ -116,7 +116,7 @@ endfor;
     @if (count($resp) > 0)
 <table style="border-collapse:collapse;width:100%;border:none;margin-top:10px;font-size:10px" border="0">
     <tr style="border:none">
-        <td style="border:none" rowspan="12">
+        <td style="border:none" rowspan="{{ $type_unsur+3 }}">
             Keterangan :<br>
             - U1 s.d U9 = Unsur-unsur pelayanan<br>
             - NRR = Nilai Rata-rata Unsur<br>
@@ -127,7 +127,7 @@ endfor;
             - NRR tertimbang = NRR per unsur x 0,111 per unsur<br><br>
 
             <h5 style="border:2px solid #000;padding:10px;margin-right:50px">IKM UNIT PELAYANAN <span
-                    style="float:right">{{$ikm > 0 ? round($ikm,2) : 0}}</span></h5>
+                    style="float:right;font-weight: bold">{{$ikm > 0 ? round($ikm,2) : 0}}</span></h5>
 
 
         <td>

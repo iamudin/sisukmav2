@@ -1,6 +1,6 @@
 {
-    "name": "udiko/sisukma",
-    "description": "Extensi LeazyCMS untuk Sistem Pelayanan",
+    "name": "udiko/sisukmav2",
+    "description": "Sisukma V2",
     "type": "library",
     "license": "MIT",
     "keywords": ["PHP"],
@@ -19,7 +19,7 @@
 
         "laravel": {
             "providers": [
-                "Leazycms\\Simpel\\SimpelServiceProvider"
+                "Sisukma\\V2\\Sisukmav2ServiceProvider"
             ]
         }
     },
@@ -27,7 +27,9 @@
     "require": {
         "barryvdh/laravel-snappy": "*",
         "h4cc/wkhtmltoimage-amd64": "*",
-        "h4cc/wkhtmltopdf-amd64": "*"
+        "h4cc/wkhtmltopdf-amd64": "*",
+        "yajra/laravel-datatables-oracle":"^11.0",
+        "simplesoftwareio/simple-qrcode": "~4"
     }
 
 }

@@ -1,5 +1,6 @@
 <?php
 namespace Sisukma\V2\Contracts;
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Sisukma\V2\Models\Skpd;
 use Sisukma\V2\Models\Respon;
@@ -8,9 +9,7 @@ use Illuminate\Support\Facades\View;
 
 class IkmManager
 {
-    function ok(){
-        return 'OKE';
-    }
+
     function diffmonth(\DateTime $date1, \DateTime $date2)
     {
         $diff = $date1->diff($date2);
@@ -34,7 +33,7 @@ class IkmManager
            elseif($from == '07' && $to == '12'):
            $periode = 'Semester II';
             else:
-            $periode = '';
+            $periode = blnindo(request()->month);
         endif;
                return $periode;
        }
@@ -47,10 +46,11 @@ class IkmManager
             })->whereYear('tgl_survei', $year)
         ->whereBetween(DB::raw('MONTH(tgl_survei)'), [$from_month,$to_month])
         ->get();
+
         for ($a = $from_month; $a <= $to_month; $a++) {
-$filteredData = $data->filter(function($item) use ($a) {
-    $month = $item->tgl_survei->format('n');
-    return $month == $this->numtomonth($a);
+            $filteredData = $data->filter(function($item) use ($a) {
+            $month = $item->tgl_survei->format('n');
+            return $month == $this->numtomonth($a);
 });
 $sortedData = $filteredData->sortByDesc(function($item)use($unsur_type) {
     if($unsur_type==11){
@@ -82,28 +82,7 @@ $sortedData = $filteredData->sortByDesc(function($item)use($unsur_type) {
     }
 
 });
-        //     $total = Respon::whereHas('layanan',function($q)use($skpd){
-        //         $q->where('skpd_id',$skpd);
-        //     })
-        //    ->whereYear('created',$year)
-        //    ->whereMonth('created',$this->numtomonth($a))
-        //    ->orderBy('u1','desc')
-        //    ->orderBy('u2','desc')
-        //    ->orderBy('u3','desc')
-        //    ->orderBy('u4','desc')
-        //    ->orderBy('u5','desc')
-        //    ->orderBy('u6','desc')
-        //    ->orderBy('u7','desc')
-        //    ->orderBy('u8','desc')
-        //    ->orderBy('u9','desc');
-        //    if($unsur_type == 11){
-        //     $total = $total->orderBy('u10','desc')->orderBy('u11','desc');
-        //    }
-        //    $real_populasi = $total->get();
-        //    $sample_populasi = $real_populasi->take(get_sample(count($real_populasi)));
-        //    $response['detail']['respon'][] = ['month'=>$this->numtomonth($a),'real'=>count($real_populasi),'sample'=>count($sample_populasi)];
-        //    $response['detail']['sample_total'] +=count($sample_populasi);
-        //    $response['sample'] = $response['sample']->merge($sample_populasi);
+
             $real_populasi = $sortedData;
             $sample_populasi = $real_populasi->take(get_sample(count($real_populasi)));
            $response['detail']['respon'][] = ['month'=>$this->numtomonth($a),'real'=>count($real_populasi),'sample'=>count($sample_populasi)];
@@ -257,39 +236,38 @@ public function get_periode_name()
         }
         return $data;
     }
-    function nilai_unsur_rekap($unsur_tambahan){
-        $skpd = Skpd::whereHas('periode_aktif', function ($q) use ($unsur_tambahan) {
-            $q->where('tahun', request()->year ?? date('Y'));
-            if ($unsur_tambahan==11) {
-                $q->unsurTambahan(); // Pastikan metode ini ada di dalam model
-            }
-        })
-        ->whereStatusSample(1)
-        ->get();
-        $unsur = $unsur_tambahan==11 ? array('u1', 'u2', 'u3', 'u4', 'u5', 'u6', 'u7', 'u8', 'u9', 'u10', 'u11') : array('u1', 'u2', 'u3', 'u4', 'u5', 'u6', 'u7', 'u8', 'u9');
-        $data['unsur'] = array();
-        $data['data'] = array();
-        if(count($skpd)){
+//     function nilai_unsur_rekap($unsur_tambahan){
+//         $skpd = Skpd::whereHas('periode_aktif', function ($q) use ($unsur_tambahan) {
+//             $q->where('tahun', request()->year ?? date('Y'));
+//         });
+//         if ($unsur_tambahan==11) {
+//             $skpd = $skpd->where('total_unsur',$unsur_tambahan); // Pastikan metode ini ada di dalam model
+//         }
+//         $skpd = $skpd->get();
+//         $unsur = $unsur_tambahan==11 ? array('u1', 'u2', 'u3', 'u4', 'u5', 'u6', 'u7', 'u8', 'u9', 'u10', 'u11') : array('u1', 'u2', 'u3', 'u4', 'u5', 'u6', 'u7', 'u8', 'u9');
+//         $data['unsur'] = array();
+//         $data['data'] = array();
+//         if(count($skpd)){
 
-        foreach($skpd as $r){
-            $nilai = $this->nilai_ikm_skpd($r->id,$unsur_tambahan);
-            $a['nama_skpd']= $r->nama_skpd;
-            $a['ikm'] = $nilai['ikm'];
+//         foreach($skpd as $r){
+//             $nilai = $this->nilai_ikm_skpd($r->id,$unsur_tambahan);
+//             $a['nama_skpd']= $r->nama_skpd;
+//             $a['ikm'] = $nilai['ikm'];
 
-            foreach($unsur as $u){
-                $a[$u] = $nilai[$u];
-            }
-            array_push($data['data'],$a);
-        }
-        foreach($unsur as $u){
-            $data['unsur'][$u] = array_sum(array_column($data['data'],$u)) / count($skpd);
-        }
-        // $data['ikm_unsur'] = $a;
-        $data['unsur']['total_ikm'] = array_sum(array_column($data['data'],'ikm')) / count($skpd) ;
-        return $data;
-    }
-return [];
-    }
+//             foreach($unsur as $u){
+//                 $a[$u] = $nilai[$u];
+//             }
+//             array_push($data['data'],$a);
+//         }
+//         foreach($unsur as $u){
+//             $data['unsur'][$u] = array_sum(array_column($data['data'],$u)) / count($skpd);
+//         }
+//         // $data['ikm_unsur'] = $a;
+//         $data['unsur']['total_ikm'] = array_sum(array_column($data['data'],'ikm')) / count($skpd) ;
+//         return $data;
+//     }
+// return [];
+//     }
     function pekerjaan_arr(){
         foreach(['TNI','POLRI','PNS','SWASTA','WIRAUSAHA','Lainnya'] as $r):
             $arr[Str::lower(str_replace(' ','_',$r))] = 0;
@@ -297,12 +275,13 @@ return [];
         return $arr;
     }
     function nilai_ikm_kabupaten($unsur_tambahan){
-        $skpd = Skpd::whereHas('periode_aktif', function ($q) use ($unsur_tambahan) {
+        $skpd = Skpd::whereHas('periode_aktif', function ($q) {
             $q->where('tahun', request()->year ?? date('Y'));
-            if ($unsur_tambahan==11) {
-                $q->unsurTambahan(); // Pastikan metode ini ada di dalam model
-            }
-        })->whereStatusSample(1)->get();
+        });
+        if ($unsur_tambahan==11) {
+            $skpd = $skpd->where('total_unsur',$unsur_tambahan); // Pastikan metode ini ada di dalam model
+        }
+        $skpd = $skpd->get();
         $l['jumlah'] = 0;
         $l['l'] = 0;
         $l['p'] = 0;

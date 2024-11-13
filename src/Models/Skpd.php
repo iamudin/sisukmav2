@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Skpd extends Model
 {
-    protected $fillable = ['nama_skpd','dibatasi','alamat','banner','maps','sort','sort','permalink','email','website','status_sample'];
+    protected $fillable = ['nama_skpd','dibatasi','alamat','banner','maps','sort','sort','permalink','email','website','total_unsur','telp'];
 
     public function user(){
         return $this->hasOne(User::class);

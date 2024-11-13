@@ -17,7 +17,7 @@
         <td>{{ $k+1 }}</td>
         <td>{{ $row->nama_skpd }}</td>
         <td width="60px" align="right">{{ $row->data->jumlah }}</td>
-        <td width="100px" align="right">{{ $row->data->ikm > 0 ? round($row->data->ikm,2) : 0 }}%</td>
+        <td width="100px" align="right">{{ $row->data->ikm > 0 ? round($row->data->ikm,2) : 0 }}</td>
         <td  width="70px" align="center">{{ prediket($row->data->ikm,true) }}</td>
         <td width="100px" >{{ prediket($row->data->ikm) }}</td>
         <td>

@@ -2,18 +2,22 @@
 
 namespace Sisukma\V2\Controllers;
 
+use Carbon\Carbon;
 use Sisukma\V2\Models\Skpd;
 use Sisukma\V2\Models\Unit;
 use Illuminate\Http\Request;
 use Sisukma\V2\Models\Unsur;
 use Sisukma\V2\Models\Respon;
 use Sisukma\V2\Models\Layanan;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
 use Sisukma\V2\Contracts\IkmManager;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Routing\Controllers\HasMiddleware;
+
 class AdminController extends Controller  implements HasMiddleware
 {
     /**
@@ -23,12 +27,23 @@ class AdminController extends Controller  implements HasMiddleware
     {
         return [
             new Middleware('auth'),
-
         ];
     }
     public function index(Request $request)
     {
+//         $surveys  = Respon::withwhereHas('layanan')->get();
+//         $startOfMonth = Carbon::createFromDate(2023, 01);
+// $endOfMonth = Carbon::createFromDate(2023, 06);
 
+// // Filter collection berdasarkan rentang bulan
+// $filteredSurveys = $surveys->filter(function ($survey) use ($startOfMonth, $endOfMonth) {
+//     $tglSurvei = Carbon::parse($survey->tgl_survei);
+//     return $tglSurvei->between($startOfMonth, $endOfMonth);
+// });
+
+// // Jika perlu, Anda bisa meng-reset keys setelah filter
+// $filteredSurveys = $filteredSurveys->values();
+// return $filteredSurveys;
         (new IkmManager)->get_periode_name();
         if($request->isMethod('post')){
             View::share('ajaxdata',json_encode($request->all()));
@@ -47,33 +62,92 @@ class AdminController extends Controller  implements HasMiddleware
     public function indexSKPD(Request $request)
     {
         abort_if(!$request->user()->isAdmin(),'403','Akses tidak dizinkan');
-        $data = Skpd::with('user')->withCount('layanans','units')->get();
+        $data = Skpd::with('user','periode_aktif')->withCount('layanans','units')->get();
         return view('sisukma::admin.skpd.index', compact('data'));
     }
     public function formSKPD(Request $request,Skpd $skpd)
     {
         abort_if(!$request->user()->isAdmin(),'403','Akses tidak dizinkan');
-        $edit = $skpd;
+        $edit = $skpd->load('periode_aktif','user');
         return view('sisukma::admin.skpd.form', compact('edit'));
     }
     public function storeSKPD(Request $request)
     {
+        $data = $request->validate([
+           'nama_skpd'=>'required|string|unique',
+           'alamat'=>'required|string',
+           'email'=>'nullable|email|unique',
+           'website'=>'nullable|url|unique',
+            'total_unsur'=>'required|in:11,9',
+           'telp'=>'nullable|numeric|unique',
+           'banner'=>'nullable|image|max:1024',
+           'periode_aktif'=>'nullable|array',
+        ]);
         if ($request->user()->isAdmin()) {
-            Skpd::create([
-                'nama_skpd' => $request->nama_skpd,
-            ]);
-        return to_route('skpd.index')->with('success', 'Berhasil');
+            $id = Skpd::create($data);
+            if($id ){
+                if($per = $request->periode_aktif){
+                    foreach($per as $row){
+                        $id->periode_aktif()->updateOrCreate(['tahun'=>$row],['tahun'=>$row]);
+                    }
+                }
+                if($request->hasFile('banner')){
+                    $id->update([
+                        'banner'=> $request->file('banner')->store('banner','public')
+                    ]);
+                }
+                $request->validate([
+                    'nama_admin'=> 'required|string',
+                    'username'=> ['required','alpha_dash:ascii','unique'],
+                    'password'=> ['required',Password::min(8)->symbols()->numbers()->mixedCase()],
+                ]);
+                $id->user()->create([
+                    'nama'=>$request->nama_admin,
+                    'username'=>$request->username,
+                    'password'=> bcrypt($request->password)
+                ]);
+            }
+            return to_route('skpd.edit',$id->id)->with('success', 'Berhasil');
         }
         abort('403','Akses tidak dizinkan');
     }
     public function updateSKPD(Request $request,Skpd $skpd)
     {
-        if ($request->user()->isAdmin()) {
+        $data = $request->validate([
+            'nama_skpd'=>'required|string|'.Rule::unique('skpds')->ignore($skpd->id),
+            'alamat'=>'required|string',
+            'email'=>'nullable|email|'.Rule::unique('skpds')->ignore($skpd->id),
+            'website'=>'nullable|url|'.Rule::unique('skpds')->ignore($skpd->id),
+            'telp'=>'nullable|numeric|'.Rule::unique('skpds')->ignore($skpd->id),
+            'total_unsur'=>'required|in:11,9',
+            'banner'=>'nullable|image|max:1024',
+            'periode_aktif'=>'nullable|array',
+         ]);
 
-            $skpd->update([
-                'nama_skpd' => $request->nama_skpd,
+        if ($request->user()->isAdmin()) {
+            if($request->hasFile('banner') ){
+                if($skpd->banner && Storage::disk('public')->exists($skpd->banner)){
+                    Storage::disk('public')->delete($skpd->banner);
+
+                }
+            $data['banner'] = $request->file('banner')->store('banner','public');
+            }
+            $skpd->update($data);
+            $skpd->periode_aktif()->delete();
+            foreach($request->periode_aktif as $r){
+                $skpd->periode_aktif()->updateOrCreate(['tahun'=>$r], ['tahun'=>$r]);
+            }
+            $request->validate([
+                'nama_admin'=> 'required|string',
+                'username'=> ['required','alpha_dash:ascii',Rule::unique('users')->ignore($skpd->user->id)],
+                'password'=> ['nullable',Password::min(8)->symbols()->numbers()->mixedCase()],
             ]);
-            return to_route('skpd.index')->with('success', 'Berhasil');
+            $skpd->user()->update([
+                'nama'=>$request->nama_admin,
+                'username'=>$request->username,
+                'password'=>$request->password ? bcrypt($request->password) : $skpd->user->password
+            ]);
+            return back()->with('success', 'Berhasil');
         }
         abort('403','Akses tidak dizinkan');
     }
@@ -85,7 +159,7 @@ class AdminController extends Controller  implements HasMiddleware
             return to_route('skpd.index')->with('danger', 'Data memiliki relasi Layanan');
             }
             $skpd->delete();
-            return to_route('unsur.index')->with('success', 'Berhasil');
+            return to_route('skpd.index')->with('success', 'Berhasil');
          }
          abort('403','Akses tidak dizinkan');
     }

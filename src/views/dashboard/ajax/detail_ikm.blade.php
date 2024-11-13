@@ -19,7 +19,7 @@
 </ul>
 <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active pt-3" id="detail" role="tabpanel" aria-labelledby="detail-tab" style="font-size:small">
-   <button class="btn btn-warning btn-sm" > <i class="fas fa-print"></i> Cetak</button>
+   <button class="btn btn-warning btn-sm" onclick="cetak_rekap('{{ $skpd_id }}',$('.ajax_data').val(),'ikm')" > <i class="fas fa-print"></i> Cetak</button>
    <hr>
     @include('sisukma::report.ikm_skpd')
     </div>
@@ -79,7 +79,7 @@
     </div>
 
     <div class="tab-pane fade pt-3" id="pengolahan" role="tabpanel" aria-labelledby="pengolahan-tab" style="max-height: 75vh;overflow:auto;">
-   <button class="btn btn-warning btn-sm" onclick="cetak_rekap('{{ $skpd_id }}',$('.ajax_data').val())"> <i class="fas fa-print"></i> Cetak</button>
+   <button class="btn btn-warning btn-sm" onclick="cetak_rekap('{{ $skpd_id }}',$('.ajax_data').val(),'pengolahan')"> <i class="fas fa-print"></i> Cetak</button>
    <hr>
         @include('sisukma::report.pengolahan-data')
 
