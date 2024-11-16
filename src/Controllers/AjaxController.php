@@ -29,9 +29,7 @@ class AjaxController extends Controller  implements HasMiddleware
         return view('sisukma::dashboard.ajax.detail_ikm',compact('skpd_id','data','skpd','periode','alamat','telp','type_unsur'))->render();
     }
 
-    public function cetak_rekap_kabupaten($request){
 
-    }
    public function cetak_rekap_skpd(Request $request){
     $dskpd = Skpd::find($request->skpd_id) ?? null;
     $skpd = $dskpd->nama_skpd ?? null;
@@ -41,7 +39,6 @@ class AjaxController extends Controller  implements HasMiddleware
     $telp = $dskpd->telp?? null;
     $type_unsur = $request->unsur_tambahan ?? 9;
     $ikm = false;
-
     if($request->type=='ikm'){
         $data = json_decode(json_encode((new IkmManager)->nilai_ikm_skpd($request->skpd_id,$request->unsur_tambahan ?? 9)));
         $ikm = true;
@@ -49,7 +46,7 @@ class AjaxController extends Controller  implements HasMiddleware
         return $pdf->download('ikm-'.str($skpd.' '.$periode)->slug().'.pdf');
 
     }elseif($request->type=='pengolahan'){
-        $data = json_decode(json_encode((new IkmManager)->nilai_ikm_skpd($request->skpd_id,$request->unsur_tambahan ?? 9)));
+    $data = json_decode(json_encode((new IkmManager)->nilai_ikm_skpd($request->skpd_id,$request->unsur_tambahan ?? 9)));
     $pdf = PDF::loadView('sisukma::report.pengolahan-data',compact('ikm','skpd_id','data','skpd','periode','alamat','telp','type_unsur'));
     return $pdf->download('pengolahan-data-'.str($skpd.' '.$periode)->slug().'.pdf');
 }
@@ -67,8 +64,16 @@ else{
             return view('sisukma::dashboard.ajax.admin',compact('data','type_unsur'))->render();
 
         }else{
-            $data = json_decode(json_encode((new IkmManager)->nilai_ikm_skpd($request->user()->skpd->id,$request->unsur_tambahan)));
-            return view('sisukma::dashboard.ajax.skpd',compact('data'))->render();
+            $dskpd = $request->user()->skpd;
+            $skpd = $dskpd->nama_skpd ?? null;
+            $skpd_id = $dskpd->id ?? null;
+            $periode = (new IkmManager)->as_periode($request->from,$request->to).' '.($request->year ?? date('Y'));
+            $alamat = $dskpd->alamat?? null;
+            $telp = $dskpd->telp?? null;
+            $type_unsur = $request->unsur_tambahan ?? 9;
+            $fs = 'fs';
+            $data = json_decode(json_encode((new IkmManager)->nilai_ikm_skpd($dskpd->id,$request->unsur_tambahan)));
+            return view('sisukma::dashboard.ajax.skpd',compact('fs','skpd_id','data','skpd','periode','alamat','telp','type_unsur'))->render();
 
         }
     }

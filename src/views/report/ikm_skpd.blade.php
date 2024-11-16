@@ -11,9 +11,9 @@
   </head>
   <body>
 @endif
-<div class="row">
+<div class="row"  @isset($fs) style="font-size:small" @endisset >
     <div class="col-lg-12 text-center">
-        <h4>INDEKS KEPUASAN MASYARAKAT (IKM)<br>{{ $skpd }}<br>
+        <h4>INDEKS KEPUASAN MASYARAKAT (IKM)<br>{{ str($skpd)->upper() }}<br>
             KABUPATEN BENGKALIS<br>PERIODE {{ str($periode)->upper() }}</h4>
     </div>
     <div class="col-lg-6 col-6" style="float:left">

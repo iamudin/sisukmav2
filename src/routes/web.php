@@ -5,5 +5,6 @@ use Sisukma\V2\Controllers\WebController;
 Route::get('/d', function(){
     return Layanan::with('skpd')->get();
 });
-Route::get('/', [WebController::class, 'index']);
+Route::match(['get','post'],'/', [WebController::class, 'index']);
+Route::post('/get_data_stats', [WebController::class, 'get_data_stats'])->name('ajax.web.data');
 Route::get('gallery/{slug?}', [WebController::class, 'gallery']);

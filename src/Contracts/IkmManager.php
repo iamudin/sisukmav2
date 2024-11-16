@@ -178,14 +178,14 @@ public function get_periode_name()
         $year = request()->year ?? date('Y');
         //ambil response tahunan
         if ($year && !request()->month && !request()->from && !request()->to && !request()->date) {
-            $data = $this->get_response_of_range($id_skpd,$year,1,12,$unsur ?? null);
+            $data = $this->get_response_of_range($id_skpd,$year,1,12,$unsur);
             View::share('periode', $year );
         }
 
         //ambil response bulanan
         if ($year && request()->month && !request()->from && !request()->to) {
             $month = intval(substr(request('month'), 0, 1) == '0' ? substr(request('month'), 1, 2) : request('month'));
-            $data = $this->get_response_of_range($id_skpd,$year,$month,$month,$unsur ?? null);
+            $data = $this->get_response_of_range($id_skpd,$year,$month,$month,$unsur);
                 View::share('periode', blnindo(request()->month) . ' ' . request()->year);
             }
 
@@ -193,7 +193,7 @@ public function get_periode_name()
         if ($year && request()->from && request()->to) {
             $from = intval(substr(request('from'), 0, 1) == '0' ? substr(request('from'), 1, 2) : request('from'));
             $to = intval(substr(request('to'), 0, 1) == '0' ? substr(request('to'), 1, 2) : request('to'));
-            $data = $this->get_response_of_range($id_skpd,$year,$from,$to,$unsur ?? null);
+            $data = $this->get_response_of_range($id_skpd,$year,$from,$to,$unsur);
             View::share('periode', $this->as_periode(request()->from,request()->to).' '.request()->year);
         }
 

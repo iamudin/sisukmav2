@@ -14,7 +14,16 @@
     </div>
     <input type="hidden" class="ajax_data" value="{!!base64_encode($ajaxdata ?? json_encode(['year'=>date('Y')]))!!}">
 </div>
-
+<form id="cetakRekapForm" method="POST" action="{{ route('ajax.rekap_skpd_pdf') }}">
+    @csrf <!-- Token CSRF Laravel untuk keamanan -->
+    <input type="hidden" name="year" id="year">
+    <input type="hidden" name="unsur_tambahan" id="unsur_tambahan">
+    <input type="hidden" name="month" id="month">
+    <input type="hidden" name="from" id="from">
+    <input type="hidden" name="to" id="to">
+    <input type="hidden" name="type" id="type">
+    <input type="hidden" name="skpd_id" id="skpd_id">
+</form>
 @include('sisukma::periode')
 @include('sisukma::dashboard.ajax.modal')
 @push('scripts')
@@ -45,35 +54,16 @@
     function cetak_rekap(skpd_id, periode, type) {
     let dec = JSON.parse(atob(periode));
 
-    fetch('{{ route("ajax.rekap_skpd_pdf") }}', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}' // CSRF token Laravel untuk keamanan
-        },
-        body: JSON.stringify({
-            year: dec.year,
-            unsur_tambahan: dec.unsur_tambahan,
-            month: dec.month,
-            from: dec.from,
-            to: dec.to,
-            type: type,
-            skpd_id: skpd_id
-        })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        // return response.json(); // Jika respons JSON, gunakan `.json()`, atau `.text()` jika HTML
-    })
-    .then(data => {
-        // Lakukan sesuatu dengan `data` respons jika diperlukan
-        // console.log(data);
-    })
-    .catch(error => {
-        // console.error('Error:', error);
-    });
+    document.getElementById('year').value = dec.year ?? null;
+document.getElementById('unsur_tambahan').value = dec.unsur_tambahan ?? null;
+document.getElementById('month').value = dec.month ?? null;
+document.getElementById('from').value = dec.from ?? null;
+document.getElementById('to').value = dec.to ?? null;
+document.getElementById('type').value = type ?? null;
+document.getElementById('skpd_id').value = skpd_id ?? null;
+
+// Submit form
+document.getElementById('cetakRekapForm').submit();
 }
 
     function modal_detail_ikm(dataikm, skpd, alamat, telp, type_unsur, skpd_id) {
@@ -110,30 +100,6 @@
     });
 }
 
-//    function modal_detail_ikm(dataikm,skpd,alamat,telp,type_unsur,skpd_id){
-//     var periode = 'dfdf';
-//     $.ajax({
-//             url: '{{ route("ajax.detailikm") }}',
-//             type: 'POST',
-//             data:{
-//                 _token:"{{ csrf_token() }}",
-//                 data_ikm:dataikm,
-//                 skpd:skpd,
-//                 alamat:alamat,
-//                 telp:telp,
-//                 periode:periode,
-//                 type_unsur:type_unsur,
-//                 skpd_id:skpd_id
-//             },
-//             success: function(response) {
-//                 $('#detailikm .modal-body').html(response);
-//                 $('#detailikm').modal('show');
-//             },
-//             error: function(xhr, status, error) {
-//                 console.error(xhr.responseText);
-//             }
-//         });
-//    }
 
 </script>
 @endpush
