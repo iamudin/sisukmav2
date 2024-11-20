@@ -124,7 +124,7 @@
 							</div>
 							<input type="password" name="password" class="form-control input_pass" value="" placeholder="password">
 						</div>
-                        <div class="form-group">
+                        <div class="form-group mt-3">
                             <img src="{{ $captcha }}" alt="" style="width:30%;height: 40px;"> <input  type="text" name="captcha" placeholder="Masukkan Kode..." required  style="border:none;float:right;height: 40px;width:67%">
                           </div>
 							<div class="justify-content-center mt-3 ">
