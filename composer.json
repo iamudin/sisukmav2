@@ -29,7 +29,8 @@
         "h4cc/wkhtmltoimage-amd64": "*",
         "h4cc/wkhtmltopdf-amd64": "*",
         "yajra/laravel-datatables-oracle":"^11.0",
-        "simplesoftwareio/simple-qrcode": "~4"
+        "simplesoftwareio/simple-qrcode": "~4",
+        "maatwebsite/excel": "^3.1"
     }
 
 }
