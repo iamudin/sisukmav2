@@ -21,7 +21,7 @@
 			margin: 0;
 			padding: 0;
 			height: 100%;
-			background: #60a3bc !important;
+			background-image: linear-gradient(to right bottom, #00963d, #008162, #006972, #005068, #1c374c, #1c3245, #1c2e3d, #1b2936, #003443, #004045, #004a39, #005221);
 		}
 		.user_card {
 			height: 400px;
@@ -97,7 +97,7 @@
 			<center><img src="{{url('logo.png')}}"  alt="Logo">
 		<br>
 		<br>
-		<h3 class="text-white" style="font-weight:bold;text-shadow:0 1px 3px #000">S I S U K M A</h3>
+		<h3 class="text-white" style="font-weight:bold;text-shadow:0 1px 3px #000">S I S U K M A <sup style="font-size:10px">2.0</sup></h3>
 		<small class="text-warning" style="font-weight:bold;text-shadow:0 1px 1px #000">Sistem Survei Kepuasan Masyarakat</small>
 	</center>
 
