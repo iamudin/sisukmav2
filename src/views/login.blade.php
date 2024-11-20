@@ -100,7 +100,6 @@
 		<h3 class="text-white" style="font-weight:bold;text-shadow:0 1px 3px #000">S I S U K M A <sup style="font-size:10px">2.0</sup></h3>
 		<small class="text-warning" style="font-weight:bold;text-shadow:0 1px 1px #000">Sistem Survei Kepuasan Masyarakat</small>
 	</center>
-
 				<div class="d-flex justify-content-center form_container" style="margin-top:30px">
 
 					<form method="POST" action="{{ route('login.submit') }}">
