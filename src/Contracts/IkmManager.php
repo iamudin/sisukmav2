@@ -41,10 +41,11 @@ class IkmManager
         $response['detail']['respon'] = array();
         $response['detail']['sample_total'] = 0;
         $response['sample'] = collect();
-        $data  = Respon::withwhereHas('layanan',function($q)use($skpd){
-                $q->where('skpd_id',$skpd);
-            })->whereYear('tgl_survei', $year)
-        ->whereBetween(DB::raw('MONTH(tgl_survei)'), [$from_month,$to_month])
+        $data  = Respon::withWhereHas('layanan', function($q) use ($skpd) {
+            $q->where('skpd_id', $skpd);
+        })
+        ->whereRaw('YEAR(tgl_survei) = ?', [$year])
+        ->whereBetween(DB::raw('MONTH(tgl_survei)'), [$from_month, $to_month])
         ->get();
 
         for ($a = $from_month; $a <= $to_month; $a++) {
