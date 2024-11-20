@@ -1,7 +1,7 @@
 @extends('sisukma::layout.app')
 @section('content')
 <div class="container-fluid px-4">
-    <h3 class="mt-4" style="width:100%">{{request()->segment('3')=='create'? 'Tambah' : 'Edit'}} Perangkat Daerah   <a href="{{route('dashboard')}}" style="float:right" class="text-white btn btn-danger btn-sm"><i class="fas fa-undo"></i> Kembali</a></h3>
+    <h3 class="mt-4" style="width:100%"> <i class="fas fa-gears"></i> {{request()->segment('3')=='create'? 'Tambah' : 'Edit'}} Pengaturan   <a href="{{route('dashboard')}}" style="float:right" class="text-white btn btn-danger btn-sm"><i class="fas fa-undo"></i> Kembali</a></h3>
 <br>
 <form class="" action="{{ route('skpd.profile') }}" enctype="multipart/form-data" method="post">
   @csrf
@@ -29,6 +29,12 @@
         <input type="text" class="form-control" name="telp" placeholder="Masukkan telp 0712345678"  value="{{ $edit->telp ??null }}">
       </div>
       <div class="form-group">
+        <label for="" class="mb-2 mt-2">Isi Survei Hanya Pada Jam kerja ? (08:00 - 12.00 & 13:00 - 17:00)</label><br>
+        <input type="radio"  name="dibatasi" value="Y" @if($edit->exists && $edit->dibatasi=='Y') checked @else checked @endif> Iya <br>
+        <input type="radio"  name="dibatasi" value="N" @if($edit->exists && $edit->dibatasi=='N') checked @endif> Tidak, Boleh kapan saja
+
+      </div>
+      <div class="form-group">
         <label for="" class="mb-2 mt-2">Banner Pelayanan</label>
 
         @if($edit->exists && $edit->banner && Storage::disk('public')->exists($edit->banner))
@@ -37,7 +43,7 @@
         <input type="checkbox" name="tampilkan_banner" value="Y" @if($edit->tampilkan_banner=='Y') checked @endif> <span class="text-danger">Tampilkan Banner di Halaman Survei</span>
         <br><br>
         @endif
-        <input type="file" class="form-control" name="banner" placeholder="Masukkan telp 0712345678"  value="{{ $edit->telp ??null }}">
+        <input type="file" accept="image/png,image/jpg" class="form-control" name="banner" >
     </div>
     </div>
 

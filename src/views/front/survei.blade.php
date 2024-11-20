@@ -22,7 +22,7 @@
 <br>
 
 <div class="col-lg-12 col-12 text-center">
-{{-- <input type="hidden" name="jam_survei" value="{{checkwaktu(now())}}"> --}}
+<input type="hidden" name="jam_survei" value="{{checkwaktu(now())}}">
 <input class="keyboard-input" onkeyup="if(this.value.length > 2) {$('.next-usia').show()} else{$('.next-usia').hide()}" onkeydown="return event.key != 'Enter';" style="text-align:center;font-size:25px;min-width:90%;font-weight:bold;border:5px solid lightblue" type="text"  name="nik" placeholder="Masukkan nama anda">
 
   <br>

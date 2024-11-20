@@ -27,7 +27,9 @@ public function survei(Request $request,$skpd,$layanan=null){
     $skpd = Skpd::with('layanans')->findOrFail(base64_decode($skpd));
 
     if(!empty($layanan) &&  $data  = $skpd->layanans->where('id',base64_decode($layanan))->first()){
-
+        if($skpd->dibatasi=='Y' && !checkwaktu(now())){
+              return redirect('survei/'.base64_encode($skpd->id))->with('warning','Survei Layanan tidak bisa dilakukan karena diluar jam kerja');;
+          }
       if($request->kirim_survei){
         $data = $request->all();
         unset($data['kirim_survei']);

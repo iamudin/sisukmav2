@@ -8,6 +8,20 @@ if (!function_exists('sample')) {
 
     }
 }
+if (!function_exists('checkwaktu')) {
+function checkwaktu($start){
+    $firstime = array('08','09','10','11','12');
+    $second = array('13','14','15','16','17');
+  $waktu = date('H',strtotime($start));
+  if(in_array($waktu,$firstime)){
+    return '08:00 - 12:00';
+  }elseif(in_array($waktu,$second)){
+    return '13:00 - 17:00';
+  }else{
+    return false;
+  }
+  }
+}
 if (!function_exists('qrcode')) {
     function qrcode($string,$size){
     return \SimpleSoftwareIO\QrCode\Facades\QrCode::size($size)

@@ -27,7 +27,9 @@ location.reload();
 
 <center><h2>Selamat Datang Di Formulir Survei Kepuasan Masyarakat <br><b>{{Str::upper($skpd->nama_skpd)}}</b></h2><span class="badge bg-info">Jam Operasional : 08:00 - 12:00 dan 13:00 - 17:00</span></center>
 <br>
-
+@if(Session::has('warning'))
+<div class="alert alert-warning"> <i class="fas fa-info"></i> {{ Session::get('warning') }}</div>
+@endif
   @if($skpd->layanans->count() > 0)
     <h5>Silahkan Pilih Layanan Dibawah ini :</h5>
 <div class="list-group w-100" style="min-width:80vw;max-height:60vh;overflow:auto" >

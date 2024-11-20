@@ -163,6 +163,7 @@ class AdminController extends Controller  implements HasMiddleware
                 }
                 $data['banner'] = $request->file('banner')->store('banner', 'public');
             }
+            $data['dibatasi'] = $request->dibatasi;
             $skpd->update($data);
 
             return back()->with('success', 'Berhasil');
