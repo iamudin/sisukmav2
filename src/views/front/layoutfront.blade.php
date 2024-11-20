@@ -82,7 +82,7 @@
   <!-- ======= Hero Section ======= -->
   @if(request()->is('/'))
   <section id="hero" class="hero" style="margin:0;padding:0">
-   <img style="width:100%" src="{{url('e-surve.webp')}}" alt="">
+   <img style="width:100%" src="https://sisukma.bengkaliskab.go.id/e-surve.webp" alt="">
   </section>
 
 
@@ -101,7 +101,7 @@
 
     <div class="container mt-4">
       <div class="copyright">
-        &copy; Copyright 2023 <strong><span>E-Survei</span></strong> -  Bagian Organisasi Sekretariat Daerah
+        &copy; Copyright 2023 <strong><span>Sisukma</span></strong> -  Bagian Organisasi Sekretariat Daerah
       </div>
       <div class="credits">
         <!-- All the links in the footer should remain intact. -->

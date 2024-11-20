@@ -26,20 +26,22 @@
 
 <body id="apping" @if($agent->isDesktop()) onload="openFullscreen()" @endif class="bg-light">
 <header class="">
-<nav class=" navbar fixed-top" style="background:rgb(13, 110, 253)">
+<nav class=" navbar fixed-top" style="background: rgb(7,89,207);background: linear-gradient(180deg, rgba(7,89,207,1) 34%, rgba(13,110,253,1) 50%, rgba(9,85,197,1) 100%);">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">
       <img src="https://bengkaliskab.go.id/favicon.png" alt=""  height="50" class="me-3 d-inline float-start align-text-top">
       <h3 class="text-white" style="line-height:5px;font-weight:bold;margin-top:10px;">S I S U K M A</h3>
-      <small class="text-white">Sistem Survei Kepuasan Masyarakat</small>
+      <small class="text-white" style="font-size:14px">Sistem Survei Kepuasan Masyarakat</small>
     </a>
+    <a href="{{ url('survei/'.request()->segment(2)) }}" class="navbar-toggler text-warning border" type="button"><i class="fa fa-undo"></i></a>
   </div>
 </nav>
 </header>
 <!-- <div class="container-fluid"> -->
-<!-- <img src="{{asset($skpd->banner)}}" style="width:100%" alt=""> -->
 
 <div class="container @if(request()->segment(3)) d-flex align-items-center justify-content-center @endif">
+
+
 @yield('content')
 </div>
 

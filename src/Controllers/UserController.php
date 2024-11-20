@@ -14,7 +14,6 @@ class UserController extends Controller  implements HasMiddleware
     {
         return [
             new Middleware('auth'),
-
         ];
     }
 }

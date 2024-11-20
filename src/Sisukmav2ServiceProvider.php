@@ -5,6 +5,7 @@ use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
+use Sisukma\V2\Middleware\WebMiddleware;
 
 class Sisukmav2ServiceProvider extends ServiceProvider
 {
@@ -24,6 +25,11 @@ class Sisukmav2ServiceProvider extends ServiceProvider
         });
 
     }
+    protected function registerMiddleware()
+    {
+        $router = $this->app['router'];
+        $router->pushMiddlewareToGroup('web', WebMiddleware::class);
+    }
     protected function registerResources()
     {
         $this->loadViewsFrom(__DIR__ . '/views', 'sisukma');
@@ -37,6 +43,7 @@ class Sisukmav2ServiceProvider extends ServiceProvider
 
     public function boot(Router $router)
     {
+        $this->registerMiddleware();
         $this->registerResources();
         $this->registerMigrations();
         Carbon::setLocale('ID');

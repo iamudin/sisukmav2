@@ -7,7 +7,6 @@ use Sisukma\V2\Controllers\AjaxController;
 $path = 'admin';
 Route::prefix($path)->group(function()use($path){
     Route::match(['get','post'],'dashboard', [AdminController::class, 'index'])->name('dashboard');
-    Route::get('account', [UserController::class, 'account'])->name('account');
     Route::controller(AjaxController::class)->group(function() {
         Route::post('ajax/dashboard', 'dashboard')->name('ajax.dashboard');
         Route::post('ajax/detailikm', 'detailikm')->name('ajax.detailikm');
@@ -17,6 +16,10 @@ Route::prefix($path)->group(function()use($path){
     });
     Route::controller(AdminController::class)->group(function() {
         // SKPD Routes
+        Route::match(['post','get'],'account', 'account')->name('user.account');
+        Route::get('linkqr/{skpd}', 'linkQR')->name('skpd.linkqr');
+        Route::get('cetakqr/{skpd}', 'cetakQR')->name('skpd.cetakqr');
+        Route::match(['post','get'],'profile-skpd', 'profileSKPD')->name('skpd.profile');
         Route::get('skpd', 'indexSKPD')->name('skpd.index');
         Route::get('skpd/create', 'formSKPD')->name('skpd.create');
         Route::post('skpd/create', 'storeSKPD')->name('skpd.store');
@@ -48,18 +51,17 @@ Route::prefix($path)->group(function()use($path){
         Route::delete('unit/{unit}/delete', 'destroyUnit')->name('unit.destroy');
 
         // User Routes
-        Route::get('user', 'indexUser')->name('user.index');
-        Route::get('user/create', 'formUser')->name('user.create');
-        Route::post('user/create', 'storeUser')->name('user.store');
-        Route::get('user/{user}/edit', 'formUser')->name('user.edit');
-        Route::put('user/{user}/edit', 'updateUser')->name('user.update');
-        Route::delete('user/{user}/delete', 'destroyUser')->name('user.destroy');
+        Route::get('responden-layanan', 'indexResponden')->name('responden.index');
+        Route::match(['get','post'],'responden-layanan/{layanan}/import', 'importResponden')->name('responden.import');
+        Route::post('responden-layanan/{layanan}/destroy', 'destroyDateResponden')->name('responden.destroy.date');
+
 
         Route::get('gallery', 'indexGallery')->name('gallery.index');
         Route::get('gallery/create', 'formGallery')->name('gallery.create');
         Route::post('gallery/create', 'storeGallery')->name('gallery.store');
         Route::get('gallery/{gallery}/edit', 'formGallery')->name('gallery.edit');
         Route::put('gallery/{gallery}/edit', 'updateGallery')->name('gallery.update');
+        Route::delete('imggallery/{imgGallery}/delete', 'destroyImgGallery')->name('imgGallery.destroy');
         Route::delete('gallery/{gallery}/delete', 'destroyGallery')->name('gallery.destroy');
 
     });

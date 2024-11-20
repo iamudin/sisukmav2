@@ -14,6 +14,12 @@ if (!function_exists('qrcode')) {
     ->generate($string,);
 }
 }
+if (!function_exists('isDate')) {
+    function isDate($date, $format = 'Y-m-d'){
+    $d = DateTime::createFromFormat($format, $date);
+    return $d && $d->format($format) === $date;
+  }
+}
 if (!function_exists('blnindo')) {
 
 function blnindo($bln){

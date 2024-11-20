@@ -1,9 +1,12 @@
 @extends('sisukma::layout.app')
 @section('content')
 <div class="container-fluid px-4">
-    <h3 class="mt-4"><i class="fas fa-tachometer-alt"></i> Dashboard</h3>
+    <h3 class="mt-4"><i class="fas fa-tachometer-alt"></i> Dashboard  <a href="{{ route('responden.index') }}" class="btn btn-sm btn-success float-end mt-2"> <i class="fas fa-table"></i> Import Responden</a></h3>
+<br>
+   <p style="font-size:30px;">Periode <b class="periode-title">{{ $periode }}</b>
+     <button onclick="$('.periode').modal('show')" class="btn btn-sm btn-danger float-end mt-2"> <i class="fa fa-edit"></i> Ganti Periode</button>
 
-   <p style="font-size:30px;">Periode <b class="periode-title">{{ $periode }}</b> <button onclick="$('.periode').modal('show')" class="btn btn-sm btn-danger float-end mt-2"> <i class="fa fa-edit"></i> Ganti Periode</button></p>
+    </p>
    <center  id="spinner" style="display: none" >
     <div class="spinner-border text-primary" role="status">
 
@@ -18,8 +21,8 @@
     <input type="hidden" name="year" id="year">
     <input type="hidden" name="unsur_tambahan" id="unsur_tambahan">
     <input type="hidden" name="month" id="month">
-    <input type="hidden" name="from" id="from">
-    <input type="hidden" name="to" id="to">
+    <input type="hidden" name="from" id="fromF">
+    <input type="hidden" name="to" id="toF">
     <input type="hidden" name="type" id="type">
     <input type="hidden" name="skpd_id" id="skpd_id">
 </form>
@@ -54,8 +57,8 @@
 document.getElementById('year').value = dec.year ?? null;
 document.getElementById('unsur_tambahan').value = dec.unsur_tambahan ?? null;
 document.getElementById('month').value = dec.month ?? null;
-document.getElementById('from').value = dec.from ?? null;
-document.getElementById('to').value = dec.to ?? null;
+document.getElementById('fromF').value = dec.from ?? null;
+document.getElementById('toF').value = dec.to ?? null;
 document.getElementById('type').value = type ?? null;
 document.getElementById('skpd_id').value = skpd_id ?? null;
 

@@ -32,12 +32,14 @@
         <!-- Navbar-->
 
         <ul class="navbar-nav ms-auto ms-auto me-3 me-lg-4">
-
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('account') }}"><i class="fas fa-user fa-fw"></i></a>
+                <a class="nav-link text-warning" target="_blank" href="{{ url('/') }}"><i class="fas fa-globe fa-fw"></i></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="navbarDropdown" href="{{ route('logout') }}"
+                <a class="nav-link text-warning" href="{{ route('user.account') }}"><i class="fas fa-user fa-fw"></i></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-danger" id="navbarDropdown" href="{{ route('logout') }}"
                     onclick="return confirm('Yakin untuk keluar ?')"><i class="fas fa-sign-out-alt fa-fw"></i></a>
             </li>
         </ul>
@@ -75,10 +77,20 @@
 
                         @if(Auth::user()->isAdmin())
                         <a class="nav-link sb-menu" href="{{ route('skpd.index') }}"> <div class="sb-nav-link-icon"><i class="fas fa-building"></i> Perangkat Daerah</div></a>
+                        @else
+                        <a class="nav-link sb-menu" href="{{ route('skpd.profile') }}"> <div class="sb-nav-link-icon"><i class="fas fa-building"></i> Perangkat Daerah</div></a>
+                        <a class="nav-link sb-menu" href="{{ url('survei/'.base64_encode(Auth::user()->skpd->id))}}"> <div class="sb-nav-link-icon"><i class="fas fa-hand-pointer"></i> Form Survei</div></a>
                         @endif
                         <a class="nav-link sb-menu" href="{{ route('gallery.index') }}"> <div class="sb-nav-link-icon"><i class="fas fa-image"></i> Gallery</div></a>
 
-
+                        @if(Auth::user()->isSkpd())
+                        <br>
+                        <br>
+                        <div class="sb-sidenav-menu-heading pt-0 mt-0">QR Code <i class="fas fa-qrcode"></i> </div>
+                        {{ QrCode::size(200)->generate('sdfsdfsdf') }}
+                        <a href="{{ route('skpd.cetakqr',Auth::user()->skpd->id) }}?cetak=ori" class="btn btn-warning btn-sm mt-2">Download QR</a>
+                        <a href="{{ route('skpd.cetakqr',Auth::user()->skpd->id) }}?cetaktamplte=true&cetak=true" class="btn btn-success btn-sm mt-2">Versi Template</a>
+                        @endif
 
 
                     </div>

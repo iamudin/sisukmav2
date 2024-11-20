@@ -19,8 +19,8 @@
     <input type="hidden" name="year" id="year">
     <input type="hidden" name="unsur_tambahan" id="unsur_tambahan">
     <input type="hidden" name="month" id="month">
-    <input type="hidden" name="from" id="from">
-    <input type="hidden" name="to" id="to">
+    <input type="hidden" name="from" id="fromF">
+    <input type="hidden" name="to" id="toF">
     <input type="hidden" name="type" id="type">
     <input type="hidden" name="skpd_id" id="skpd_id">
 </form>
@@ -57,8 +57,8 @@
     document.getElementById('year').value = dec.year ?? null;
 document.getElementById('unsur_tambahan').value = dec.unsur_tambahan ?? null;
 document.getElementById('month').value = dec.month ?? null;
-document.getElementById('from').value = dec.from ?? null;
-document.getElementById('to').value = dec.to ?? null;
+document.getElementById('fromF').value = dec.from ?? null;
+document.getElementById('toF').value = dec.to ?? null;
 document.getElementById('type').value = type ?? null;
 document.getElementById('skpd_id').value = skpd_id ?? null;
 

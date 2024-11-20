@@ -36,7 +36,7 @@
           <div id="peri" style="display:none">
           <input type="radio"name="c"  onchange="if(this.value){$('.month').show();$('.month select').removeAttr('disabled');$('#from').val('');$('#to').val('');}"> Bulan<br>
           <input type="radio" name="c" onchange="$('.month').hide();$('#from').val('01');$('#to').val('06');"> Januari - Juni<br>
-          <input type="radio" name="c"  onchange="$('.month').hide();;$('#from').val('07');$('#to').val('12');"> Juli - Desember<br>
+          <input type="radio" name="c"  onchange="$('.month').hide();$('#from').val('07');$('#to').val('12');"> Juli - Desember<br>
           @foreach(array(
             ['name'=>'I','range'=>['01','03']],
             ['name'=>'II','range'=>['04','06']],

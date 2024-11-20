@@ -10,14 +10,9 @@ use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Routing\Controllers\HasMiddleware;
 
-class AjaxController extends Controller  implements HasMiddleware
+class AjaxController extends Controller
 {
-    public static function middleware(): array
-    {
-        return [
-            new Middleware('auth'),
-        ];
-    }
+
     public function detailikm(Request $request){
         $data = json_decode(base64_decode($request->data_ikm));
         $skpd = $request->skpd;

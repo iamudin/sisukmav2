@@ -2,19 +2,25 @@
 
 namespace Sisukma\V2\Controllers;
 
-use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Sisukma\V2\Models\Skpd;
 use Sisukma\V2\Models\Unit;
 use Illuminate\Http\Request;
 use Sisukma\V2\Models\Unsur;
 use Sisukma\V2\Models\Respon;
+use Sisukma\V2\Models\Gallery;
 use Sisukma\V2\Models\Layanan;
 use Illuminate\Validation\Rule;
+use Sisukma\V2\Models\ImgGallery;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
+use Maatwebsite\Excel\Facades\Excel;
 use Sisukma\V2\Contracts\IkmManager;
 use Illuminate\Support\Facades\Storage;
+use Barryvdh\Snappy\Facades\SnappyImage;
 use Illuminate\Validation\Rules\Password;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Routing\Controllers\HasMiddleware;
 
@@ -26,146 +32,264 @@ class AdminController extends Controller  implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('auth'),
+            new Middleware('auth',null, ['cetakQR']),
         ];
     }
     public function index(Request $request)
     {
-//         $surveys  = Respon::withwhereHas('layanan')->get();
-//         $startOfMonth = Carbon::createFromDate(2023, 01);
-// $endOfMonth = Carbon::createFromDate(2023, 06);
 
-// // Filter collection berdasarkan rentang bulan
-// $filteredSurveys = $surveys->filter(function ($survey) use ($startOfMonth, $endOfMonth) {
-//     $tglSurvei = Carbon::parse($survey->tgl_survei);
-//     return $tglSurvei->between($startOfMonth, $endOfMonth);
-// });
-
-// // Jika perlu, Anda bisa meng-reset keys setelah filter
-// $filteredSurveys = $filteredSurveys->values();
-// return $filteredSurveys;
         (new IkmManager)->get_periode_name();
-        if($request->isMethod('post')){
-            View::share('ajaxdata',json_encode($request->all()));
+        if ($request->isMethod('post')) {
+            View::share('ajaxdata', json_encode($request->all()));
         }
-        if($request->user()->isAdmin()){
+        if ($request->user()->isAdmin()) {
 
             return view('sisukma::dashboard.admin');
-        }else{
+        } else {
             return view('sisukma::dashboard.skpd');
         }
-
-
     }
 
-    //SKPD
+    public function account(Request $request){
+        $user = Auth::user();
+        if($request->isMethod('post')){
+            $request->validate([
+                'nama'=>'required|string',
+                'password' => 'nullable|confirmed|min:6',
+            ]);
+
+            $user->update([
+                'nama'=>$request->nama,
+                'password'=>$request->passsword ? bcrypt($request->password) : $user->password,
+            ]);
+            return back()->with('success','Akun berhasil diperbarui');
+        }
+        return view('sisukma::admin.account',compact('user'));
+    }
+    public function cetakQR(Skpd $skpd)
+    {
+        if($vc = request()->cetak){
+            $path = 'dataqr/'.str('qr '.$skpd->nama_skpd)->slug().'.jpg';
+            if($vc=='ori'){
+                SnappyImage::generate(route('skpd.cetakqr',$skpd->id),Storage::path($path));
+            }else{
+                SnappyImage::generate(route('skpd.cetakqr',$skpd->id).'?cetaktemplate=true',Storage::path($path));
+            }
+            if(Storage::exists($path)){
+                return response()->download(Storage::path($path))->deleteFileAfterSend();
+            }
+        }
+        if(request()->cetaktemplate){
+        return view('sisukma::report.qrcode', ['skpd' => $skpd]);
+        }
+        return view('sisukma::report.qrcode-ori', ['skpd' => $skpd]);
+    }
     public function indexSKPD(Request $request)
     {
-        abort_if(!$request->user()->isAdmin(),'403','Akses tidak dizinkan');
-        $data = Skpd::with('user','periode_aktif')->withCount('layanans','units')->get();
+        abort_if(!$request->user()->isAdmin(), '403', 'Akses tidak dizinkan');
+        $data = Skpd::with('user', 'periode_aktif')->withCount('layanans', 'units')->get();
         return view('sisukma::admin.skpd.index', compact('data'));
     }
-    public function formSKPD(Request $request,Skpd $skpd)
+    public function formSKPD(Request $request, Skpd $skpd)
     {
-        abort_if(!$request->user()->isAdmin(),'403','Akses tidak dizinkan');
-        $edit = $skpd->load('periode_aktif','user');
+        abort_if(!$request->user()->isAdmin(), '403', 'Akses tidak dizinkan');
+        $edit = $skpd->load('periode_aktif', 'user');
         return view('sisukma::admin.skpd.form', compact('edit'));
     }
     public function storeSKPD(Request $request)
     {
         $data = $request->validate([
-           'nama_skpd'=>'required|string|unique',
-           'alamat'=>'required|string',
-           'email'=>'nullable|email|unique',
-           'website'=>'nullable|url|unique',
-            'total_unsur'=>'required|in:11,9',
-           'telp'=>'nullable|numeric|unique',
-           'banner'=>'nullable|image|max:1024',
-           'periode_aktif'=>'nullable|array',
+            'nama_skpd' => 'required|string|unique',
+            'alamat' => 'required|string',
+            'email' => 'nullable|email|unique',
+            'website' => 'nullable|url|unique',
+            'total_unsur' => 'required|in:11,9',
+            'telp' => 'nullable|numeric|unique',
+            'banner' => 'nullable|image|max:1024',
+            'periode_aktif' => 'nullable|array',
         ]);
         if ($request->user()->isAdmin()) {
             $id = Skpd::create($data);
-            if($id ){
-                if($per = $request->periode_aktif){
-                    foreach($per as $row){
-                        $id->periode_aktif()->updateOrCreate(['tahun'=>$row],['tahun'=>$row]);
+            if ($id) {
+                if ($per = $request->periode_aktif) {
+                    foreach ($per as $row) {
+                        $id->periode_aktif()->updateOrCreate(['tahun' => $row], ['tahun' => $row]);
                     }
                 }
-                if($request->hasFile('banner')){
+                if ($request->hasFile('banner')) {
                     $id->update([
-                        'banner'=> $request->file('banner')->store('banner','public')
+                        'banner' => $request->file('banner')->store('banner', 'public')
                     ]);
                 }
                 $request->validate([
-                    'nama_admin'=> 'required|string',
-                    'username'=> ['required','alpha_dash:ascii','unique'],
-                    'password'=> ['required',Password::min(8)->symbols()->numbers()->mixedCase()],
+                    'nama_admin' => 'required|string',
+                    'username' => ['required', 'alpha_dash:ascii', 'unique'],
+                    'password' => ['required', Password::min(8)->symbols()->numbers()->mixedCase()],
                 ]);
                 $id->user()->create([
-                    'nama'=>$request->nama_admin,
-                    'username'=>$request->username,
-                    'password'=> bcrypt($request->password)
+                    'nama' => $request->nama_admin,
+                    'username' => $request->username,
+                    'password' => bcrypt($request->password)
                 ]);
             }
-            return to_route('skpd.edit',$id->id)->with('success', 'Berhasil');
+            return to_route('skpd.edit', $id->id)->with('success', 'Berhasil');
         }
-        abort('403','Akses tidak dizinkan');
+        abort('403', 'Akses tidak dizinkan');
     }
-    public function updateSKPD(Request $request,Skpd $skpd)
+    public function profileSKPD(Request $request)
+    {
+        abort_if(Auth::user()->isAdmin(),'403', 'Akses tidak dizinkan');
+
+        $skpd = Auth::user()->skpd;
+        if($request->isMethod('post')){
+
+        $data = $request->validate([
+            'nama_skpd' => 'required|string|' . Rule::unique('skpds')->ignore($skpd->id),
+            'alamat' => 'required|string',
+            'tampilkan_banner' => 'nullable|in:Y,N',
+            'email' => 'nullable|email|' . Rule::unique('skpds')->ignore($skpd->id),
+            'website' => 'nullable|url|' . Rule::unique('skpds')->ignore($skpd->id),
+            'telp' => 'nullable|numeric|' . Rule::unique('skpds')->ignore($skpd->id),
+            'banner' => 'nullable|image|max:1024',
+        ]);
+
+        if(!$request->tampilkan_banner){
+            $data['tampilkan_banner'] = 'N';
+        }
+
+            if ($request->hasFile('banner')) {
+                if ($skpd->banner && Storage::disk('public')->exists($skpd->banner)) {
+                    Storage::disk('public')->delete($skpd->banner);
+                }
+                $data['banner'] = $request->file('banner')->store('banner', 'public');
+            }
+            $skpd->update($data);
+
+            return back()->with('success', 'Berhasil');
+        }
+        return view('sisukma::admin.skpd.profile',['edit'=>$skpd]);
+    }
+    public function updateSKPD(Request $request, Skpd $skpd)
     {
         $data = $request->validate([
-            'nama_skpd'=>'required|string|'.Rule::unique('skpds')->ignore($skpd->id),
-            'alamat'=>'required|string',
-            'email'=>'nullable|email|'.Rule::unique('skpds')->ignore($skpd->id),
-            'website'=>'nullable|url|'.Rule::unique('skpds')->ignore($skpd->id),
-            'telp'=>'nullable|numeric|'.Rule::unique('skpds')->ignore($skpd->id),
-            'total_unsur'=>'required|in:11,9',
-            'banner'=>'nullable|image|max:1024',
-            'periode_aktif'=>'nullable|array',
-         ]);
+            'nama_skpd' => 'required|string|' . Rule::unique('skpds')->ignore($skpd->id),
+            'alamat' => 'required|string',
+            'email' => 'nullable|email|' . Rule::unique('skpds')->ignore($skpd->id),
+            'website' => 'nullable|url|' . Rule::unique('skpds')->ignore($skpd->id),
+            'telp' => 'nullable|numeric|' . Rule::unique('skpds')->ignore($skpd->id),
+            'total_unsur' => 'required|in:11,9',
+            'banner' => 'nullable|image|max:1024',
+            'periode_aktif' => 'nullable|array',
+        ]);
 
         if ($request->user()->isAdmin()) {
-            if($request->hasFile('banner') ){
-                if($skpd->banner && Storage::disk('public')->exists($skpd->banner)){
+            if ($request->hasFile('banner')) {
+                if ($skpd->banner && Storage::disk('public')->exists($skpd->banner)) {
                     Storage::disk('public')->delete($skpd->banner);
-
                 }
-            $data['banner'] = $request->file('banner')->store('banner','public');
+                $data['banner'] = $request->file('banner')->store('banner', 'public');
             }
             $skpd->update($data);
             $skpd->periode_aktif()->delete();
-            foreach($request->periode_aktif as $r){
-                $skpd->periode_aktif()->updateOrCreate(['tahun'=>$r], ['tahun'=>$r]);
+            foreach ($request->periode_aktif as $r) {
+                $skpd->periode_aktif()->updateOrCreate(['tahun' => $r], ['tahun' => $r]);
             }
             $request->validate([
-                'nama_admin'=> 'required|string',
-                'username'=> ['required','alpha_dash:ascii',Rule::unique('users')->ignore($skpd->user->id)],
-                'password'=> ['nullable',Password::min(8)->symbols()->numbers()->mixedCase()],
+                'nama_admin' => 'required|string',
+                'username' => ['required', 'alpha_dash:ascii', Rule::unique('users')->ignore($skpd->user->id)],
+                'password' => ['nullable', Password::min(8)->symbols()->numbers()->mixedCase()],
             ]);
             $skpd->user()->update([
-                'nama'=>$request->nama_admin,
-                'username'=>$request->username,
-                'password'=>$request->password ? bcrypt($request->password) : $skpd->user->password
+                'nama' => $request->nama_admin,
+                'username' => $request->username,
+                'password' => $request->password ? bcrypt($request->password) : $skpd->user->password
             ]);
             return back()->with('success', 'Berhasil');
         }
-        abort('403','Akses tidak dizinkan');
+        abort('403', 'Akses tidak dizinkan');
     }
-    public function destroySKPD(Request $request,Skpd $skpd)
+    public function destroySKPD(Request $request, Skpd $skpd)
     {
 
-       if ($request->user()->isAdmin()) {
-        if($skpd->layanans()->exists()){
-            return to_route('skpd.index')->with('danger', 'Data memiliki relasi Layanan');
+        if ($request->user()->isAdmin()) {
+            if ($skpd->layanans()->exists()) {
+                return to_route('skpd.index')->with('danger', 'Data memiliki relasi Layanan');
             }
             $skpd->delete();
             return to_route('skpd.index')->with('success', 'Berhasil');
-         }
-         abort('403','Akses tidak dizinkan');
+        }
+        abort('403', 'Akses tidak dizinkan');
     }
+    //gallery
+    public function indexGallery(Request $request)
+    {
+        $data = Gallery::with('images','skpd')
+            ->when($request->user()->isSkpd(), function ($query) use ($request) {
+                return $query->whereSkpdId($request->user()->skpd->id);
+            })
+            ->latest('created_at')
+            ->get();
+        return view('sisukma::admin.gallery.index', compact('data'));
+    }
+    public function formGallery(Gallery $gallery)
+    {
+        $edit = $gallery;
+        return view('sisukma::admin.gallery.form', compact('edit'));
+    }
+    public function storeGallery(Request $request, Gallery $gallery)
+    {
+        $request->validate([
+            'nama'=>'required|string',
+            'aktif'=>'required|string',
+        ]);
+        $data= $gallery->create([
+            'nama' => $request->nama,
+            'aktif'=>$request->aktif,
+            'slug'=>str($request->nama)->slug().'-'.Str::random(4)
+        ]);
+        return  to_route('gallery.edit',$data->id)->with('success', 'Gallery Tersimpan');
 
-//Unit Pelayanan
-public function indexUnit(Request $request)
+    }
+    public function updateGallery(Request $request, Gallery $gallery)
+    {
+        if($request->upload){
+            $request->validate([
+                'gambar'=>'required|image|max:1024',
+                'caption'=>'required|string'
+            ]);
+            if($request->hasFile('gambar')){
+
+                $gallery->images()->create([
+                   'path'=> $request->file('gambar')->store('gallery', 'public'),
+                   'caption'=> $request->caption,
+                ]);
+            }
+        }else{
+            $gallery->update([
+                'nama' => $request->nama,
+                'aktif'=>$request->aktif
+            ]);
+        }
+
+
+        return back()->with('success', 'Berhasil Tersimpan');
+    }
+    public function destroyGallery(Gallery $gallery)
+    {
+            abort_if(Auth::user()->skpd->id != $gallery->skpd_id,404,'Tidak diizinkan');
+            $gallery->delete();
+            return back()->with('success', 'Berhasil');
+    }
+    public function destroyImgGallery(ImgGallery $imgGallery)
+    {
+            if(Storage::disk('public')->exists($imgGallery->path)){
+                Storage::disk('public')->delete($imgGallery->path);
+            }
+            $imgGallery->delete();
+            return back()->with('success', 'Berhasil');
+    }
+    //Unit Pelayanan
+    public function indexUnit(Request $request)
     {
         $data = Unit::with('skpd')
             ->when($request->user()->isSkpd(), function ($query) use ($request) {
@@ -178,13 +302,12 @@ public function indexUnit(Request $request)
     }
     public function formUnit(Request $request, Unit $unit)
     {
-       abort_if($request->user()->isSkpd() && $unit->exists && $unit->skpd_id != $request->user()->skpd->id,'403','Aksi tidak di izinkan');
+        abort_if($request->user()->isSkpd() && $unit->exists && $unit->skpd_id != $request->user()->skpd->id, '403', 'Aksi tidak di izinkan');
         $edit = $unit;
         if ($request->user()->isAdmin()) {
             $skpd = Skpd::get();
         } else {
             $skpd = null;
-
         }
         return view(
             'sisukma::admin.unit.form',
@@ -243,7 +366,7 @@ public function indexUnit(Request $request)
     //Layanan
     public function indexLayanan(Request $request)
     {
-        $data = Layanan::with('skpd','unit')
+        $data = Layanan::with('skpd', 'unit')
             ->when($request->user()->isSkpd(), function ($query) use ($request) {
                 return $query->whereSkpdId($request->user()->skpd->id); // Ganti dengan kondisi yang sesuai
             })->orderBy('skpd_id')
@@ -252,16 +375,14 @@ public function indexUnit(Request $request)
     }
     public function formLayanan(Request $request, Layanan $layanan)
     {
-       abort_if($request->user()->isSkpd() && $layanan->exists && $layanan->skpd_id != $request->user()->skpd->id,'403','Aksi tidak di izinkan');
+        abort_if($request->user()->isSkpd() && $layanan->exists && $layanan->skpd_id != $request->user()->skpd->id, '403', 'Aksi tidak di izinkan');
         $edit = $layanan;
         if ($request->user()->isAdmin()) {
             $skpd = Skpd::get();
             $unit = $request->skpd || $edit->exists ? Unit::whereSkpdId($request->skpd ?? $edit->skpd_id)->get() : null;
-
         } else {
             $skpd = null;
             $unit = Unit::whereSkpdId($request->user()->skpd->id)->get();
-
         }
         return view(
             'sisukma::admin.layanan.form',
@@ -330,13 +451,13 @@ public function indexUnit(Request $request)
     //Layanan
     public function indexUnsur(Request $request)
     {
-        abort_if(!$request->user()->isAdmin(),'403','Akses tidak dizinkan');
+        abort_if(!$request->user()->isAdmin(), '403', 'Akses tidak dizinkan');
         $data = Unsur::orderBy('urutan')->get();
         return view('sisukma::admin.unsur.index', compact('data'));
     }
     public function formUnsur(Request $request, Unsur $unsur)
     {
-        abort_if(!$request->user()->isAdmin(),'403','Akses tidak dizinkan');
+        abort_if(!$request->user()->isAdmin(), '403', 'Akses tidak dizinkan');
         $edit = $unsur;
         return view('sisukma::admin.unsur.form', compact('edit'));
     }
@@ -345,57 +466,105 @@ public function indexUnit(Request $request)
         if ($request->user()->isAdmin()) {
             Unsur::create([
                 'nama_unsur' => $request->nama_unsur,
-                'a'=>$request->a,
-                'b'=>$request->b,
-                'c'=>$request->c,
-                'd'=>$request->d,
-                'urutan'=>$request->urutan,
+                'a' => $request->a,
+                'b' => $request->b,
+                'c' => $request->c,
+                'd' => $request->d,
+                'urutan' => $request->urutan,
             ]);
-        return to_route('unsur.index')->with('success', 'Berhasil');
+            return to_route('unsur.index')->with('success', 'Berhasil');
         }
-        abort('403','Akses tidak dizinkan');
-
+        abort('403', 'Akses tidak dizinkan');
     }
-    public function updateUnsur(Request $request,Unsur $unsur)
+    public function updateUnsur(Request $request, Unsur $unsur)
     {
         if ($request->user()->isAdmin()) {
-           $unsur->update([
+            $unsur->update([
                 'nama_unsur' => $request->nama_unsur,
-                'a'=>$request->a,
-                'b'=>$request->b,
-                'c'=>$request->c,
-                'd'=>$request->d,
-                'urutan'=>$request->urutan,
+                'a' => $request->a,
+                'b' => $request->b,
+                'c' => $request->c,
+                'd' => $request->d,
+                'urutan' => $request->urutan,
             ]);
-        return to_route('unsur.index')->with('success', 'Berhasil');
+            return to_route('unsur.index')->with('success', 'Berhasil');
         }
-        abort('403','Akses tidak dizinkan');
+        abort('403', 'Akses tidak dizinkan');
     }
-    public function destroyUnsur(Request $request,Unsur $unsur)
-    {
-
-    }
+    public function destroyUnsur(Request $request, Unsur $unsur) {}
 
 
     //User
-    public function indexUser(Request $request)
-    {
-        return view('sisukma::admin.unsur.index');
+public function indexResponden(){
+    abort_if(!Auth::user()->isSkpd(),'403','Akses tidak diizinkan');
+
+    $data = Layanan::whereSkpdId(Auth::user()->skpd->id)->withCount('respons')->get();
+    return view('sisukma::admin.responden.index',compact('data'));
+}
+
+public function importResponden(Request $request, Layanan $layanan){
+    abort_if($layanan->skpd_id != Auth::user()->skpd_id || !Auth::user()->isSkpd(),'403','Akses tidak diizinkan');
+        if($request->isMethod('post')){
+
+        if($request->hasFile('fileimport') && $xlsx = $request->file('fileimport'))
+        {
+          if($xlsx->getClientOriginalExtension() != 'xlsx')
+          return back();
+
+          $total = 0;
+          $gagal = 0;
+          $data = Excel::toArray(null,$xlsx);
+          foreach($data as $v){
+            foreach($v as $k=>$value){
+              if($k > 0 && is_numeric($value[0])){
+                if(isDate($value[1])){
+              $t['tgl_survei'] = $value[1].' 00:00:00';
+              $t['jam_survei'] = $value[2];
+              $t['jenis_kelamin'] = $value[3];
+              $t['usia'] = $value[4];
+              $t['pendidikan'] = Str::upper($value[5]);
+              $t['pekerjaan'] = Str::upper($value[6]);
+              $t['u1'] = $value[7];
+              $t['u2'] = $value[8];
+              $t['u3'] = $value[9];
+              $t['u4'] = $value[10];
+              $t['u5'] = $value[11];
+              $t['u6'] = $value[12];
+              $t['u7'] = $value[13];
+              $t['u8'] = $value[14];
+              $t['u9'] = $value[15];
+              $t['saran'] = $value[16];
+              $t['created'] = now();
+              $t['layanan_id'] = $layanan->id;
+              $t['reference'] = 'xlsx';
+              Respon::create($t);
+              $total++;
+              }else{
+                $gagal++;
+
+              }
+              }
+
+            }
+          }
+          $desc = $total + $gagal;
+          return back()->with('success','Total data '.$desc.' | '.$total.' Responden berhasil diimport dan '.$gagal.' Gagal Tanggal Tidak Sesuai Format');
+
     }
-    public function formUser(Request $request)
-    {
-        return view('sisukma::admin.dashboard');
     }
-    public function storeUser(Request $request)
-    {
-        return view('sisukma::admin.dashboard');
-    }
-    public function updateUser(Request $request)
-    {
-        return view('sisukma::admin.dashboard');
-    }
-    public function destroyUser(Request $request)
-    {
-        return view('sisukma::admin.dashboard');
-    }
+    $data = Respon::whereBelongsTo($layanan)
+    ->whereReference('xlsx')
+    ->selectRaw('created as date, COUNT(*) as count,reference as ref')
+    ->groupBy('created')
+    ->get();
+    return view('sisukma::admin.responden.import',compact('data','layanan'));
+}
+
+public function destroyDateResponden(Request $request, Layanan $layanan){
+
+    Respon::whereBelongsTo($layanan)->whereCreated($request->date)->delete();
+    return back()->with('success','Data tanggal '.$request->date.' berhasil dihapus');
+}
+
+
 }

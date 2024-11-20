@@ -84,7 +84,7 @@ textarea {
 .keyboard-dark {
   background: rgba(0, 0, 0, 0.25);
 }
- 
+
 </style>
 <script>
   const Keyboard = {
@@ -233,7 +233,7 @@ textarea {
           keyElement.addEventListener("click", () => {
             this.properties.value += " ";
             this._triggerEvent("oninput");
-      $('.keyboard-input').keyup();
+            $('.keyboard-input').keyup();
 
 
           });

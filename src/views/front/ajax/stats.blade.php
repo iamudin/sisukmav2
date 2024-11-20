@@ -63,12 +63,12 @@
         <tr>
         <td>Jumlah</td>
         <td>:</td>
-        <td><b>{{$r->data->ikm}}</b> Orang</td>
+        <td><b>{{$r->data->jumlah}}</b> Orang</td>
         </tr>
         <tr>
         <td>Jenis Kelamin</td>
         <td>:</td>
-        <td>L = <b>{{$r->data->ikm}}</b>  Orang / P = <b>{{$r->data->ikm}}</b> Orang </td>
+        <td>L = <b>{{$r->data->l}}</b>  Orang / P = <b>{{$r->data->p}}</b> Orang </td>
         </tr>
         <tr>
         <td>Pendidikan</td>
@@ -83,9 +83,8 @@
         </tr>
         </table>
         <div>
-        <form action="{{url()->full()}}" method="post"> @csrf
-        <button style="cursor:pointer"  name="print" value="" type="submit" class="btn btn-info btn-sm  float-end" aria-hidden="true"><i class="fa fa-print" aria-hidden="true"></i></button>
-        </form>
+              <button style="cursor:pointer" onclick="cetak_rekap('{{ $r->skpd_id }}',$('.ajax_data').val())" class="btn btn-info btn-sm  float-end" aria-hidden="true"><i class="fa fa-print" aria-hidden="true"></i> Cetak</button>
+
         </div>
         </div>
         </div>

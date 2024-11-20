@@ -1,4 +1,4 @@
-@extends('front.layout')
+@extends('sisukma::front.layout')
 @section('content')
 <style>
 </style>
@@ -8,12 +8,11 @@
         @csrf
 <div class="list-group w-100" style="min-width:80vw text-center">
 <div class="row q-all start" >
-<center><h5>Silahkan Tekan Tombol Mulai Untuk Melakukan Survei Kepuasan pada Layanan </h5><h1><b>{{$data->nama_layanan}}</b></h1></center>
+<center><h5 style="font-style: italic">Silahkan Tekan Tombol Mulai Untuk Melakukan Survei Kepuasan pada Layanan </h5><h1><b>{{$data->nama_layanan}}</b></h1></center>
 
 
 <div class="col-lg-12 col-12 text-center mt-4">
 <button type="button" class="btn btn-xl btn-primary mb-2 me-2" onclick="$('.q-all').hide();$('.nik').show()" style="font-size:40px"><b>MULAI</b></button><br>
-<a href="{{url('survei/'.request()->segment(2))}}"> <i class="fa fa-home" aria-hidden="true"></i> Kembali Ke Layanan</a>
 </div>
 </div>
 <div class="row q-all nik" style="display:none" >
@@ -23,7 +22,7 @@
 <br>
 
 <div class="col-lg-12 col-12 text-center">
-<input type="hidden" name="jam_survei" value="{{checkwaktu(now())}}">
+{{-- <input type="hidden" name="jam_survei" value="{{checkwaktu(now())}}"> --}}
 <input class="keyboard-input" onkeyup="if(this.value.length > 2) {$('.next-usia').show()} else{$('.next-usia').hide()}" onkeydown="return event.key != 'Enter';" style="text-align:center;font-size:25px;min-width:90%;font-weight:bold;border:5px solid lightblue" type="text"  name="nik" placeholder="Masukkan nama anda">
 
   <br>
@@ -88,7 +87,7 @@
 <input type="hidden" name="pendidikan">
 
 <div class="list-group" style="min-width:100%">
- 
+
 @foreach(['Non Pendidikan','SD','SMP','SMA','DIII','S1','S2','S3'] as $k=>$r)
 <button style="min-width:100%" onclick="$('input[name=pendidikan]').val('{{$r}}');$('.edu').removeClass('active');$('.edu-{{$k}}').addClass('active');$('.next-kerja').show()" type="button" class="edu edu-{{$k}} list-group-item list-group-item-action"><b>{{$r}}</b></button>
               @endforeach
@@ -113,7 +112,7 @@
 <input type="hidden" name="pekerjaan">
 
 <div class="list-group"  >
- 
+
 @foreach(['PNS','TNI','POLRI','SWASTA','WIRAUSAHA','Lainnya'] as $k=>$r)
 <button type="button" onclick="$('input[name=pekerjaan]').val('{{$r}}');$('.krj').removeClass('active');$('.krj-{{$k}}').addClass('active');$('.next-emot').show()" class="krj krj-{{$k}} w-100 list-group-item list-group-item-action"><b>{{$r}}</b></button>
               @endforeach
@@ -128,18 +127,18 @@
 </div>
 
 
-@foreach(DB::table('unsur')->get() as $r)
+@foreach($skpd->total_unsur == 11 ?  DB::table('unsurs')->orderBy('urutan')->get() : DB::table('unsurs')->orderBy('urutan')->limit(9)->get() as $r)
     <div class="w-100 text-center q-all q-{{$r->urutan}}" style="display:none">
       <h3 style="font-weight:bold" >{{$r->urutan}}. {{$r->nama_unsur}}</h3>
       <input type="hidden" class="u{{$r->urutan}}" name="u{{$r->urutan}}">
    <div class="row text-center mt-5">
     @foreach(['a','b','c','d'] as $k=>$alf)
     <div class="col-lg-3 col-3" style="cursor:pointer" onclick="$('.imgemot-{{$r->urutan}}').attr('style','width:100%;filter: grayscale(1)');$('.img-{{$alf}}-{{$r->urutan}}').attr('style','filter:none;width:100%');$('.u{{$r->urutan}}').val('{{$k+1}}');$('.next-{{$r->urutan}}').show();">
-        <img src="{{asset($alf.'.png')}}" class="imgemot-{{$r->urutan}} img-{{$alf}}-{{$r->urutan}}" style="width:100%" alt=""><br>
+        <img src="https://sisukma.bengkaliskab.go.id/{{$alf.'.png'}}" class="imgemot-{{$r->urutan}} img-{{$alf}}-{{$r->urutan}}" style="width:100%" alt=""><br>
         <span><b>{{$r->$alf}}</b></span>
     </div>
     @endforeach
-  
+
    </div>
    <br>
     <br>
@@ -151,25 +150,25 @@
    </div>
   @endforeach
 </div>
-<div class="w-100 q-10" style="display:none;min-width:80vw;text-align:center">
+<div class="w-100 @if($skpd->total_unsur == 11) q-12 @else q-10 @endif" style="display:none;min-width:80vw;text-align:center">
     <h3>Saran</h3>
     <textarea style="height:200px;text-align:center;font-size:25px;min-width:90%;font-weight:bold;border:5px solid lightblue" name="saran" type="text" class="form-control keyboard-input" placeholder="Tuliskan saran anda..."></textarea>
     <br>
     <div>
-    <button class="btn btn-danger btn-md float-start" type="button"  value="true" style="font-weight:bold" onclick="$('.q-10').hide();$('.q-9').show()">Sebelumnya</button>
+    <button class="btn btn-danger btn-md float-start" type="button"  value="true" style="font-weight:bold" @if($skpd->total_unsur == 11) onclick="$('.q-12').hide();$('.q-11').show()" @else onclick="$('.q-10').hide();$('.q-9').show()" @endif>Sebelumnya</button>
     <button class="btn btn-primary btn-md float-end btn-submit" type="button" onclick="return alert_confirm()" name="kirim_survei" value="true" style="font-weight:bold">Kirim Survei</button>
     </div>
 </div>
-@php 
-$agent = new \Jenssegers\Agent\Agent;
-@endphp
-@if($agent->isDesktop())
-@include('front.keyboard')
-@endif
+
 </form>
 </div>
 </div>
-
+@php
+$agent = new \Jenssegers\Agent\Agent;
+@endphp
+@if($agent->isDesktop())
+@include('sisukma::front.keyboard')
+@endif
 <style>
   .swal2-cancel {
     margin-right:10px;
@@ -196,7 +195,7 @@ swalWithBootstrapButtons.fire({
   reverseButtons: true
 }).then((result) => {
   if (result.isConfirmed) {
-  
+
       $('.btn-submit').attr('type','submit');
       $('.btn-submit').removeAttr('onclick');
       $('.btn-submit').click();
