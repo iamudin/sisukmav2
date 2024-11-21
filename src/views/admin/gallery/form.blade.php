@@ -8,7 +8,7 @@
 
       <div class="form-group">
         <label for="">Nama</label>
-        <input class="form-control" name="nama" placeholder="Masukkan Nama Unit Pelayanan" value="{{ $edit->nama ??null }}" required>
+        <input class="form-control" name="nama" placeholder="Masukkan Nama Gallery" value="{{ $edit->nama ??null }}" required>
       </div>
 
 
