@@ -23,7 +23,7 @@
 </div>
 <div class="row">
   <div class="col-lg-12 text-center mt-4">
-    <h1 >MOHON BANTUAN SAUDARA UNTUK MENGISI SURVEY INDEKS KEPUASAN MASYARAKAT (IKM) PADA LAYANAN KAMI</h1>
+    <h1 >MOHON BANTUAN SAUDARA UNTUK MENGISI SURVEI INDEKS KEPUASAN MASYARAKAT (IKM) PADA LAYANAN KAMI</h1>
     <br>
     <h4>Scan QR Dibawah ini :</h4>
 
