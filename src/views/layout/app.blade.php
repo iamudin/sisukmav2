@@ -79,7 +79,7 @@
                         <a class="nav-link sb-menu" href="{{ route('skpd.index') }}"> <div class="sb-nav-link-icon"><i class="fas fa-building"></i> Perangkat Daerah</div></a>
                         @else
                         <a class="nav-link sb-menu" href="{{ route('skpd.profile') }}"> <div class="sb-nav-link-icon"><i class="fas fa-gears"></i> Pengaturan</div></a>
-                        <a class="nav-link sb-menu" href="{{ url('survei/'.base64_encode(Auth::user()->skpd->id))}}"> <div class="sb-nav-link-icon"><i class="fas fa-hand-pointer"></i> Form Survei</div></a>
+                        <a target="_blank" class="nav-link sb-menu" href="{{ url('survei/'.base64_encode(Auth::user()->skpd->id))}}"> <div class="sb-nav-link-icon"><i class="fas fa-hand-pointer"></i> Form Survei</div></a>
                         @endif
                         <a class="nav-link sb-menu" href="{{ route('gallery.index') }}"> <div class="sb-nav-link-icon"><i class="fas fa-image"></i> Gallery</div></a>
 
