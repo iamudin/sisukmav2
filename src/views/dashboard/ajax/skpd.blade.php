@@ -306,7 +306,7 @@
                  </tr>
              </thead>
              <tbody>
-                 @foreach(collect($data->saran)->where('saran','!=','')->values() as $k=>$row)
+                 @foreach(collect($data->saran)->where('saran','!=','')->sortByDesc('id')->values() as $k=>$row)
                  <tr>
                      <td>{{ $k+1 }}</td>
                      <td>{{ date('d M Y',strtotime($row->tgl_survei)) }}</td>
