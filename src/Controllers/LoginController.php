@@ -14,7 +14,7 @@ class LoginController extends Controller
 
     public function codeCaptcha()
     {
-        Session::put('captcha',Str::random(6));
+        Session::put('captcha',Str::random(4));
     }
     public function generateCaptcha(Request $request)
     {
