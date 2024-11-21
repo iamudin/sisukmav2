@@ -32,6 +32,9 @@
           <td>:</td>
           <td>
             @foreach(['Non Pendidikan','SD','SMP','SMA','DIII','S1','S2','S3'] as $r)
+            @php $k = Str::lower(str_replace(' ','_',$r)); @endphp
+            {{$r}} <span class="float-end "><b>{{$data->$k ?? 0}}</b>  <span class="text-muted">Orang</span></span> <br>
+
             @endforeach
           </td>
         </tr>
