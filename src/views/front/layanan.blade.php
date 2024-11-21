@@ -45,7 +45,7 @@ location.reload();
 </div>
 @else
 <div class="list-group w-100" style="min-width:80vw" >
-<center><h3>Belum ada layanan</h3></center>
+<div class="alert alert-warning"> <i class="fas fa-info"></i> Belum Ada Layanan</div>
 </div>
 @endif
 </div>
