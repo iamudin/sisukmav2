@@ -43,7 +43,7 @@
         <input type="checkbox" name="tampilkan_banner" value="Y" @if($edit->tampilkan_banner=='Y') checked @endif> <span class="text-danger">Tampilkan Banner di Halaman Survei</span>
         <br><br>
         @endif
-        <input type="file" accept="image/png,image/jpg" class="form-control" name="banner" >
+        <input type="file" accept="image/png,image/jpeg" class="form-control" name="banner" >
     </div>
     </div>
 

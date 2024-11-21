@@ -60,7 +60,7 @@ class AdminController extends Controller  implements HasMiddleware
 
             $user->update([
                 'nama'=>$request->nama,
-                'password'=>$request->passsword ? bcrypt($request->password) : $user->password,
+                'password'=> $request->password ? bcrypt($request->password) : $user->password,
             ]);
             return back()->with('success','Akun berhasil diperbarui');
         }
@@ -534,7 +534,9 @@ public function importResponden(Request $request, Layanan $layanan){
               $t['u7'] = $value[13];
               $t['u8'] = $value[14];
               $t['u9'] = $value[15];
-              $t['saran'] = $value[16];
+              $t['u10'] = $value[16] ?? 0;
+              $t['u11'] = $value[17] ?? 0;
+              $t['saran'] = $value[18];
               $t['created'] = now();
               $t['layanan_id'] = $layanan->id;
               $t['reference'] = 'xlsx';
