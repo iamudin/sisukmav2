@@ -113,7 +113,7 @@
 
 <div class="list-group"  >
 
-@foreach(['PNS','TNI','POLRI','SWASTA','WIRAUSAHA','Lainnya'] as $k=>$r)
+@foreach(['ASN','TNI','POLRI','SWASTA','WIRAUSAHA','Lainnya'] as $k=>$r)
 <button type="button" onclick="$('input[name=pekerjaan]').val('{{$r}}');$('.krj').removeClass('active');$('.krj-{{$k}}').addClass('active');$('.next-emot').show()" class="krj krj-{{$k}} w-100 list-group-item list-group-item-action"><b>{{$r}}</b></button>
               @endforeach
 
