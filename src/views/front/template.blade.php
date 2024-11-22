@@ -12,18 +12,18 @@
   <style>
   </style>
   <body>
-      
+
   <div style="border:15px double #000;padding:30px;background:url('{{url('trnp.png')}}') #fff;background-attachment:fixed;height:1500px;width:1100px;margin:0 auto" >
 <div class="row">
     <div class="col-12 text-center">
-    <img class="mb-5"  src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Lambang_Kabupaten_Bengkalis.png/300px-Lambang_Kabupaten_Bengkalis.png" height="160" alt=""><br><h1><b>{{Str::upper($skpd->nama_skpd)}} KABUPATEN BENGKALIS</b></h1> 
+    <img class="mb-5"  src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Lambang_Kabupaten_Bengkalis.png/300px-Lambang_Kabupaten_Bengkalis.png" height="160" alt=""><br><h1><b>{{Str::upper($skpd->nama_skpd)}} KABUPATEN BENGKALIS</b></h1>
 
     </div>
-  
+
 </div>
 <div class="row">
   <div class="col-lg-12 text-center mt-4">
-    <h1 >MOHON BANTUAN SAUDARA UNTUK MENGISI SURVEY INDEKS KEPUASAN MASYARAKAT (IKM) PADA LAYANAN KAMI</h1>
+    <h1 >MOHON BANTUAN SAUDARA UNTUK MENGISI SURVEY KEPUASAN MASYARAKAT (IKM) PADA LAYANAN KAMI</h1>
     <br>
     <h4>Scan QR Dibawah ini :</h4>
     <img src="{{toqr('https://e-survei.bengkaliskab.go.id/survei/'.enc64($skpd->id_skpd))}}" style="height:650px;width:660px;padding:25px;border-radius:50px 0 50px 0;border:10px solid #000;" >

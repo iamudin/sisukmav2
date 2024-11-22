@@ -114,7 +114,7 @@ $range = array(
 return $range;
 }
 function pekerjaan($data){
-foreach(['TNI','POLRI','PNS','SWASTA','WIRAUSAHA','Lainnya'] as $r):
+foreach(['TNI','POLRI','ASN','SWASTA','WIRAUSAHA','Lainnya'] as $r):
     $arr[Str::lower(str_replace(' ','_',$r))] = count($data->where('pekerjaan',$r));
 endforeach;
 return $arr;
@@ -270,7 +270,7 @@ public function get_periode_name()
 // return [];
 //     }
     function pekerjaan_arr(){
-        foreach(['TNI','POLRI','PNS','SWASTA','WIRAUSAHA','Lainnya'] as $r):
+        foreach(['TNI','POLRI','ASN','SWASTA','WIRAUSAHA','Lainnya'] as $r):
             $arr[Str::lower(str_replace(' ','_',$r))] = 0;
         endforeach;
         return $arr;
@@ -313,7 +313,7 @@ public function get_periode_name()
                 foreach(['SMA','Non Pendidikan','SD','SMP','DIII','S1','S2','S3'] as $r):
                     $l[Str::lower(str_replace(' ','_',$r))] += $cek['pendidikan'][Str::lower(str_replace(' ','_',$r))] ?? 0;
                 endforeach;
-                foreach(['TNI','POLRI','PNS','SWASTA','WIRAUSAHA','Lainnya'] as $r):
+                foreach(['TNI','POLRI','ASN','SWASTA','WIRAUSAHA','Lainnya'] as $r):
                     $l['pekerjaan'][Str::lower(str_replace(' ','_',$r))] += $cek['pekerjaan'][Str::lower(str_replace(' ','_',$r))] ?? 0;
                 endforeach;
 

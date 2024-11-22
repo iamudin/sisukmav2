@@ -18,8 +18,6 @@ class LoginController extends Controller
     }
     public function generateCaptcha(Request $request)
     {
-
-
         $image = imagecreatetruecolor(120, 40);
         $bgColor = imagecolorallocate($image, 255, 255, 255);
         $textColor = imagecolorallocate($image, 0, 0, 0);
