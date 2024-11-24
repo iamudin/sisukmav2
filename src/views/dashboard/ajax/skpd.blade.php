@@ -256,6 +256,15 @@
         </div>
         <div class="tab-pane fade py-4" id="ikm" role="tabpanel" aria-labelledby="ikm-tab" style="max-height: 80vh;overflow:auto">
             <button class="btn btn-warning btn-sm" onclick="cetak_rekap('{{ $skpd_id }}',$('.ajax_data').val(),'ikm')" > <i class="fas fa-print"></i> Cetak</button>
+            {{-- <div class="dropdown">
+                <button class="btn btn-warning btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-print"></i> Cetak
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  <li><a class="dropdown-item" href="JavaScript:void(0)" onclick="cetak_rekap('{{ $skpd_id }}',$('.ajax_data').val(),'ikm','tojpg')"> <i class="fas fa-file-image"></i> JPG</a></li>
+                  <li><a class="dropdown-item" href="JavaScript:void(0)" onclick="cetak_rekap('{{ $skpd_id }}',$('.ajax_data').val(),'ikm','topdf')"> <i class="fas fa-file-pdf"></i> PDF</a></li>
+                </ul>
+              </div> --}}
             <hr>
             @include('sisukma::report.ikm_skpd')
         </div>

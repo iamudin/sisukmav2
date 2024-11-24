@@ -23,6 +23,7 @@
     <input type="hidden" name="month" id="month">
     <input type="hidden" name="from" id="fromF">
     <input type="hidden" name="to" id="toF">
+    <input type="hidden" name="format" id="format">
     <input type="hidden" name="type" id="type">
     <input type="hidden" name="skpd_id" id="skpd_id">
 </form>
@@ -49,7 +50,7 @@
             }
         });
     }
-    function cetak_rekap(skpd_id, periode, type) {
+    function cetak_rekap(skpd_id, periode, type,format=false) {
     let dec = JSON.parse(atob(periode));
 
 
@@ -61,6 +62,9 @@ document.getElementById('fromF').value = dec.from ?? null;
 document.getElementById('toF').value = dec.to ?? null;
 document.getElementById('type').value = type ?? null;
 document.getElementById('skpd_id').value = skpd_id ?? null;
+if(format){
+    document.getElementById('format').format = format ?? null;
+}
 
 // Submit form
 document.getElementById('cetakRekapForm').submit();
