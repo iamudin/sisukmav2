@@ -252,7 +252,39 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card shadow mb-4">
+                            <!-- Card Header - Dropdown -->
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                <h6 class="m-0 font-weight-bold text-primary">Persentase Responden Berdasarkan Layanan</h6>
 
+                            </div>
+                            <!-- Card Body -->
+                            <div class="card-body">
+                            <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Layanan</th>
+                                    <th>Responden</th>
+                                    <th>Persentase</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach($data->sample_ikm_layanan as $k=>$row)
+                                <tr>
+                                    <td>{{$k+1}}</td>
+                                    <td>{{ $row->nama_layanan}}</td>
+                                    <td><b>{{ $row->responden->jumlah}}</b></td>
+                                    <td><b>{{round( $row->responden->jumlah / $data->jumlah*100,2)}}%</b></td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                               </table>
+                                </div>
+                            </div>
+                        </div>
                 <!-- Pie Chart -->
 
             </div>
