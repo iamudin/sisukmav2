@@ -252,7 +252,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-12 col-lg-12">
+                    {{-- <div class="col-xl-12 col-lg-12">
                         <div class="card shadow mb-4">
                             <!-- Card Header - Dropdown -->
                             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -284,7 +284,7 @@
                                </table>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                 <!-- Pie Chart -->
 
             </div>

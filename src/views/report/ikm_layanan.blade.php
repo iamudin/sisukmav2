@@ -24,6 +24,7 @@
             <th style="width:20px">No</th>
             <th style="width:30%">Layanan</th>
             <th>Responden</th>
+            <th>Persentasi</th>
             <th style="width:80px">Nilai IKM</th>
             <th style="width:120px">Prediket</th>
             <th width="10px">Aksi</th>
@@ -38,6 +39,7 @@
                 Jenis Kelamin : <br>L = <b>{{ $row->responden->l }}</b>, P = <b>{{ $row->responden->p }}</b>
 
             </td>
+            <td><b>{{round( $row->responden->jumlah / $data->jumlah*100,2)}}%</b></td>
             <td align="right"><b>{{ round($row->ikm,2) }}</b></td>
             <td>{{ prediket($row->ikm,true) .' ('.prediket($row->ikm).')' }}</td>
             <td> <button class="btn btn-sm btn-success" onclick="$('#detail-saran-{{ $k }}').modal('show')"> <i class="fas fa-eye"></i> </button> </td>
