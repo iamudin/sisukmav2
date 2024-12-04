@@ -37,50 +37,6 @@ class IkmManager
         endif;
                return $periode;
        }
-       function cari_nilai_ikm_layanan($respon,$unsur_tambahan)
-       {
-           $unsur = $unsur_tambahan==11 ? array('u1', 'u2', 'u3', 'u4', 'u5', 'u6', 'u7', 'u8', 'u9', 'u10', 'u11') : array('u1', 'u2', 'u3', 'u4', 'u5', 'u6', 'u7', 'u8', 'u9');
-           foreach ($unsur as $r) {
-               $u[$r] = 0;
-           }
-           $responden = $respon;
-           $sample = count($responden);
-           if ($respon){
-               foreach ($responden as $row) {
-                   foreach ($unsur as $r) {
-                       $u[$r] += $row->$r;
-                   }
-               }
-               $data = $this->responden($responden);
-               foreach ($unsur as $r) {
-                   $totalunsur[] = ($u[$r] / $sample) * (1 / count($unsur));
-                   $data[$r] = $u[$r] / $sample;
-               }
-               $ikm = array_sum($totalunsur) * 25;
-
-            }
-            else{
-               $data = $this->responden($responden);
-               foreach ($unsur as $r) {
-                   $data[$r] = 0;
-               }
-               $ikm = 0;
-
-           }
-           return $ikm;
-       }
-    function ikm_perlayanan($data,$unsur_type){
-        $ikmlayanan = array();
-        $groupedByLayanan = $data->groupBy('layanan');
-        foreach($groupedByLayanan as $key=>$row){
-            $a['id']= json_decode($key)->id;
-            $a['nama_layanan']= json_decode($key)->nama_layanan;
-            $a['ikm'] = $this->cari_nilai_ikm_layanan($row,$unsur_type);
-            $a['responden']= $this->responden($row);
-            $ikmlayanan[] = $a;
-        }
-        return $ikmlayanan;
-    }
     function get_response_of_range($skpd,$year,$from_month,$to_month,$unsur_type=9){
         $response['detail']['respon'] = array();
         $response['detail']['sample_total'] = 0;
@@ -91,7 +47,7 @@ class IkmManager
         ->whereRaw('YEAR(tgl_survei) = ?', [$year])
         ->whereBetween(DB::raw('MONTH(tgl_survei)'), [$from_month, $to_month])
         ->get();
-        $response['ikm_perlayanan'] = $this->ikm_perlayanan($data,$unsur_type);
+
         for ($a = $from_month; $a <= $to_month; $a++) {
             $filteredData = $data->filter(function($item) use ($a) {
             $month = $item->tgl_survei->format('n');
@@ -130,14 +86,10 @@ $sortedData = $filteredData->sortByDesc(function($item)use($unsur_type) {
 
             $real_populasi = $sortedData;
             $sample_populasi = $real_populasi->take(get_sample(count($real_populasi)));
-
-
            $response['detail']['respon'][] = ['month'=>$this->numtomonth($a),'real'=>count($real_populasi),'sample'=>count($sample_populasi)];
            $response['detail']['sample_total'] +=count($sample_populasi);
            $response['sample'] = $response['sample']->merge($sample_populasi);
-
         }
-        $response['sample_ikm_perlayanan'] = $this->ikm_perlayanan($response['sample'],$unsur_type);
 return $response;
  }
  function rekapitulasi_unsur_ikm($id){
@@ -271,8 +223,6 @@ public function get_periode_name()
             }
             $data['ikm'] = array_sum($totalunsur) * 25;
             $data['detail'] = $respon['detail'];
-            $data['ikm_layanan'] = $respon['ikm_perlayanan'];
-            $data['sample_ikm_layanan'] = $respon['sample_ikm_perlayanan'];
             $data['responden'] = $responden;
 
          }
@@ -284,8 +234,6 @@ public function get_periode_name()
             $data['ikm'] = 0;
             $data['responden'] = [];
             $data['detail'] = ['respon'=>[],'sample_total'=>0];
-            $data['ikm_layanan'] =[];
-            $data['sample_ikm_layanan'] = [];
         }
         return $data;
     }

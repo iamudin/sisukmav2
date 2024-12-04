@@ -16,7 +16,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <!-- Earnings (Monthly) Card Example -->
                         <div class="col-xl-3 col-md-6 mb-4">
                             <div class="card border-left-success shadow h-100 py-2">
@@ -81,7 +80,9 @@
         <li class="nav-item" role="presentation">
           <button class="nav-link" id="ikm-tab" data-bs-toggle="tab" data-bs-target="#ikm" type="button" role="tab" aria-controls="ikm" aria-selected="false"> <i class="fas fa-building"></i> IKM </button>
         </li>
-
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="ikm-perlayanan-tab" data-bs-toggle="tab" data-bs-target="#ikm-perlayanan" type="button" role="tab" aria-controls="ikm-perlayanan" aria-selected="false"> <i class="fas fa-building"></i> IKM Perlayanan </button>
+          </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="pengolahan-tab" data-bs-toggle="tab" data-bs-target="#pengolahan" type="button" role="tab" aria-controls="pengolahan" aria-selected="false"> <i class="fas fa-building"></i> Pengolahan Data </button>
         </li>
@@ -93,6 +94,9 @@
         </li>
       </ul>
       <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade py-4" id="ikm-perlayanan" role="tabpanel" aria-labelledby="ikm-perlayanan-tab" style="max-height: 80vh;overflow:auto">
+            @include('sisukma::report.ikm_layanan')
+        </div>
         <div class="tab-pane fade show active py-4" id="home" role="tabpanel" aria-labelledby="home-tab">
             <div class="row">
 

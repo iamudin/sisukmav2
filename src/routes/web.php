@@ -1,8 +1,9 @@
 <?php
 use Illuminate\Support\Facades\Route;
+use Sisukma\V2\Contracts\IkmManager;
 use Sisukma\V2\Controllers\WebController;
 Route::get('/d', function(){
-    return bcrypt('12345678');
+    return (new IkmManager)->nilai_ikm_skpd(327,9);
 });
 Route::match(['get','post'],'survei/{skpd}/{layanan?}', [WebController::class, 'survei']);
 Route::match(['get','post'],'/', [WebController::class, 'index']);

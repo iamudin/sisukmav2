@@ -27,6 +27,7 @@
     <input type="hidden" name="type" id="type">
     <input type="hidden" name="skpd_id" id="skpd_id">
 </form>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         $('#spinner').show();
@@ -71,4 +72,6 @@ document.getElementById('cetakRekapForm').submit();
 }
 </script>
 @include('sisukma::periode')
+
+
 @endsection
