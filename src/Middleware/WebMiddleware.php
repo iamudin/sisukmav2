@@ -16,9 +16,9 @@ class WebMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        // if($request->getHttpHost()!='sisukma.bengkaliskab.go.id'){
-        //     return redirect(str_replace($request->getHttpHost(),'sisukma.bengkaliskab.go.id',$request->fullUrl()));
-        // }
+        if($request->getHttpHost()!='sisukma.bengkaliskab.go.id'){
+            return redirect(str_replace($request->getHttpHost(),'sisukma.bengkaliskab.go.id',$request->fullUrl()));
+        }
         return $next($request);
 
     }
