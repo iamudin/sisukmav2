@@ -367,7 +367,7 @@ class AdminController extends Controller  implements HasMiddleware
     //Layanan
     public function indexLayanan(Request $request)
     {
-        $data = Layanan::with('skpd', 'unit')
+        $data = Layanan::with('skpd', 'unit')->withCount('respons')
             ->when($request->user()->isSkpd(), function ($query) use ($request) {
                 return $query->whereSkpdId($request->user()->skpd->id); // Ganti dengan kondisi yang sesuai
             })->orderBy('skpd_id')

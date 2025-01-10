@@ -12,6 +12,7 @@
                 <th>Nama Layanan </th>
                 <th>SKPD</th>
                 <th>Unit Pelayanan</th>
+                <th>Ttl Responden</th>
                 <th >Aksi</th>
             </tr>
         </thead>
@@ -23,6 +24,7 @@
                 <td>{{ $v->nama_layanan }}</td>
                 <td>{{ $v->skpd->nama_skpd}}</td>
                 <td>{{ $v->unit?->nama}}</td>
+                <td>{{ $v->respons_count}}</td>
 
                 <td >
                     <div class="btn-group">
