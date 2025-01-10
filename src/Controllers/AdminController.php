@@ -439,6 +439,7 @@ class AdminController extends Controller  implements HasMiddleware
         abort_if($request->user()->isSkpd() && $layanan->skpd_id != $request->user()->skpd->id, 403, 'Aksi tidak di izinkan');
         if ($layanan->respons()->exists()) {
             if($request->user()->isAdmin()){
+                $layanan->delete();
                 return to_route('layanan.index')->with('success', 'Data Berhasil Dihapus');
             }else{
             return to_route('layanan.index')->with('danger', 'Layanan Memiliki Responden, Hub. Admin utk Konfirmasi Penghapusan data ini.');
