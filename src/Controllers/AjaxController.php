@@ -48,7 +48,7 @@ class AjaxController extends Controller
 else{
     $data = json_decode(json_encode((new IkmManager)->nilai_ikm_kabupaten($request->unsur_tambahan ?? 9)));
     $pdf = PDF::loadView('sisukma::report.ikm_kabupaten',compact('ikm','skpd_id','data','skpd','periode','alamat','telp','type_unsur'));
-    return $pdf->setTemporatyFolder(config('snappy.temporary_folder'))->download('ikm-kabupaten-'.str($periode)->slug().'.pdf');
+    return $pdf->download('ikm-kabupaten-'.str($periode)->slug().'.pdf');
     //dfd
 }
     }
