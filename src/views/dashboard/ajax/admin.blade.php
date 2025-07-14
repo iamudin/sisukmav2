@@ -95,6 +95,7 @@
           <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true"> <i class="fas fa-eye"></i> Detail</button>
         </li>
         @if($type_unsur == 9)
+
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="ikm-kab-tab" data-bs-toggle="tab" data-bs-target="#ikm-kab" type="button" role="tab" aria-controls="ikm-kab" aria-selected="false"> <i class="fas fa-building"></i> IKM Kabupaten</button>
           </li>
@@ -106,6 +107,13 @@
       </ul>
       <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active py-4" id="home" role="tabpanel" aria-labelledby="home-tab">
+            <div class="row">
+                <div class="col-lg-12">
+                    <form action="" class="action">
+                        <button name="cetakikmkab" value="" class="btn btn-warnin btn-md">CETAK</button>
+                    </form>
+                </div>
+            </div>
             <div class="row">
 
                 <!-- Area Chart -->

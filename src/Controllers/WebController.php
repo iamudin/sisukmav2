@@ -22,6 +22,10 @@ public function index(Request $request){
     }
     return view('sisukma::front.index');
 }
+
+function detail_ikm_kabupaten(){
+
+}
 public function survei(Request $request,$skpd,$layanan=null){
 
     $skpd = Skpd::with('layanans')->findOrFail(base64_decode($skpd));
