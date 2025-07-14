@@ -23,6 +23,8 @@ use Illuminate\Validation\Rules\Password;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Routing\Controllers\HasMiddleware;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
+use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
 
 class AdminController extends Controller  implements HasMiddleware
 {
@@ -34,6 +36,13 @@ class AdminController extends Controller  implements HasMiddleware
         return [
             new Middleware('auth',null, ['cetakQR']),
         ];
+    }
+
+    function cetakikmkab(Request $req){
+        $data = $req->cetakikmkab ? json_decode(base64_decode($req->cetakikmkab)): null;
+        $periode = $req->periode;
+        $pdf = PDF::loadView('sisukma::report.ringkasan_ikm_kabupaten',compact('data','periode'));
+        return $pdf->download('Data IKM Kabupaten.pdf');
     }
     public function index(Request $request)
     {

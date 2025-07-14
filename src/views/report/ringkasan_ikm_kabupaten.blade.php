@@ -1,4 +1,3 @@
-@if(isset($ikm))
 <!doctype html>
 <html lang="en">
   <head>
@@ -10,10 +9,9 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   </head>
   <body>
-@endif
 <div class="row"  @isset($fs) style="font-size:small" @endisset >
     <div class="col-lg-12 text-center">
-        <h4>INDEKS KEPUASAN MASYARAKAT (IKM)<br>{{ str($skpd)->upper() }}<br>
+        <h4>INDEKS KEPUASAN MASYARAKAT (IKM)<br>
             KABUPATEN BENGKALIS<br>PERIODE {{ str($periode)->upper() }}</h4>
     </div>
     <div class="col-lg-6 col-6" style="float:left">
@@ -54,7 +52,7 @@
                         <td>{{ $r }} </td>
                         <td>= </td>
                         @php $pd = Str::lower(str_replace(' ','_',$r));@endphp
-                        <td> {{ $data->pendidikan->$pd ?? 0 }} <span style="float:right">Orang</span></td>
+                        <td> {{ $data->$pd ?? 0 }} <span style="float:right">Orang</span></td>
                     </tr>
                 @endforeach
 
@@ -74,7 +72,6 @@
             KUALITAS PELAYANAN BAGI MASYARAKAT</h5>
     </div>
 </div>
-@if(isset($ikm))
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -82,4 +79,3 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   </body>
 </html>
-@endif

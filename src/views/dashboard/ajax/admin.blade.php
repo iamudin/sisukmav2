@@ -109,8 +109,10 @@
         <div class="tab-pane fade show active py-4" id="home" role="tabpanel" aria-labelledby="home-tab">
             <div class="row">
                 <div class="col-lg-12">
-                    <form action="" class="action">
-                        <button name="cetakikmkab" value="" class="btn btn-warnin btn-md">CETAK</button>
+                    <form action="{{ route('cetakikmkab') }}" class="action" method="post">
+                        @csrf
+                        <input type="hidden" value="" name="periode" class="periode-sub">
+                        <button onclick="$('.periode-sub').val($('.periode-title').text())" name="cetakikmkab" value="{{ base64_encode(json_encode(json_decode(collect($data)->except('data_ikm_skpd'),true))) }}" class="btn btn-warning btn-sm mb-3">CETAK</button>
                     </form>
                 </div>
             </div>

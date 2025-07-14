@@ -17,6 +17,7 @@ Route::prefix($path)->group(function()use($path){
     Route::controller(AdminController::class)->group(function() {
         // SKPD Routes
         Route::match(['post','get'],'account', 'account')->name('user.account');
+        Route::post('cetakikmkab', 'cetakikmkab')->name('cetakikmkab');
         Route::get('linkqr/{skpd}', 'linkQR')->name('skpd.linkqr');
         Route::get('cetakqr/{skpd}', 'cetakQR')->name('skpd.cetakqr');
         Route::match(['post','get'],'profile-skpd', 'profileSKPD')->name('skpd.profile');
