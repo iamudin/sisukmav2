@@ -17,7 +17,6 @@ class WebMiddleware
     public function handle(Request $request, Closure $next)
     {
       if (!in_array(request()->ip(), ['127.0.0.1', '::1'])) {
-        dd('df');
         if($request->getHttpHost()!='sisukma.bengkaliskab.go.id'){
            return redirect(str_replace($request->getHttpHost(),'sisukma.bengkaliskab.go.id',$request->fullUrl()));
         }
