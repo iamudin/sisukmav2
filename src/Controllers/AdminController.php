@@ -108,12 +108,12 @@ class AdminController extends Controller  implements HasMiddleware
     public function storeSKPD(Request $request)
     {
         $data = $request->validate([
-            'nama_skpd' => 'required|string|unique',
+            'nama_skpd' => 'required|string|unique:skpds,nama_skpd',
             'alamat' => 'required|string',
-            'email' => 'nullable|email|unique',
-            'website' => 'nullable|url|unique',
+            'email' => 'nullable|email|unique:skpds,email',
+            'website' => 'nullable|url|unique:skpds,website',
             'total_unsur' => 'required|in:11,9',
-            'telp' => 'nullable|numeric|unique',
+            'telp' => 'nullable|numeric|unique:skpds,telp',
             'banner' => 'nullable|image|max:1024',
             'periode_aktif' => 'nullable|array',
         ]);
