@@ -6,194 +6,9 @@ use Sisukma\V2\Models\Skpd;
 use Sisukma\V2\Models\Respon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
-use Illuminate\Http\Request;
+
 class IkmManager
 {
-/*
-    public function getSurveyRekap(Request $request)
-    {
-        $periode = $request->periode; // bulan | triwulan | semester | tahun
-        $tahun = $request->tahun ?? date('Y');
-        $bulan = $request->bulan ?? date('m'); // opsional
-
-        // base query respons
-        $query = DB::table('respons as r')
-            ->join('layanans as l', 'r.layanan_id', '=', 'l.id')
-            ->join('skpds as s', 'l.skpd_id', '=', 's.id')
-            ->select(
-                'r.*',
-                's.nama_skpd',
-                'l.nama_layanan'
-            );
-
-        // filter periode
-        if ($periode == 'bulan') {
-            $query->whereYear('r.created_at', $tahun)
-                ->whereMonth('r.created_at', $bulan);
-
-        } elseif ($periode == 'triwulan') {
-            $triwulan = ceil($bulan / 3);
-            $start = ($triwulan - 1) * 3 + 1;
-            $end = $start + 2;
-
-            $query->whereYear('r.created_at', $tahun)
-                ->whereBetween(DB::raw('MONTH(r.created_at)'), [$start, $end]);
-
-        } elseif ($periode == 'semester') {
-            $semester = ($bulan <= 6) ? [1, 6] : [7, 12];
-
-            $query->whereYear('r.created_at', $tahun)
-                ->whereBetween(DB::raw('MONTH(r.created_at)'), $semester);
-
-        } elseif ($periode == 'tahun') {
-            $query->whereYear('r.created_at', $tahun);
-        }
-
-        // 🔥 order semua u1..u9 desc
-        for ($i = 1; $i <= 9; $i++) {
-            $query->orderByDesc("r.u$i");
-        }
-
-        $respons = $query->get();
-
-        // 🔄 Kelompokkan per layanan
-        $grouped = $respons->groupBy('layanan_id');
-
-        $result = [];
-
-        foreach ($grouped as $layananId => $rows) {
-            $layananNama = $rows->first()->nama_layanan;
-            $skpdNama = $rows->first()->nama_skpd;
-
-            // hitung jumlah row tiap layanan
-            $jumlah_row = $rows->count();
-
-            // 🔑 konversi dengan fungsi morgan
-            $sampleSize = get_sample($jumlah_row);
-
-            // ambil top-N dari urutan teratas
-            $top = $rows->take($sampleSize);
-
-            $result[] = [
-                'nama_skpd' => $skpdNama,
-                'nama_layanan' => $layananNama,
-                'jumlah_row' => $jumlah_row,
-                'sample_size' => $sampleSize,
-                'sample_data' => $top->values(),
-            ];
-        }
-
-        return response()->json($result);
-    }
-*/
-    public function getSurveyRekap($request)
-    {
-        if($request->year && !$request->from && !$request->to){
-            $tahun = $request->year;
-            $periode = 'tahun';
-        }
-        if ($request->from && $request->to) {
-            if (in_array($request->to, ['01', '07']) && in_array($request->to, ['06', '12'])) {
-                $periode = 'semester';
-                $bulan = $request->to;
-            $tahun = $request->year;
-
-            }elseif (in_array($request->to, ['01','04','07','10']) && in_array($request->to, ['03','06','09','12'])) {
-                $periode = 'triwulan';
-                $bulan = $request->to;
-            $tahun = $request->year;
-
-            }
-          
-        }
-        if($request->month && !$request->from && !$request->to){
-            $periode = 'bulan';
-            $bulan = $request->month;
-            $tahun = $request->year;
-
-        }
-        // base query respons
-        $query = DB::table('respons as r')
-            ->join('layanans as l', 'r.layanan_id', '=', 'l.id')
-            ->join('skpds as s', 'l.skpd_id', '=', 's.id')
-            ->select(
-                'r.*',
-                's.nama_skpd',
-                'l.nama_layanan'
-            );
-
-        // filter periode
-        if ($periode == 'bulan') {
-            $query->whereYear('r.created_at', $tahun)
-                ->whereMonth('r.created_at', $bulan);
-
-        } elseif ($periode == 'triwulan') {
-            $triwulan = ceil($bulan / 3);
-            $start = ($triwulan - 1) * 3 + 1;
-            $end = $start + 2;
-
-            $query->whereYear('r.created_at', $tahun)
-                ->whereBetween(DB::raw('MONTH(r.created_at)'), [$start, $end]);
-
-        } elseif ($periode == 'semester') {
-            $semester = ($bulan <= 6) ? [1, 6] : [7, 12];
-
-            $query->whereYear('r.created_at', $tahun)
-                ->whereBetween(DB::raw('MONTH(r.created_at)'), $semester);
-
-        } elseif ($periode == 'tahun') {
-            $query->whereYear('r.created_at', $tahun);
-        }
-
-        // urutkan biar sample konsisten (misal descending u1..u9 seperti awal)
-        for ($i = 1; $i <= 9; $i++) {
-            $query->orderByDesc("r.u$i");
-        }
-
-        $respons = $query->get();
-
-        // kelompokkan per layanan
-        $grouped = $respons->groupBy('layanan_id');
-
-        $result = [];
-
-        foreach ($grouped as $layananId => $rows) {
-            $layananNama = $rows->first()->nama_layanan;
-            $skpdNama = $rows->first()->nama_skpd;
-
-            // jumlah responden asli
-            $jumlah_real = $rows->count();
-
-            // hitung sample size
-            $sampleSize = get_sample($jumlah_real);
-
-            // ambil sample
-            $sampled = $rows->take($sampleSize);
-
-            // sum unsur u1..u9 dari sample
-            $total_nilai_unsur = [];
-            for ($i = 1; $i <= 9; $i++) {
-                $total_nilai_unsur["u$i"] = $sampled->sum("u$i");
-            }
-
-            $result[] = [
-                'nama_skpd' => $skpdNama,
-                'nama_layanan' => $layananNama,
-                'jumlah_real_responden' => $jumlah_real,
-                'jumlah_sample_responden' => $sampleSize,
-                'total_nilai_unsur' => $total_nilai_unsur,
-            ];
-        }
-
-        // urutkan per SKPD lalu per layanan
-        $result = collect($result)->sortBy([
-            ['nama_skpd', 'asc'],
-            ['nama_layanan', 'asc'],
-        ])->values();
-
-        return $result;
-    }
-
 
     function diffmonth(\DateTime $date1, \DateTime $date2)
     {
@@ -222,50 +37,6 @@ class IkmManager
         endif;
                return $periode;
        }
-       function cari_nilai_ikm_layanan($respon,$unsur_tambahan)
-       {
-           $unsur = $unsur_tambahan==11 ? array('u1', 'u2', 'u3', 'u4', 'u5', 'u6', 'u7', 'u8', 'u9', 'u10', 'u11') : array('u1', 'u2', 'u3', 'u4', 'u5', 'u6', 'u7', 'u8', 'u9');
-           foreach ($unsur as $r) {
-               $u[$r] = 0;
-           }
-           $responden = $respon;
-           $sample = count($responden);
-           if ($respon){
-               foreach ($responden as $row) {
-                   foreach ($unsur as $r) {
-                       $u[$r] += $row->$r;
-                   }
-               }
-               $data = $this->responden($responden);
-               foreach ($unsur as $r) {
-                   $totalunsur[] = ($u[$r] / $sample) * (1 / count($unsur));
-                   $data[$r] = $u[$r] / $sample;
-               }
-               $ikm = array_sum($totalunsur) * 25;
-
-            }
-            else{
-               $data = $this->responden($responden);
-               foreach ($unsur as $r) {
-                   $data[$r] = 0;
-               }
-               $ikm = 0;
-
-           }
-           return $ikm;
-       }
-    function ikm_perlayanan($data,$unsur_type){
-        $ikmlayanan = array();
-        $groupedByLayanan = $data->groupBy('layanan');
-        foreach($groupedByLayanan as $key=>$row){
-            $a['id']= json_decode($key)->id;
-            $a['nama_layanan']= json_decode($key)->nama_layanan;
-            $a['ikm'] = $this->cari_nilai_ikm_layanan($row,$unsur_type);
-            $a['responden']= $this->responden($row);
-            $ikmlayanan[] = $a;
-        }
-        return $ikmlayanan;
-    }
     function get_response_of_range($skpd,$year,$from_month,$to_month,$unsur_type=9){
         $response['detail']['respon'] = array();
         $response['detail']['sample_total'] = 0;
@@ -276,7 +47,7 @@ class IkmManager
         ->whereRaw('YEAR(tgl_survei) = ?', [$year])
         ->whereBetween(DB::raw('MONTH(tgl_survei)'), [$from_month, $to_month])
         ->get();
-        $response['ikm_perlayanan'] = $this->ikm_perlayanan($data,$unsur_type);
+
         for ($a = $from_month; $a <= $to_month; $a++) {
             $filteredData = $data->filter(function($item) use ($a) {
             $month = $item->tgl_survei->format('n');
@@ -315,14 +86,10 @@ $sortedData = $filteredData->sortByDesc(function($item)use($unsur_type) {
 
             $real_populasi = $sortedData;
             $sample_populasi = $real_populasi->take(get_sample(count($real_populasi)));
-
-
            $response['detail']['respon'][] = ['month'=>$this->numtomonth($a),'real'=>count($real_populasi),'sample'=>count($sample_populasi)];
            $response['detail']['sample_total'] +=count($sample_populasi);
            $response['sample'] = $response['sample']->merge($sample_populasi);
-
         }
-        $response['sample_ikm_perlayanan'] = $this->ikm_perlayanan($response['sample'],$unsur_type);
 return $response;
  }
  function rekapitulasi_unsur_ikm($id){
@@ -456,8 +223,6 @@ public function get_periode_name()
             }
             $data['ikm'] = array_sum($totalunsur) * 25;
             $data['detail'] = $respon['detail'];
-            $data['ikm_layanan'] = $respon['ikm_perlayanan'];
-            $data['sample_ikm_layanan'] = $respon['sample_ikm_perlayanan'];
             $data['responden'] = $responden;
 
          }
@@ -469,8 +234,6 @@ public function get_periode_name()
             $data['ikm'] = 0;
             $data['responden'] = [];
             $data['detail'] = ['respon'=>[],'sample_total'=>0];
-            $data['ikm_layanan'] =[];
-            $data['sample_ikm_layanan'] = [];
         }
         return $data;
     }
