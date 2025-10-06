@@ -49,9 +49,11 @@ class AdminController extends Controller  implements HasMiddleware
 
         (new IkmManager)->get_periode_name();
         if ($request->isMethod('post')) {
+            // return (new IkmManager)->getSurveyRekap($request);
             View::share('ajaxdata', json_encode($request->all()));
         }
         if ($request->user()->isAdmin()) {
+            // return (new IkmManager)->nilai_ikm_kabupaten(9);
 
             return view('sisukma::dashboard.admin');
         } else {

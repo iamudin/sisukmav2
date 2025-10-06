@@ -54,9 +54,11 @@ else{
     }
     public function dashboard(Request $request){
         if($request->user()->isAdmin()){
+            // dd($request->all());
+            $data_v3 = (new IkmManager)->getSurveyRekap($request);
             $data = (new IkmManager)->nilai_ikm_kabupaten($request->unsur_tambahan);
             $type_unsur = $request->unsur_tambahan;
-            return view('sisukma::dashboard.ajax.admin',compact('data','type_unsur'))->render();
+            return view('sisukma::dashboard.ajax.admin',compact('data','type_unsur','data_v3'))->render();
 
         }else{
             $dskpd = $request->user()->skpd;

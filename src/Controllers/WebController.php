@@ -23,6 +23,11 @@ public function index(Request $request){
     return view('sisukma::front.index');
 }
 
+function dataikm(Request $request){
+    $data = (new IkmManager)->getSurveyRekap($request);
+        return $data;
+}
+
 function detail_ikm_kabupaten(){
 
 }

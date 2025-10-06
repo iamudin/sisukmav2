@@ -9,3 +9,5 @@ Route::match(['get','post'],'survei/{skpd}/{layanan?}', [WebController::class, '
 Route::match(['get','post'],'/', [WebController::class, 'index']);
 Route::post('/get_data_stats', [WebController::class, 'get_data_stats'])->name('ajax.web.data');
 Route::get('gallery/{slug?}', [WebController::class, 'gallery']);
+Route::get('dataikm', [WebController::class, 'dataikm']);
+
