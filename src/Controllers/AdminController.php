@@ -208,8 +208,8 @@ class AdminController extends Controller  implements HasMiddleware
             }
             $request->validate([
                 'nama_admin' => 'required|string',
-                'username' => $skpd->user() ? ['required', 'alpha_dash:ascii', Rule::unique('users')->ignore($skpd->user->id)] : ['required','unique:users,username'],
-                'password' => $skpd->user() ?['nullable', Password::min(8)->symbols()->numbers()->mixedCase()] :  ['required'],
+                'username' => $skpd->user ? ['required', 'alpha_dash:ascii', Rule::unique('users')->ignore($skpd->user->id)] : ['required','unique:users,username'],
+                'password' => $skpd->user ?['nullable', Password::min(8)->symbols()->numbers()->mixedCase()] :  ['required'],
             ]);
             $skpd->user()->updateOrCreate([
                 'nama' => $request->nama_admin,
