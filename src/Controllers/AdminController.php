@@ -214,6 +214,7 @@ class AdminController extends Controller  implements HasMiddleware
             $skpd->user()->updateOrCreate(['skpd_id'=>$skpd->id],[
                 'nama' => $request->nama_admin,
                 'username' => $request->username,
+                'status' => 'Aktif',
                 'password' => $request->password ? bcrypt($request->password) : ($skpd->user->password ??  bcrypt($request->password))
             ]);
             return back()->with('success', 'Berhasil');
