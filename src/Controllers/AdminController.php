@@ -203,7 +203,7 @@ class AdminController extends Controller  implements HasMiddleware
             }
             $skpd->update($data);
             $skpd->periode_aktif()->delete();
-            foreach ($request->periode_aktif as $r) {
+            foreach ($request->periode_aktif ?? [] as $r) {
                 $skpd->periode_aktif()->updateOrCreate(['tahun' => $r], ['tahun' => $r]);
             }
             $request->validate([
