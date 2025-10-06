@@ -285,12 +285,14 @@
                                                                 <button class="btn btn-warning btn-sm" onclick="cetak_rekap(null,$('.ajax_data').val(),'ikmkab')"> <i class="fas fa-print"></i> Cetak</button><br><br>
                                                                 @include('sisukma::report.ikm_kabupaten')
                                                             </div>
+                                                            @if(isset($data_v3))
                                                                 <div class="tab-pane fade pt-4" id="ikm-kabv2" role="tabpanel" aria-labelledby="ikm-kabv2-tab"
                                                                     style="max-height: 75vh;overflow:auto">
                                                                     <button class="btn btn-warning btn-sm" onclick="cetak_rekap(null,$('.ajax_data').val(),'ikmkab')"> <i
                                                                             class="fas fa-print"></i> Cetak</button><br><br>
                                                                         @include('sisukma::report.v3.kabupaten')
                                                                 </div>
+                                                                @endif
                                                         @endif
                                                       </div>
 
