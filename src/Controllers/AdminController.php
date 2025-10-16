@@ -134,7 +134,7 @@ class AdminController extends Controller  implements HasMiddleware
                 }
                 $request->validate([
                     'nama_admin' => 'required|string',
-                    'username' => ['required', 'alpha_dash:ascii', 'unique'],
+                    'username' => 'required|alpha_dash:ascii|unique:users,username',
                     'password' => ['required', Password::min(8)->symbols()->numbers()->mixedCase()],
                 ]);
                 $id->user()->create([
@@ -331,7 +331,6 @@ class AdminController extends Controller  implements HasMiddleware
             ]
         );
 
-        return view('sisukma::admin.dashboard');
     }
     public function storeUnit(Request $request)
     {
