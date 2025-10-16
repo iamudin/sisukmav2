@@ -140,6 +140,8 @@ class AdminController extends Controller  implements HasMiddleware
                 $id->user()->create([
                     'nama' => $request->nama_admin,
                     'username' => $request->username,
+                    'level'=>'skpd',
+                    'status' => 'Aktif',
                     'password' => bcrypt($request->password)
                 ]);
             }

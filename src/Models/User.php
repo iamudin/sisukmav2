@@ -6,7 +6,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    protected $fillable = ['last_login_at','last_login_ip','nama','email','password','username','skpd_id','status'];
+    protected $fillable = ['last_login_at','last_login_ip','nama','email','password','username','skpd_id','status','level'];
     public function isAdmin(){
         return $this->level=='admin';
     }
