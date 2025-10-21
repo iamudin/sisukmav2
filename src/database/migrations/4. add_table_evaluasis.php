@@ -10,14 +10,17 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('kategori_unsurs', function (Blueprint $table) {
+        Schema::create('evaluasis', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_kategori')->unique()->nullable();
-            $table->string('urutan')->nullable();
+            $table->foreignId('layanan_id')->constrained('layanans')->cascadeOnDelete();
+            $table->year('tahun')->nullable();
+            $table->string('unsur_perbaikan')->nullable();
+            $table->string('rencana_tindak_lanjut')->nullable();
+            $table->string('rtl')->nullable();
             $table->timestamps();
         });
 
-   
+
     }
 
     /**
@@ -25,6 +28,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('kategori_unsurs');
+        Schema::dropIfExists('evaluasis');
     }
 };

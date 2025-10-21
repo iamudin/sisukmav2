@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class KategoriUnsur extends Model
 {
-    protected $fillable = ['nama_kategori'];
+    protected $fillable = ['nama','urutan'];
 
     public function unsurs()
     {

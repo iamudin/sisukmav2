@@ -17,14 +17,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Sisukma\V2\Contracts\IkmManager;
+use Sisukma\V2\Models\KategoriUnsur;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\Snappy\Facades\SnappyImage;
 use Illuminate\Validation\Rules\Password;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
-use Illuminate\Routing\Controllers\Middleware;
-use Illuminate\Routing\Controllers\HasMiddleware;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
 use Barryvdh\Snappy\Facades\SnappyPdf as PDF;
+use Illuminate\Routing\Controllers\Middleware;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
 class AdminController extends Controller  implements HasMiddleware
 {
@@ -60,7 +62,148 @@ class AdminController extends Controller  implements HasMiddleware
             return view('sisukma::dashboard.skpd');
         }
     }
+function cetakrekap9v2(Request $request, $skpd=null){
+        $nama_skpd = nama_skpd($skpd);
+        $tahun = request('tahun', date('Y'));
+        $periode = request('periode', null);
+        $jenis_periode = request('jenis_periode', 'tahun');
+        $data = $this->getRekapSurvei9($skpd, $jenis_periode, $tahun, $periode);
+        $data = $skpd ? $data : $data;
+        $pdf = Pdf::loadView($skpd ? 'sisukma::dashboard.v2.report.rekapitulasi-opd-9' : 'sisukma::dashboard.v2.report.rekapitulasi-kab-9', [
+            'data' => $data,
+            'jenis_periode' => $jenis_periode,
+            'tahun' => $tahun,
+            'periode' => $periode,
+            'nama_skpd' => $nama_skpd,
+        ])->setOrientation('landscape');
 
+        // 🔹 Download file
+        return response()->streamDownload(
+            fn() => print ($pdf->output()),
+            'rekap-data-9-unsur-' . Str::slug($nama_skpd . ' ' . getNamaPeriode($jenis_periode, $periode, $tahun)) . '.pdf'
+        );
+}
+    function cetakrekapv2(Request $request, $skpd = null)
+    {
+        $nama_skpd = nama_skpd($skpd);
+        $tahun = request('tahun', date('Y'));
+        $periode = request('periode', null);
+        $jenis_periode = request('jenis_periode', 'tahun');
+        $data = $this->getRekapSurvei($skpd, $jenis_periode, $tahun, $periode);
+        $data = $skpd ? $data : $data;
+        $pdf = Pdf::loadView($skpd ? 'sisukma::dashboard.v2.report.rekapitulasi-opd' : 'sisukma::dashboard.v2.report.rekapitulasi-kab', [
+            'data' => $data,
+            'jenis_periode' => $jenis_periode,
+            'tahun' => $tahun,
+            'periode' => $periode,
+            'nama_skpd' => $nama_skpd,
+        ])->setOrientation('landscape');
+
+        // 🔹 Download file
+        return response()->streamDownload(
+            fn() => print ($pdf->output()),
+            'rekap-data-' . Str::slug($nama_skpd . ' ' . getNamaPeriode($jenis_periode, $periode, $tahun)) . '.pdf'
+        );
+    }
+    function cetakolahanv2(Request $request,$skpd=null){
+        $nama_skpd = nama_skpd($skpd);
+        $tahun = request('tahun', date('Y'));
+        $periode = request('periode', null);
+        $jenis_periode = request('jenis_periode', 'tahun');
+        $data = $this->getRekapOlahan($skpd,$jenis_periode,$tahun,$periode);
+        $data = !$skpd ? json_decode($data) : $data;
+          $pdf = Pdf::loadView('sisukma::dashboard.v2.report.pengolahan-data-opd', [
+                                'data' => $data,
+                                'jenis_periode' => $jenis_periode,
+                                'tahun' => $tahun,
+                                'periode' => $periode,
+                                'nama_skpd' => $nama_skpd,
+                            ])->setOrientation('landscape');
+
+                            // 🔹 Download file
+        return response()->streamDownload(
+            fn() => print ($pdf->output()),
+            'olahan-data-' . Str::slug($nama_skpd.' '.getNamaPeriode($jenis_periode, $periode, $tahun)). '.pdf'
+        );
+    }
+
+        function cetakolahan9v2(Request $request, $skpd = null)
+        {
+            $nama_skpd = nama_skpd($skpd);
+            $tahun = request('tahun', date('Y'));
+            $periode = request('periode', null);
+            $jenis_periode = request('jenis_periode', 'tahun');
+            $data = $this->getRekapOlahan9($skpd, $jenis_periode, $tahun, $periode);
+            $data = !$skpd ? json_decode($data) : $data;
+            $pdf = Pdf::loadView('sisukma::dashboard.v2.report.pengolahan-data-opd-9', [
+                'data' => $data,
+                'jenis_periode' => $jenis_periode,
+                'tahun' => $tahun,
+                'periode' => $periode,
+                'nama_skpd' => $nama_skpd,
+            ])->setOrientation('landscape');
+
+            // 🔹 Download file
+            return response()->streamDownload(
+                fn() => print ($pdf->output()),
+                'olahan-data-' . Str::slug($nama_skpd . ' ' . getNamaPeriode($jenis_periode, $periode, $tahun)) . '.pdf'
+            );
+        }
+    function getDataSurvei($periode, $tahun = null, $bulan = null)
+    {
+        // 🔹 Buat key unik berdasarkan parameter
+        // $cacheKey = "data_survei_kab_{$periode}_{$tahun}_{$bulan}";
+
+        // // 🔹 Gunakan Cache::remember untuk menyimpan hasil query selama 30 menit
+        // return Cache::remember($cacheKey, now()->addMinutes(10), function () use ($periode, $tahun, $bulan) {
+
+            // Contoh isi query aslinya
+            return collect(json_decode(json_encode(getStatistik9(null, null, $periode, $tahun, $bulan))));
+        // });
+    }
+    function getRekapOlahan($skpd = null, $periode, $tahun = null, $bulan = null)
+    {
+            return json_decode(json_encode(collect(getDataIKM($skpd, null, $periode, $tahun, $bulan))));
+    }
+      function getRekapOlahan9($skpd = null, $periode, $tahun = null, $bulan = null)
+    {
+            return json_decode(json_encode(collect(getDataIKM9($skpd, null, $periode, $tahun, $bulan))));
+    }
+    function getRekapSurvei9($skpd=null,$periode, $tahun = null, $bulan = null)
+    {
+        // 🔹 Buat key unik berdasarkan parameter
+       
+            return json_decode(json_encode(collect(getDataUnsur9($skpd, null, $periode, $tahun, $bulan))));
+    }
+    function getRekapSurvei($skpd = null, $periode, $tahun = null, $bulan = null)
+    {
+        // 🔹 Buat key unik berdasarkan parameter
+        $cacheKey = "data_rekap_{$periode}_{$tahun}_{$bulan}_{$skpd}";
+
+        // 🔹 Gunakan Cache::remember untuk menyimpan hasil query selama 30 menit
+        return Cache::remember($cacheKey, now()->addMinutes(30), function () use ($periode, $tahun, $bulan, $skpd) {
+            // Contoh isi query aslinya
+            return json_decode(json_encode(collect(getDataUnsur($skpd, null, $periode, $tahun, $bulan))));
+        });
+    }
+    public function indexv2(Request $request){
+    if(!Cache::has('unsur_16')){
+            abort('404');
+    }
+    $tahun = request('tahun',date('Y'));
+    $periode = request('periode',null);
+    $jenis_periode = request('jenis_periode','tahun');
+        $nama_periode = getNamaPeriode($jenis_periode, $periode, $tahun);
+        if ($request->user()->isAdmin()) {
+            $data = $this->getDataSurvei($jenis_periode, $tahun, $periode);
+        
+            return view('sisukma::dashboard.v2.admin',compact('data','nama_periode'));
+        } else {
+            $data = json_decode(json_encode(getStatistik(auth()->user()->skpd->id,null,$jenis_periode, $tahun, $periode)));
+            $data9 = json_decode(json_encode(getStatistik9(auth()->user()->skpd->id,null,$jenis_periode, $tahun, $periode)));
+            return view('sisukma::dashboard.v2.skpd',compact('data','nama_periode','data9'));
+        }
+    }
     public function account(Request $request){
         $user = Auth::user();
         if($request->isMethod('post')){
@@ -77,23 +220,28 @@ class AdminController extends Controller  implements HasMiddleware
         }
         return view('sisukma::admin.account',compact('user'));
     }
-    public function cetakQR(Skpd $skpd)
+    public function cetakQR(Skpd $skpd,$layanan=null)
     {
+        $lcek = Layanan::find($layanan);
+        $ly = $layanan && $lcek ? $lcek : null;
         if($vc = request()->cetak){
-            $path = 'dataqr/'.str('qr '.$skpd->nama_skpd)->slug().'.jpg';
+            $path = 'dataqr/'.str('qr '.$skpd->nama_skpd.' '.($ly?->nama_layanan??null))->slug().'.jpg';
+            if(Storage::exists($path)){
+                Storage::delete($path);
+            }
             if($vc=='ori'){
-                SnappyImage::generate(route('skpd.cetakqr',$skpd->id),Storage::path($path));
+                SnappyImage::generate(route('skpd.cetakqr',[$skpd->id,$layanan]),Storage::path($path));
             }else{
-                SnappyImage::generate(route('skpd.cetakqr',$skpd->id).'?cetaktemplate=true',Storage::path($path));
+                SnappyImage::generate(route('skpd.cetakqr', [$skpd->id, $layanan]).'?cetaktemplate=true',Storage::path($path));
             }
             if(Storage::exists($path)){
                 return response()->download(Storage::path($path))->deleteFileAfterSend();
             }
         }
         if(request()->cetaktemplate){
-        return view('sisukma::report.qrcode', ['skpd' => $skpd]);
+        return view('sisukma::report.qrcode', ['skpd' => $skpd,'layanan'=>$layanan]);
         }
-        return view('sisukma::report.qrcode-ori', ['skpd' => $skpd]);
+        return view('sisukma::report.qrcode-ori', ['skpd' => $skpd,'layanan'=>$layanan]);
     }
     public function indexSKPD(Request $request)
     {
@@ -391,7 +539,7 @@ class AdminController extends Controller  implements HasMiddleware
     public function formLayanan(Request $request, Layanan $layanan)
     {
         abort_if($request->user()->isSkpd() && $layanan->exists && $layanan->skpd_id != $request->user()->skpd->id, '403', 'Aksi tidak di izinkan');
-        $edit = $layanan;
+        $edit = $layanan->load('evaluasi');
         if ($request->user()->isAdmin()) {
             $skpd = Skpd::get();
             $unit = $request->skpd || $edit->exists ? Unit::whereSkpdId($request->skpd ?? $edit->skpd_id)->get() : null;
@@ -408,7 +556,13 @@ class AdminController extends Controller  implements HasMiddleware
             ]
         );
 
-        return view('sisukma::admin.dashboard');
+    }
+    function createEvaluasiLayanan(Request $request, Layanan $layanan){
+        $layanan->evaluasi()->updateOrCreate([
+            'tahun'=>$request->tahun
+        ],$request->all());
+
+        return back();
     }
     public function storeLayanan(Request $request)
     {
@@ -472,7 +626,7 @@ class AdminController extends Controller  implements HasMiddleware
     public function indexUnsur(Request $request)
     {
         abort_if(!$request->user()->isAdmin(), '403', 'Akses tidak dizinkan');
-        $data = Unsur::orderBy('urutan')->get();
+        $data = Unsur::with('kategoriUnsur')->orderBy('urutan')->get();
         return view('sisukma::admin.unsur.index', compact('data'));
     }
     public function formUnsur(Request $request, Unsur $unsur)
@@ -486,6 +640,7 @@ class AdminController extends Controller  implements HasMiddleware
         if ($request->user()->isAdmin()) {
             Unsur::create([
                 'nama_unsur' => $request->nama_unsur,
+                'kategori_unsur_id' => $request->kategori_unsur_id,
                 'a' => $request->a,
                 'b' => $request->b,
                 'c' => $request->c,
@@ -496,11 +651,13 @@ class AdminController extends Controller  implements HasMiddleware
         }
         abort('403', 'Akses tidak dizinkan');
     }
+
     public function updateUnsur(Request $request, Unsur $unsur)
     {
         if ($request->user()->isAdmin()) {
             $unsur->update([
                 'nama_unsur' => $request->nama_unsur,
+                'kategori_unsur_id' => $request->kategori_unsur_id,
                 'a' => $request->a,
                 'b' => $request->b,
                 'c' => $request->c,
@@ -511,8 +668,50 @@ class AdminController extends Controller  implements HasMiddleware
         }
         abort('403', 'Akses tidak dizinkan');
     }
-    public function destroyUnsur(Request $request, Unsur $unsur) {}
+    public function destroyUnsur(Request $request, Unsur $unsur) {
+        $unsur->delete();
+        return to_route('unsur.index');
+    }
 
+    public function indexKategori(Request $request)
+    {
+        abort_if(!$request->user()->isAdmin(), '403', 'Akses tidak dizinkan');
+        $data = KategoriUnsur::orderBy('urutan')->get();
+        return view('sisukma::admin.kategori.index', compact('data'));
+    }
+    public function formKategori(Request $request, KategoriUnsur $kategori)
+    {
+        abort_if(!$request->user()->isAdmin(), '403', 'Akses tidak dizinkan');
+        $edit = $kategori;
+        return view('sisukma::admin.kategori.form', compact('edit'));
+    }
+    public function storeKategori(Request $request)
+    {
+        if ($request->user()->isAdmin()) {
+            KategoriUnsur::create([
+                'nama' => $request->nama,
+                'urutan' => $request->urutan,
+            ]);
+            return to_route('kategori.index')->with('success', 'Berhasil');
+        }
+        abort('403', 'Akses tidak dizinkan');
+    }
+    public function updateKategori(Request $request, KategoriUnsur $kategori)
+    {
+        if ($request->user()->isAdmin()) {
+            $kategori->update([
+                'nama' => $request->nama,
+                'urutan' => $request->urutan,
+            ]);
+            return to_route('kategori.index')->with('success', 'Berhasil');
+        }
+        abort('403', 'Akses tidak dizinkan');
+    }
+    public function destroyKategori(Request $request, KategoriUnsur $kategori)
+    {
+        $kategori->delete();
+        return to_route('kategori.index');
+    }
 
     //User
 public function indexResponden(){
@@ -587,6 +786,25 @@ public function destroyDateResponden(Request $request, Layanan $layanan){
     Respon::whereBelongsTo($layanan)->whereCreated($request->date)->delete();
     return back()->with('success','Data tanggal '.$request->date.' berhasil dihapus');
 }
+    function pengaturan(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            if ($request->unsur_16) {
+                if ($request->unsur_16 == 'aktif') {
+                    Cache::put('unsur_16', 'aktif');
+                } else {
+                    Cache::forget('unsur_16');
+                }
+            }
+            if($id=$request->layanan_ujicoba){
+                Cache::put('layanan_ujicoba', $id);
+            }
+            return back()->with('success','Berhasil disimpan');
+        }
 
+        return view('sisukma::pengaturan');
+    }
 
 }
+
+

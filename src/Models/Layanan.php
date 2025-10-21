@@ -16,4 +16,7 @@ class Layanan extends Model
     public function respons(){
         return $this->hasMany(Respon::class);
     }
+      public function evaluasi(){
+        return $this->hasMany(Evaluasi::class);
+    }
 }

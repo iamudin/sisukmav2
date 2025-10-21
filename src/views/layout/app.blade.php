@@ -26,7 +26,7 @@
                 class="fas fa-bars"></i></button>
         <!-- Navbar Search-->
         <form class="d-none d-md-inline-block form-inline me-auto me-0 me-md-3 my-2 my-md-0 w-30" style="color:#f5f5f5">
-          <marquee>Selamat datang {{ request()->user()->isAdmin() ? 'Admin Kabupaten' : 'Admin '.request()->user()->skpd->nama_skpd }}</marquee>
+          <marquee>Selamat datang {{ request()->user()->isAdmin() ? 'Admin Kabupaten' : 'Admin ' . request()->user()->skpd->nama_skpd }}</marquee>
 
         </form>
         <!-- Navbar-->
@@ -70,16 +70,23 @@
                         </a>
                         @if(Auth::user()->isAdmin())
 
-                        <a class="nav-link sb-menu" href="{{ route('unsur.index') }}"> <div class="sb-nav-link-icon"><i class="fa fa-list"></i> Unsur</div></a>
+                            <a class="nav-link sb-menu" href="{{ route('unsur.index') }}"> <div class="sb-nav-link-icon"><i class="fa fa-list"></i> Unsur</div></a>
+                            <a class="nav-link sb-menu" href="{{ route('kategori.index') }}">
+                                <div class="sb-nav-link-icon"><i class="fa fa-tag"></i> Kategori Unsur</div>
+                            </a>
                         @endif
                         <a class="nav-link sb-menu" href="{{ route('layanan.index') }}"> <div class="sb-nav-link-icon"><i class="fas fa-desktop"></i> Layanan</div></a>
+                        
                         <a class="nav-link sb-menu" href="{{ route('unit.index') }}"> <div class="sb-nav-link-icon"><i class="fas fa-rocket"></i> Unit Pelayanan</div></a>
 
                         @if(Auth::user()->isAdmin())
-                        <a class="nav-link sb-menu" href="{{ route('skpd.index') }}"> <div class="sb-nav-link-icon"><i class="fas fa-building"></i> Perangkat Daerah</div></a>
+                            <a class="nav-link sb-menu" href="{{ route('skpd.index') }}"> <div class="sb-nav-link-icon"><i class="fas fa-building"></i> Perangkat Daerah</div></a>
+                            <a class="nav-link sb-menu" href="{{ route('pengaturan') }}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-gear"></i> Pengaturan</div>
+                            </a>
                         @else
                         <a class="nav-link sb-menu" href="{{ route('skpd.profile') }}"> <div class="sb-nav-link-icon"><i class="fas fa-gears"></i> Pengaturan</div></a>
-                        <a target="_blank" class="nav-link sb-menu" href="{{ url('survei/'.base64_encode(Auth::user()->skpd->id))}}"> <div class="sb-nav-link-icon"><i class="fas fa-hand-pointer"></i> Form Survei</div></a>
+                        <a target="_blank" class="nav-link sb-menu" href="{{ url('survei/' . base64_encode(Auth::user()->skpd->id))}}"> <div class="sb-nav-link-icon"><i class="fas fa-hand-pointer"></i> Form Survei</div></a>
                         @endif
                         <a class="nav-link sb-menu" href="{{ route('gallery.index') }}"> <div class="sb-nav-link-icon"><i class="fas fa-image"></i> Gallery</div></a>
 
@@ -88,8 +95,8 @@
                         <br>
                         <div class="sb-sidenav-menu-heading pt-0 mt-0">QR Code <i class="fas fa-qrcode"></i> </div>
                         {{ QrCode::size(200)->generate('sdfsdfsdf') }}
-                        <a href="{{ route('skpd.cetakqr',Auth::user()->skpd->id) }}?cetak=ori" class="btn btn-warning btn-sm mt-2">Download QR</a>
-                        <a href="{{ route('skpd.cetakqr',Auth::user()->skpd->id) }}?cetaktamplte=true&cetak=true" class="btn btn-success btn-sm mt-2">Versi Template</a>
+                        <a href="{{ route('skpd.cetakqr', Auth::user()->skpd->id) }}?cetak=ori" class="btn btn-warning btn-sm mt-2">Download QR</a>
+                        <a href="{{ route('skpd.cetakqr', Auth::user()->skpd->id) }}?cetaktamplte=true&cetak=true" class="btn btn-success btn-sm mt-2">Versi Template</a>
                         @endif
 
 

@@ -7,6 +7,16 @@ use Sisukma\V2\Controllers\AjaxController;
 $path = 'admin';
 Route::prefix($path)->group(function()use($path){
     Route::match(['get','post'],'dashboard', [AdminController::class, 'index'])->name('dashboard');
+    Route::match(['get', 'post'], 'dashboard-v2/cetak-rekap/{skpd?}', [AdminController::class, 'cetakrekapv2'])->name('cetakrekapv2');
+
+    Route::match(['get', 'post'], 'dashboard-v2/cetak-rekap9/{skpd?}', [AdminController::class, 'cetakrekap9v2'])->name('cetakrekap9v2');
+    
+    Route::match(['get', 'post'], 'dashboard-v2/cetak-olahan/{skpd?}', [AdminController::class, 'cetakolahanv2'])->name('cetakolahanv2');
+    Route::match(['get', 'post'], 'dashboard-v2/cetak-olahan9/{skpd?}', [AdminController::class, 'cetakolahan9v2'])->name('cetakolahan9v2');
+
+    Route::match(['get', 'post'], 'pengaturan', [AdminController::class, 'pengaturan'])->name('pengaturan');
+
+    Route::match(['get', 'post'], 'dashboard-v2', [AdminController::class, 'indexv2'])->name('dashboard-v2');
     Route::controller(AjaxController::class)->group(function() {
         Route::post('ajax/dashboard', 'dashboard')->name('ajax.dashboard');
         Route::post('ajax/detailikm', 'detailikm')->name('ajax.detailikm');
@@ -19,7 +29,7 @@ Route::prefix($path)->group(function()use($path){
         Route::match(['post','get'],'account', 'account')->name('user.account');
         Route::post('cetakikmkab', 'cetakikmkab')->name('cetakikmkab');
         Route::get('linkqr/{skpd}', 'linkQR')->name('skpd.linkqr');
-        Route::get('cetakqr/{skpd}', 'cetakQR')->name('skpd.cetakqr');
+        Route::get('cetakqr/{skpd}/{layanan?}', 'cetakQR')->name('skpd.cetakqr');
         Route::match(['post','get'],'profile-skpd', 'profileSKPD')->name('skpd.profile');
         Route::get('skpd', 'indexSKPD')->name('skpd.index');
         Route::get('skpd/create', 'formSKPD')->name('skpd.create');
@@ -32,6 +42,7 @@ Route::prefix($path)->group(function()use($path){
         Route::get('layanan', 'indexLayanan')->name('layanan.index');
         Route::get('layanan/create', 'formLayanan')->name('layanan.create');
         Route::post('layanan/create', 'storeLayanan')->name('layanan.store');
+        Route::post('layanan/evaluasi/{layanan}/create', 'createEvaluasiLayanan')->name('layanan.evaluasi.store');
         Route::get('layanan/{layanan}/edit', 'formLayanan')->name('layanan.edit');
         Route::put('layanan/{layanan}/edit', 'updateLayanan')->name('layanan.update');
         Route::delete('layanan/{layanan}/delete', 'destroyLayanan')->name('layanan.destroy');
@@ -44,6 +55,13 @@ Route::prefix($path)->group(function()use($path){
         Route::put('unsur/{unsur}/edit', 'updateUnsur')->name('unsur.update');
         Route::delete('unsur/{unsur}/delete', 'destroyUnsur')->name('unsur.destroy');
 
+        Route::get('kategori-unsur', 'indexKategori')->name('kategori.index');
+        Route::get('kategori-unsur/create', 'formKategori')->name('kategori.create');
+        Route::post('kategori-unsur/create', 'storeKategori')->name('kategori.store');
+        Route::get('kategori-unsur/{kategori}/edit', 'formKategori')->name('kategori.edit');
+        Route::put('kategori-unsur/{kategori}/edit', 'updateKategori')->name('kategori.update');
+        Route::delete('kategori-unsur/{kategori}/delete', 'destroyKategori')->name('kategori.destroy');
+        
         Route::get('unit', 'indexUnit')->name('unit.index');
         Route::get('unit/create', 'formUnit')->name('unit.create');
         Route::post('unit/create', 'storeUnit')->name('unit.store');

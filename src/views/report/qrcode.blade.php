@@ -24,11 +24,16 @@
 <div class="row">
   <div class="col-lg-12 text-center mt-4">
     <h1 >MOHON BANTUAN SAUDARA UNTUK MENGISI<br>SURVEI KEPUASAN MASYARAKAT (SKM) <br>PADA PRODUK LAYANAN KAMI</h1>
+    @if($layanan)
+    @if($l = Sisukma\V2\Models\Layanan::find($layanan))
+    <h2>{{ $l->nama_layanan }}</h2>
+    @endif
+    @endif
     <br>
     <h4>Scan QR Dibawah ini :</h4>
 
     <button style="padding:20px;border-radius:50px 0 50px 0;border:10px solid #000;background:transparent" >
-     {{QrCode::size(500)->generate(url('survei/'.base64_encode($skpd->id)))}}
+     {{QrCode::size(500)->generate(route('survei.form',[base64_encode($skpd->id),base64_encode($layanan)]))}}
     </button>
     <br><span style="font-size:20px"><b>Diterbitkan dari  https://sisukma.bengkaliskab.go.id</b></span>
     <br>
