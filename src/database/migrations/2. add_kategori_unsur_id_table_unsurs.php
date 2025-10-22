@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::table('unsurs', function (Blueprint $table) {
             if(!Schema::hasColumn('unsurs', 'kategori_unsur_id')){
-            $table->foreignId('kategori_unsur_id')->constrained('kategori_unsurs')->nullable();
+            $table->foreignId('kategori_unsur_id')->nullable();
             }
         });
 

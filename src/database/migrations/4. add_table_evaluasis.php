@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('evaluasis', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('layanan_id')->constrained('layanans')->cascadeOnDelete();
+            $table->foreignId('layanan_id')->nullable();
             $table->year('tahun')->nullable();
             $table->string('unsur_perbaikan')->nullable();
             $table->string('rencana_tindak_lanjut')->nullable();
