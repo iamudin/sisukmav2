@@ -10,13 +10,11 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::table('unsurs', function (Blueprint $table) {
-            if(!Schema::hasColumn('unsurs', 'kategori_unsur_id')){
-            $table->foreignId('kategori_unsur_id')->nullable();
-            }
+        Schema::table('kategori_unsurs', function (Blueprint $table) {
+            $table->string('nama')->change();
         });
 
-
+   
     }
 
     /**

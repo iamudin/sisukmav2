@@ -4,7 +4,7 @@
     <h3 class="mt-4"><i class="fas fa-tachometer-alt"></i> Dashboard</h3>
     @if(Cache::has('unsur_16'))
     <div class="alert alert-info">
-        Dashboard Sisukma versi 16 Unsur Tersedia !  <a href="{{ route('dashboard-v2') }}" class="btn btn-warning btn-sm float-end">Buka Dashboard v2</a> 
+        Dashboard V2 Tersedia !  <a href="{{ route('dashboard-v2') }}" class="btn btn-warning btn-sm float-end">Buka Dashboard v2</a> 
     </div>
     @endif
    <p style="font-size:30px;">Periode <b class="periode-title">{{ $periode }}</b> <button onclick="$('.periode').modal('show')" class="btn btn-sm btn-danger float-end mt-2"> <i class="fa fa-edit"></i> Ganti Periode</button></p>

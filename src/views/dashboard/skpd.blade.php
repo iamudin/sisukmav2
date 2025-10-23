@@ -6,7 +6,7 @@
     @if(Cache::has('unsur_16'))
     
         <div class="alert alert-info">
-            Dashboard Sisukma versi 16 Unsur tersedia!<a href="{{ route('dashboard-v2') }}" class="btn btn-warning btn-sm float-end">Buka
+            Dashboard V2 Tersedia !<a href="{{ route('dashboard-v2') }}" class="btn btn-warning btn-sm float-end">Buka
                 Dashboard v2</a>
         </div>
     @endif
