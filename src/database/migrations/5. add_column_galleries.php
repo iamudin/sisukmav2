@@ -15,7 +15,10 @@ return new class extends Migration {
            
         });
 
+        Schema::table('respons', function (Blueprint $table) {
+            $table->string('disabilitas')->nullable()->change();
 
+        });
     }
 
     /**
