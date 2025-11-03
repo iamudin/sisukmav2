@@ -397,6 +397,9 @@ function cetakrekap9v2(Request $request, $skpd=null){
     }
     public function formGallery(Gallery $gallery)
     {
+        if($gallery->exists && Auth::user()->isSkpd() && $gallery->skpd_id != Auth::user()->skpd->id){
+            abort(403,'Tidak diizinkan');
+        }
         $edit = $gallery;
         return view('sisukma::admin.gallery.form', compact('edit'));
     }
@@ -409,6 +412,7 @@ function cetakrekap9v2(Request $request, $skpd=null){
         $data= $gallery->create([
             'nama' => $request->nama,
             'aktif'=>$request->aktif,
+            'skpd_id'=>$request->user()->skpd->id,
             'slug'=>str($request->nama)->slug().'-'.Str::random(4)
         ]);
         return  to_route('gallery.edit',$data->id)->with('success', 'Gallery Tersimpan');
@@ -431,7 +435,8 @@ function cetakrekap9v2(Request $request, $skpd=null){
         }else{
             $gallery->update([
                 'nama' => $request->nama,
-                'aktif'=>$request->aktif
+                'aktif'=>$request->aktif,
+                'skpd_id' => $request->user()->skpd->id,
             ]);
         }
 
