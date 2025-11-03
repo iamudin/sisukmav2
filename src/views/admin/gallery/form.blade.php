@@ -73,7 +73,7 @@
   <table class="table table-striped table-bordered">
       <tr>
           <td style="width:90px"><input type="file" accept="image/png,image/jpg" name="gambar" id="" class="form-control"></td>
-          <td><textarea name="caption" id="" class="form-control" placeholder="masukkan caption"></textarea></td>
+          <td><textarea name="caption" id="" class="form-control" placeholder="Masukkan keterangan Gambar"></textarea></td>
       </tr>
   </table>
   <button type="submit" class="btn float-end btn-primary btn-sm" name="upload" value="true"> <i class="fas fa-upload"></i> Upload</button>
