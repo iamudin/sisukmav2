@@ -436,7 +436,7 @@ function cetakrekap9v2(Request $request, $skpd=null){
             $gallery->update([
                 'nama' => $request->nama,
                 'aktif'=>$request->aktif,
-                'skpd_id' => $request->user()->skpd->id,
+                'skpd_id' => $request->user()->isAdmin() ? $gallery->skpd_id : $request->user()->skpd->id,
             ]);
         }
 
