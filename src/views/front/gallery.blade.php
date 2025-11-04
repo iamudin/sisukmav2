@@ -35,7 +35,7 @@
               <div class="d-flex align-items-center">
                 <img src="{{asset('logo.png')}}" alt="" class="img-fluid post-author-img flex-shrink-0">
                 <div class="post-meta">
-                  <small class="post-author-list">{{$r->skpd->nama_skpd}}</small>
+                  <small class="post-author-list">{{$r->skpd?->nama_skpd ?? null}}</small>
                   <p class="post-date">
                     <time datetime="2022-01-01">{{$r->created_at->format('Y-m-d')}}</time>
                   </p>

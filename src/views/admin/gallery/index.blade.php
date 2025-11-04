@@ -16,7 +16,7 @@
                 <th>Nama </th>
                 <th>Jumlah Foto</th>
                 <th>Perangkat Daerah</th>
-                <th>Dipublikasikan</th>
+                <th>Status</th>
                 <th >Aksi</th>
             </tr>
         </thead>
@@ -27,8 +27,8 @@
                 <td>{{ $i+1 }}</td>
                 <td>{{ $v->nama }}</td>
                 <td>{{ $v->images->count()}}</td>
-                <td>{{ $v->skpd?->nama_skpd}}</td>
-                <td>{{ $v->status == 'Y' ? 'Publik' : 'Draft'}}</td>
+                <td>{{ $v->skpd?->nama_skpd ?? null}}</td>
+                <td>{{ $v->aktif == 'Y' ? 'Publik' : 'Draft'}}</td>
                 <td>
                     <div class="btn-group">
                     <a  href="{{route('gallery.edit',$v->id)}}" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i></a>
