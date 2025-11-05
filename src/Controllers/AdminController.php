@@ -48,7 +48,6 @@ class AdminController extends Controller  implements HasMiddleware
     }
     public function index(Request $request)
     {
-        return to_route('dashboard-v2');
         (new IkmManager)->get_periode_name();
         if ($request->isMethod('post')) {
             // return (new IkmManager)->getSurveyRekap($request);
