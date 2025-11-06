@@ -131,12 +131,12 @@
       <br>
       <div>
           <button type="button" class="btn btn-danger btn-md float-start previous" style="width:150px" onclick="$('.q-all').hide();$('.pd').show()"><i class="fa fa-angle-left" aria-hidden="true"></i> Sebelumnya</button>
-        @if(count($query) == 16)
+      
 
           <button type="button" class="btn btn-primary btn-md float-end next-disabilitas next-emot" onclick="$('.q-all').hide();$('.disabilitas').show()" style="width:150px;display:none">Lanjutkan <i class="fa fa-angle-right" aria-hidden="true"></i></button>
-      @else
-          <button type="button" class="btn btn-primary btn-md float-end next-emot" onclick="$('.q-all').hide();$('.q-1').show()" style="width:150px;display:none">Lanjutkan <i class="fa fa-angle-right" aria-hidden="true"></i></button>
-          @endif
+   
+          {{-- <button type="button" class="btn btn-primary btn-md float-end next-emot" onclick="$('.q-all').hide();$('.q-1').show()" style="width:150px;display:none">Lanjutkan <i class="fa fa-angle-right" aria-hidden="true"></i></button> --}}
+         
 
 
           </div>
