@@ -1,9 +1,9 @@
 <?php
 namespace Sisukma\V2\Controllers;
+use Sisukma\V2\Contracts\IkmCounter;
 use Sisukma\V2\Models\Skpd;
 use Illuminate\Http\Request;
 use Sisukma\V2\Models\Respon;
-use Sisukma\V2\Models\Layanan;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
 use Sisukma\V2\Contracts\IkmManager;
@@ -13,14 +13,31 @@ use Sisukma\V2\Models\Gallery;
 class WebController extends Controller
 {
 public function index(Request $request){
+        $jenis_periode = request('jenis_periode', 'tahun');
+        $periode = request('periode', null);
+        $tahun = request('tahun', date('Y'));
+        $cacheKey = "data_survei_kab_{$jenis_periode}_{$tahun}_{$periode}";
+      
+        if($request->isMethod('post')){
+            if (!Cache::has($cacheKey)) {
+                $baru = true;
+            }
+               Cache::remember($cacheKey, now()->addMinutes(30), function () use ($jenis_periode, $tahun, $periode) {
+                    return collect(json_decode(json_encode((new IkmCounter)->getStatistik9(null, null, $jenis_periode, $tahun, $periode))));
+                });
+               if(Cache::has($cacheKey)){
+                if(isset($baru)){
+                    return response()->json(['msg' => 'new']);
 
-    (new IkmManager)->get_periode_name();
-    if($request->isMethod('post')){
+                }
+                return response()->json(['msg' => 'old']);
+            }
 
-
-        View::share('ajaxdata',json_encode($request->all()));
+            // // 🔹 Gunakan Cache::remember untuk menyimpan hasil query selama 30 menit
+          
     }
-    return view('sisukma::front.index');
+       
+    return view('sisukma::front.index',['namaperiode'=>getNamaPeriode($jenis_periode,$periode,$tahun),'data'=>Cache::get($cacheKey) ?? []]);
 }
 
 function dataikm(Request $request){

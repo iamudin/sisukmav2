@@ -11,8 +11,8 @@
         <tr style="background-color: #f2f2f2;">
             <th rowspan="2">NO. RES</th>
             <th rowspan="2">Jenis Layanan</th>
-            <th rowspan="2">Jenis Kelamin</th>
             <th rowspan="2">Pendidikan</th>
+            <th rowspan="2">Jenis Kelamin</th>
             <th rowspan="2">Pekerjaan</th>
             <th rowspan="2">Kategorisasi Pengguna Layanan</th>
             <th rowspan="2">Kategori Disabilitas</th>
@@ -51,7 +51,7 @@
             <th colspan="7" style="text-align: left;">Total Nilai Pertanyaan</th>
     @for($u = 1; $u <= 9; $u++)
         @php $k = "u" . $u @endphp
-        <td>{{ $data->total_perunsur->$k }}</td>
+        <td>{{ $data->jumlah_total_perunsur->$k }}</td>
     @endfor
         </tr>
     
@@ -59,7 +59,7 @@
             <th colspan="7" style="text-align: left;">Nilai Rata-rata Pertanyaan</th>
             @for($u = 1; $u <= 9; $u++)
                 @php $k = "u" . $u @endphp
-                <td>{{ $data->rata_rata_perunsur->$k }}</td>
+                <td>{{ round($data->jumlah_rata_perunsur->$k ,2)}}</td>
             @endfor
         </tr>
     
@@ -67,7 +67,7 @@
             <th colspan="7" style="text-align: left;">Nilai Per Unsur</th>
                 @for($u = 1; $u <= 9; $u++)
                     @php $k = "u" . $u @endphp
-                            <td>{{$data->p_unsur->$k}}</td>
+                            <td>{{round($data->jumlah_nilai_perunsur->$k,2)}}</td>
 
                 @endfor
            
@@ -77,7 +77,7 @@
             <th colspan="7" style="text-align: left;">Kategori Per Unsur</th>
                 @for($u = 1; $u <= 9; $u++)
                     @php $k = "u" . $u @endphp
-                                <td>{{$data->prediket_unsur->$k}}</td>
+                                <td>{{getPredikat($data->jumlah_rata_perunsur->$k)}}</td>
 
 
                 @endfor
@@ -86,17 +86,17 @@
     
         <tr style="background-color: #f2f2f2;">
             <th colspan="7" style="text-align: left;">IKM OPP</th>
-            <td colspan="16">{{$data->nilai_ikm}}</td>
+            <td colspan="16">{{round($data->nilai_ikm,2)}}</td>
         </tr>
     
         <tr style="background-color: #f9f9f9;">
             <th colspan="7" style="text-align: left;">IKM Konversi OPP</th>
-            <td colspan="16">{{$data->nilai_konversi}}</td>
+            <td colspan="16">{{round($data->nilai_konversi,2)}}</td>
         </tr>
     
         <tr style="background-color: #f2f2f2;">
             <th colspan="7" style="text-align: left;">Mutu Layanan</th>
-            <td colspan="16">{{$data->prediket_mutu_layanan}}</td>
+            <td colspan="16">{{$data->predikat_mutu}}</td>
         </tr>
     </tbody>
 

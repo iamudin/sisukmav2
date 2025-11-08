@@ -5,17 +5,20 @@
 
 </center>
 <table border="1" cellspacing="0" cellpadding="6"
-    style="border-collapse: collapse; text-align: center; font-family: Arial; font-size: 13px;width:100%">
-    <thead>
+    style="border-collapse: collapse; text-align: center; font-family: Arial; font-size: 8px;width:100%">
+    <tbody>
         <tr style="background-color: #cfe2f3;">
             <th rowspan="2">NO. RES</th>
-            <th rowspan="2">Nama Unit</th>
-            <th rowspan="2">Jenis Layanan</th>
+            <th rowspan="2">Unit Pelayanan</th><th rowspan="2">Jenis Layanan</th>
             <th rowspan="2">Periode Pelaksanaan</th>
             <th colspan="9">NILAI UNSUR PELAYANAN</th>
             <th rowspan="2">IKM</th>
             <th rowspan="2">Kategori / Mutu</th>
             <th rowspan="2">Jumlah Responden</th>
+            <th rowspan="2">Metode SKM</th>
+            <th rowspan="2">Unsur Perioritas Perbaikan</th>
+            <th rowspan="2">Rencana Tidak Lanjut</th>
+            <th rowspan="2">Realisasi RTL Periode Sebelumnya %</th>
         </tr>
         <tr style="background-color: #cfe2f3;">
             <th>Persyaratan</th>
@@ -28,63 +31,51 @@
             <th>Aduan</th>
             <th>Sarpas</th>
         </tr>
-    </thead>
-    <tbody>
-        @foreach($data->per_layanan as $row)
+
+        @foreach(collect($data->hasil_perlayanan)->sortBy('nama_skpd') as $row)
             <tr>
                 <td>{{ $loop->iteration }}</td>
-                <td align="left">{{ $row->nama_skpd }}</td>
-                <td align="left">{{ $row->nama_layanan }}</td>
+                <td align="left" style="width:500px">{{ $row->nama_skpd }}</td>
+                <td align="left" style="width:500px">{{ $row->nama_layanan }}</td>
                 <td>{{ getNamaPeriode($jenis_periode, $periode, $tahun) }}</td>
-                <td>{{ $row->konversi_unsur->p1 }}</td>
-                <td>{{ $row->konversi_unsur->p2 }}</td>
-                <td>{{ $row->konversi_unsur->p3 }}</td>
-                <td>{{ $row->konversi_unsur->p4 }}</td>
-                <td>{{ $row->konversi_unsur->p5 }}</td>
-                <td>{{ $row->konversi_unsur->p6 }}</td>
-                <td>{{ $row->konversi_unsur->p7 }}</td>
-                <td>{{ $row->konversi_unsur->p8 }}</td>
-                <td>{{ $row->konversi_unsur->p9 }}</td>
-                <td>{{ $row->nilai_konversi }}</td>
-                <td>{{ $row->predikat_mutu_layanan }}</td>
-                <td>{{ $row->jumlah_responden }}</td>
+                @for($u = 1; $u <= 9; $u++)
+                    @php $k = "u$u";@endphp
+                    <td>{{ round($row->nilai_perunsur->$k)}}</td>
+                @endfor
+                <td>{{ round($row->nilai_konversi, 2) }}</td>
+                <td>{{ $row->predikat_mutu }}</td>
+                <td>{{ $row->sample_diambil }}</td>
+                <td>Online</td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
-           @endforeach
+        @endforeach
         <tr style="background-color: #d9ead3; font-weight: bold;">
-            <td colspan="4">Nilai Per Unsur</td>
-            <td>{{ $data->nilai_perunsur->p1 }}</td>
-            <td>{{ $data->nilai_perunsur->p2 }}</td>
-            <td>{{ $data->nilai_perunsur->p3 }}</td>
-            <td>{{ $data->nilai_perunsur->p4 }}</td>
-            <td>{{ $data->nilai_perunsur->p5 }}</td>
-            <td>{{ $data->nilai_perunsur->p6 }}</td>
-            <td>{{ $data->nilai_perunsur->p7 }}</td>
-            <td>{{ $data->nilai_perunsur->p8 }}</td>
-            <td>{{ $data->nilai_perunsur->p9 }}</td>
-            <td colspan="3"></td>
+            <td colspan="3">Nilai Per Unsur</td>
+            @for($u = 1; $u <= 9; $u++)
+                @php $k = "u$u";@endphp
+                <td>{{ round($data->jumlah_nilai_perunsur->$k, 2) }}</td>
+            @endfor
+            <td colspan="8"></td>
         </tr>
         <tr style="background-color: #d9ead3; font-weight: bold;">
-            <td colspan="4">Kategori Per Unsur</td>
-            <td>{{ $data->predikat_perunsur->p1 }}</td>
-            <td>{{ $data->predikat_perunsur->p2 }}</td>
-            <td>{{ $data->predikat_perunsur->p3 }}</td>
-            <td>{{ $data->predikat_perunsur->p4 }}</td>
-            <td>{{ $data->predikat_perunsur->p5 }}</td>
-            <td>{{ $data->predikat_perunsur->p6 }}</td>
-            <td>{{ $data->predikat_perunsur->p7 }}</td>
-            <td>{{ $data->predikat_perunsur->p8 }}</td>
-            <td>{{ $data->predikat_perunsur->p9 }}</td>
-            <td colspan="3"></td>
+            <td colspan="3">Kategori Per Unsur</td>
+            @for($u = 1; $u <= 9; $u++)
+                @php $k = "u$u";@endphp
+                <td>{{ getPredikat($data->jumlah_rata_perunsur->$k) }}</td>
+            @endfor
+            <td colspan="8"></td>
         </tr>
         <tr style="background-color: #fff200; font-weight: bold;">
-            <td colspan="4">IKM IP</td>
-            <td colspan="9">{{ $data->nilai_ikm }}</td>
-            <td colspan="3"></td>
+            <td colspan="3">IKM IP</td>
+            <td colspan="9">{{ round($data->nilai_konversi, 2) }}</td>
+            <td colspan="8"></td>
         </tr>
         <tr style="background-color: #d9ead3; font-weight: bold;">
-            <td colspan="4">Mutu Layanan</td>
-            <td colspan="9">{{ $data->predikat_ikm }}</td>
-            <td colspan="3"></td>
+            <td colspan="3">Mutu Layanan</td>
+            <td colspan="9">{{ $data->predikat_mutu }}</td>
+            <td colspan="8"></td>
         </tr>
     </tbody>
 </table>

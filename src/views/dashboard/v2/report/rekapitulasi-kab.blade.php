@@ -6,7 +6,7 @@
 </center>
 <table border="1" cellspacing="0" cellpadding="6"
     style="border-collapse: collapse; text-align: center; font-family: Arial; font-size: 13px;width:100%">
-    <thead>
+    <tbody>
         <tr style="background-color: #cfe2f3;">
             <th rowspan="2">NO. RES</th>
             <th rowspan="2">Nama Unit</th>
@@ -28,8 +28,7 @@
             <th>Aduan</th>
             <th>Sarpas</th>
         </tr>
-    </thead>
-    <tbody>
+   
         @foreach($data->per_layanan as $row)
             <tr>
                 <td>{{ $loop->iteration }}</td>

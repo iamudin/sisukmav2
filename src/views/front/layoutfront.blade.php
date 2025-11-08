@@ -1,136 +1,77 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
-  <title>S I S U K M A - Sistem Survei Kepuasan Masyarakat</title>
-  <meta content="" name="description">
-  <meta content="" name="keywords">
-
-  <!-- Favicons -->
-  <link href="https://bengkaliskab.go.id/favicon.png" rel="icon">
-  <link href="https://bengkaliskab.go.id/favicon.png" rel="apple-touch-icon">
-
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600;1,700&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" integrity="sha512-fD9DI5bZwQxOi7MhYWnnNPlvXdp/2Pj3XSTRrFs5FQa4mizyGLnJcN6tuvUS6LbmgN1ut+XGSABKvjN0H6Aoow==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <!-- Vendor CSS Files -->
-  <link href="{{asset('back/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
-  <link href="{{asset('back/vendor/bootstrap-icons/bootstrap-icons.css')}}" rel="stylesheet">
-  <link href="{{asset('back/vendor/aos/aos.css')}}" rel="stylesheet">
-  <link href="{{asset('back/vendor/glightbox/css/glightbox.min.css')}}" rel="stylesheet">
-  <link href="{{asset('back/vendor/swiper/swiper-bundle.min.css')}}" rel="stylesheet">
-
-  <!-- Template Main CSS File -->
-  <link href="{{asset('back/css/main.css')}}" rel="stylesheet">
-  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-  <!-- =======================================================
-  * Template Name: Impact - v1.2.0
-  * Template URL: https://bootstrapmade.com/impact-bootstrap-business-website-template/
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SISUKMA - Sistem Informasi Survei Kepuasan Masyarakat</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>
+<body class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100">
 
-  <!-- ======= Header ======= -->
-  <section id="topbar" class="topbar d-flex align-items-center" style="background:darkblue">
-    <div class="container d-flex justify-content-center justify-content-md-between">
-      <div class="contact-info d-flex align-items-center">
-        <i class="bi bi-envelope d-flex align-items-center"><a href="mailto:organisasibengkalis@gmail.com">organisasibengkalis@gmail.com</a></i>
-      </div>
-      <!-- <div class="social-links d-none d-md-flex align-items-center">
-        <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
-        <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
-        <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
-        <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></i></a>
-      </div> -->
+  <!-- Navbar -->
+  <header class="bg-gradient-to-r from-blue-700 to-blue-600 shadow-md fixed top-0 left-0 right-0 z-50">
+    <div class="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
+      <h1 class="text-xl font-bold text-white tracking-widest">S I S U K M A</h1>
+      <nav class="hidden md:flex space-x-6">
+        <a href="#" class="text-white hover:text-yellow-200 transition">Beranda</a>
+        <a href="#statistik" class="text-white hover:text-yellow-200 transition">Statistik</a>
+        <a href="#gallery" class="text-white hover:text-yellow-200 transition">Gallery</a>
+        <a href="#login" class="text-white font-semibold hover:text-yellow-200 transition">Login</a>
+      </nav>
+      <button id="menu-btn" class="md:hidden text-white focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
     </div>
-  </section>
-
-  <header id="header" class="header d-flex align-items-center" style="background:rgb(13, 110, 253)">
-
-    <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
-      <a href="{{url('/')}}" class="logo d-flex align-items-center">
-        <!-- Uncomment the line below if you also wish to use an image logo -->
-        <!-- <img src="assets/img/logo.png" alt=""> -->
-        <h1 style="text-shadow:0 1px 6px #000"> <img src="https://bengkaliskab.go.id/favicon.png" alt=""> S I S U K M A</h1>
-      </a>
-      <nav id="navbar" class="navbar">
-        <ul>
-          <li><a href="{{url('/')}}"> <i class="fa fa-house"></i> &nbsp; Beranda</a></li>
-          <li><a href="#services"> <i class="fa fa-chart-bar"></i> &nbsp; Statistik</a></li>
-          <li><a href="{{url('/gallery')}}"> <i class="fa fa-camera"></i> &nbsp;  Gallery</a></li>
-          <li><a href="{{url('/login')}}"> <i class="fa fa-sign-in"></i> &nbsp;  Login</a></li>
-
-
-        </ul>
-      </nav><!-- .navbar -->
-
-      <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
-      <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
-
+    <div id="mobile-menu" class="hidden md:hidden flex flex-col space-y-2 px-4 pb-4 bg-blue-700">
+      <a href="#" class="text-white hover:text-yellow-200 transition">Beranda</a>
+      <a href="#statistik" class="text-white hover:text-yellow-200 transition">Statistik</a>
+      <a href="#gallery" class="text-white hover:text-yellow-200 transition">Gallery</a>
+      <a href="#login" class="text-white font-semibold hover:text-yellow-200 transition">Login</a>
     </div>
-  </header><!-- End Header -->
-  <!-- End Header -->
+  </header>
+  @yield('content')
+     <!-- Footer -->
+    <footer class="bg-blue-900 text-blue-100 py-6 text-center">
+        <p>© 2025 Bagian Oragnisasi Sekretariat Daerah Kabupaten Bengkalis. All Rights Reserved. <br> Dikembangkan oleh Diskominfotik Kab. Bengkalis</p>
+    </footer>
+    <script>
+      // Toggle mobile menu
+      document.getElementById('menu-btn').addEventListener('click', () => {
+        const menu = document.getElementById('mobile-menu');
+        menu.classList.toggle('hidden');
+      });
 
-  <!-- ======= Hero Section ======= -->
-  @if(request()->is('/'))
-  <section id="hero" class="hero" style="margin:0;padding:0">
-   <img style="width:100%" src="https://sisukma.bengkaliskab.go.id/e-surve.webp" alt="">
-  </section>
+      // Hero slider
+      const slides = document.querySelectorAll('.slide');
+      const dots = document.querySelectorAll('.dot');
+      let current = 0;
 
+      function showSlide(index) {
+        slides.forEach((slide, i) => {
+          slide.style.opacity = i === index ? '1' : '0';
+          dots[i].classList.toggle('bg-white', i === index);
+          dots[i].classList.toggle('bg-white/50', i !== index);
+        });
+      }
 
-  @endif
-<main id="main">
-  <!-- End Hero Section -->
-    <!-- ======= Testimonials Section ======= -->
-@yield('content')
+      dots.forEach((dot, i) => {
+        dot.addEventListener('click', () => {
+          current = i;
+          showSlide(current);
+        });
+      });
 
-</main><!-- End #main -->
+      setInterval(() => {
+        current = (current + 1) % slides.length;
+        showSlide(current);
+      }, 5000); // 5 detik
 
-  <!-- ======= Footer ======= -->
-  <footer id="footer" class="footer" style="background:rgb(13, 110, 253)">
-
-
-
-    <div class="container mt-4">
-      <div class="copyright">
-        &copy; Copyright 2023 <strong><span>Sisukma</span></strong> -  Bagian Organisasi Sekretariat Daerah
-      </div>
-      <div class="credits">
-        <!-- All the links in the footer should remain intact. -->
-        <!-- You can delete the links only if you purchased the pro version. -->
-        <!-- Licensing information: https://bootstrapmade.com/license/ -->
-        <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/impact-bootstrap-business-website-template/ -->
-        Designed by <a href="https://diskominfotik.bengkaliskab.go.id">Tim IT Diskominfotik Kab. Bengkalis</a>
-      </div>
-    </div>
-
-  </footer><!-- End Footer -->
-  <!-- End Footer -->
-
-  <a href="#" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-
-  <div id="preloader"></div>
-
-  <!-- Vendor JS Files -->
-  <script src="{{asset('back/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
-  <script src="{{asset('back/vendor/aos/aos.js')}}"></script>
-  <script src="{{asset('back/vendor/glightbox/js/glightbox.min.js')}}"></script>
-  <script src="{{asset('back/vendor/purecounter/purecounter_vanilla.js')}}"></script>
-  <script src="{{asset('back/vendor/swiper/swiper-bundle.min.js')}}"></script>
-  <script src="{{asset('back/vendor/isotope-layout/isotope.pkgd.min.js')}}"></script>
-  <script src="{{asset('back/vendor/php-email-form/validate.js')}}"></script>
-
-  <!-- Template Main JS File -->
-  <script src="{{asset('back/js/main.js')}}"></script>
-
-</body>
-
-</html>
+      showSlide(current);
+    </script>
+    </body>
+    
+    </html>

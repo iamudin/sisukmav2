@@ -3,6 +3,7 @@
 namespace Sisukma\V2\Controllers;
 
 use Illuminate\Support\Str;
+use Sisukma\V2\Contracts\IkmCounter;
 use Sisukma\V2\Models\Skpd;
 use Sisukma\V2\Models\Unit;
 use Illuminate\Http\Request;
@@ -66,8 +67,8 @@ function cetakrekap9v2(Request $request, $skpd=null){
         $tahun = request('tahun', date('Y'));
         $periode = request('periode', null);
         $jenis_periode = request('jenis_periode', 'tahun');
-        $data = $this->getRekapSurvei9($skpd, $jenis_periode, $tahun, $periode);
-        $data = $skpd ? $data : $data;
+        $data = (new IkmCounter)->getDataIkm9($skpd, null,$jenis_periode, $tahun, $periode);
+        $data = json_decode(json_encode($data));
         $pdf = Pdf::loadView($skpd ? 'sisukma::dashboard.v2.report.rekapitulasi-opd-9' : 'sisukma::dashboard.v2.report.rekapitulasi-kab-9', [
             'data' => $data,
             'jenis_periode' => $jenis_periode,
@@ -77,9 +78,7 @@ function cetakrekap9v2(Request $request, $skpd=null){
         ])->setOrientation('landscape');
 
         // 🔹 Download file
-        return response()->streamDownload(
-            fn() => print ($pdf->output()),
-            'rekap-data-9-unsur-' . Str::slug($nama_skpd . ' ' . getNamaPeriode($jenis_periode, $periode, $tahun)) . '.pdf'
+        return $pdf->stream('rekap-data-9-unsur-' . Str::slug($nama_skpd . ' ' . getNamaPeriode($jenis_periode, $periode, $tahun)) . '.pdf'
         );
 }
     function cetakrekapv2(Request $request, $skpd = null)
@@ -132,8 +131,8 @@ function cetakrekap9v2(Request $request, $skpd=null){
             $tahun = request('tahun', date('Y'));
             $periode = request('periode', null);
             $jenis_periode = request('jenis_periode', 'tahun');
-            $data = $this->getRekapOlahan9($skpd, $jenis_periode, $tahun, $periode);
-            $data = !$skpd ? json_decode($data) : $data;
+            $data = (new IkmCounter)->getDataIkm9($skpd, null,$jenis_periode, $tahun, $periode);
+            $data = !$skpd ? json_decode($data) : json_decode(json_encode($data));
             $pdf = Pdf::loadView('sisukma::dashboard.v2.report.pengolahan-data-opd-9', [
                 'data' => $data,
                 'jenis_periode' => $jenis_periode,
@@ -143,10 +142,7 @@ function cetakrekap9v2(Request $request, $skpd=null){
             ])->setOrientation('landscape');
 
             // 🔹 Download file
-            return response()->streamDownload(
-                fn() => print ($pdf->output()),
-                'olahan-data-' . Str::slug($nama_skpd . ' ' . getNamaPeriode($jenis_periode, $periode, $tahun)) . '.pdf'
-            );
+            return $pdf->stream('olahan-data-' . Str::slug($nama_skpd . ' ' . getNamaPeriode($jenis_periode, $periode, $tahun)) . '.pdf');
         }
     function getDataSurvei($periode, $tahun = null, $bulan = null)
     {
@@ -185,6 +181,14 @@ function cetakrekap9v2(Request $request, $skpd=null){
             return json_decode(json_encode(collect(getDataUnsur($skpd, null, $periode, $tahun, $bulan))));
         });
     }
+
+    function statsresp(Request $request){
+    
+        $view = view('sisukma::dashboard.v2.statsresp',[
+            'data'=>json_decode(base64_decode($request->data)) ?? []
+        ])->render();
+        return response($view);
+    }
     public function indexv2(Request $request){
     if(!Cache::has('unsur_16')){
             abort('404');
@@ -192,14 +196,33 @@ function cetakrekap9v2(Request $request, $skpd=null){
     $tahun = request('tahun',date('Y'));
     $periode = request('periode',null);
     $jenis_periode = request('jenis_periode','tahun');
+        $cacheKey = "data_survei_kab_{$jenis_periode}_{$tahun}_{$periode}";
+
         $nama_periode = getNamaPeriode($jenis_periode, $periode, $tahun);
         if ($request->user()->isAdmin()) {
-            $data = $this->getDataSurvei($jenis_periode, $tahun, $periode);
+                 if($request->isMethod('post')){
+            if (!Cache::has($cacheKey)) {
+                $baru = true;
+            }
+               Cache::remember($cacheKey, now()->addMinutes(30), function () use ($jenis_periode, $tahun, $periode) {
+                    return collect(json_decode(json_encode((new IkmCounter)->getStatistik9(null, null, $jenis_periode, $tahun, $periode))));
+                });
+               if(Cache::has($cacheKey)){
+                if(isset($baru)){
+                    return response()->json(['msg' => 'new']);
+
+                }
+                return response()->json(['msg' => 'old']);
+            }
+
+            // // 🔹 Gunakan Cache::remember untuk menyimpan hasil query selama 30 menit
+          
+    }
         
-            return view('sisukma::dashboard.v2.admin',compact('data','nama_periode'));
+            return view('sisukma::dashboard.v2.admin', ['periode' => getNamaPeriode($jenis_periode, $periode, $tahun), 'data' => Cache::get($cacheKey) ?? []]);
         } else {
             $data = json_decode(json_encode(getStatistik(auth()->user()->skpd->id,null,$jenis_periode, $tahun, $periode)));
-            $data9 = json_decode(json_encode(getStatistik9(auth()->user()->skpd->id,null,$jenis_periode, $tahun, $periode)));
+            $data9 = json_decode(json_encode((new IkmCounter)->getStatistik9(auth()->user()->skpd->id,null,$jenis_periode, $tahun, $periode)));
             return view('sisukma::dashboard.v2.skpd',compact('data','nama_periode','data9'));
         }
     }
