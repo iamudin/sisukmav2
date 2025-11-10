@@ -220,7 +220,7 @@ function cetakrekap9v2(Request $request, $skpd=null){
           
     }
         
-            return view('sisukma::dashboard.v2.admin', ['periode' => getNamaPeriode($jenis_periode, $periode, $tahun), 'data' => Cache::get($cacheKey) ?? []]);
+            return view('sisukma::dashboard.v2.admin', ['periode' => $nama_periode, 'data' => Cache::get($cacheKey) ?? []]);
         } else {
             $data = json_decode(json_encode(getStatistik(auth()->user()->skpd->id,null,$jenis_periode, $tahun, $periode)));
             $data9 = json_decode(json_encode((new IkmCounter)->getStatistik9(auth()->user()->skpd->id,null,$jenis_periode, $tahun, $periode)));

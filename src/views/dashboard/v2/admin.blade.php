@@ -2,7 +2,7 @@
 @section('content')
     <div class="container-fluid px-4">
         <h3 class="mt-4"><i class="fas fa-tachometer-alt"></i> Dashboard</h3>
-        <p style="font-size:30px;">Periode <b class="periode-title">{{ $nama_periode ?? date('Y')}}</b> <button
+        <p style="font-size:30px;">Periode <b class="periode-title">{{ $periode ?? date('Y')}}</b> <button
                 onclick="$('.periode').modal('show')" class="btn btn-sm btn-danger float-end mt-2"> <i
                     class="fa fa-edit"></i> Ganti Periode</button></p>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
