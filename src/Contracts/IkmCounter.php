@@ -15,7 +15,11 @@ class   IkmCounter {
                 'layanans.nama_layanan as nama_layanan',
                 'skpds.nama_skpd as nama_skpd',
                 'layanans.id as id_layanan'
-            );
+            )
+            ->whereHas('layanan.skpd.periode_aktif', function ($q)use($tahun) {
+                $q->where('tahun', $tahun ?? date('Y'));
+            });
+
 
         if ($skpd) {
             $query->where('skpds.id', $skpd);
@@ -169,10 +173,14 @@ class   IkmCounter {
             ->select(
                 'respons.*',
                 'layanans.nama_layanan as nama_layanan',
-                'layanans.id as id_layanan',
+                'skpds.nama_skpd as nama_skpd',
                 'skpds.id as skpd_id',
-                'skpds.nama_skpd as nama_skpd'
-            );
+                'layanans.id as id_layanan'
+            )
+            ->whereHas('layanan.skpd.periode_aktif', function ($q)use($tahun) {
+                $q->where('tahun', $tahun ?? date('Y'));
+            });
+
 
         if ($skpd)
             $query->where('skpds.id', $skpd);
