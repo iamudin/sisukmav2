@@ -29,8 +29,8 @@
     <div id="mobile-menu" class="hidden md:hidden flex flex-col space-y-2 px-4 pb-4 bg-blue-700">
       <a href="/" class="text-white hover:text-yellow-200 transition">Beranda</a>
       <a href="/" class="text-white hover:text-yellow-200 transition">Statistik</a>
-      <a href="gallery" class="text-white hover:text-yellow-200 transition">Gallery</a>
-      <a href="login" class="text-white font-semibold hover:text-yellow-200 transition">Login</a>
+      <a href="/gallery" class="text-white hover:text-yellow-200 transition">Gallery</a>
+      <a href="/login" class="text-white font-semibold hover:text-yellow-200 transition">Login</a>
     </div>
   </header>
   @yield('content')
