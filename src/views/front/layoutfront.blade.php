@@ -15,10 +15,10 @@
     <div class="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
       <h1 class="text-xl font-bold text-white tracking-widest">S I S U K M A</h1>
       <nav class="hidden md:flex space-x-6">
-        <a href="#" class="text-white hover:text-yellow-200 transition">Beranda</a>
-        <a href="#statistik" class="text-white hover:text-yellow-200 transition">Statistik</a>
-        <a href="#gallery" class="text-white hover:text-yellow-200 transition">Gallery</a>
-        <a href="#login" class="text-white font-semibold hover:text-yellow-200 transition">Login</a>
+        <a href="/" class="text-white hover:text-yellow-200 transition">Beranda</a>
+        <a href="/" class="text-white hover:text-yellow-200 transition">Statistik</a>
+        <a href="/gallery" class="text-white hover:text-yellow-200 transition">Gallery</a>
+        <a href="/login" class="text-white font-semibold hover:text-yellow-200 transition">Login</a>
       </nav>
       <button id="menu-btn" class="md:hidden text-white focus:outline-none">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
