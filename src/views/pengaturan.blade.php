@@ -9,7 +9,7 @@
                     @csrf
                     <div class="form-group">
                         <label for="">Pemberitahuan</label><br>
-                       <textarea name="pemberitahuan" class="form-control" id=""></textarea>
+                       <textarea name="pemberitahuan" class="form-control" id="">{{ Cache::get('pemberitahuan') ?? null }}</textarea>
                     </div>
                     <div class="form-group">
                         <label for="">Form Survei</label><br>
