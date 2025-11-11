@@ -824,6 +824,21 @@ public function destroyDateResponden(Request $request, Layanan $layanan){
                     Cache::forget('unsur_16');
                 }
             }
+             if ($request->form_survei) {
+                if ($request->form_survei == 'aktif') {
+                    Cache::put('form_survei', 'aktif');
+                } else {
+                    Cache::put('form_survei', 'nonaktif');
+                }
+            }
+               if ($p = $request->pemberitahuan) {
+                if(strlen($p)>0){
+                    Cache::put('pemberitahuan', $p);
+
+                }else{
+                    Cache::forget('pemberitahuan');
+                }
+            }
             if($id=$request->layanan_ujicoba){
                 Cache::put('layanan_ujicoba', $id);
             }

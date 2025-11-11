@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\View;
 use Sisukma\V2\Contracts\IkmManager;
 use Illuminate\Support\Facades\Cache;
 use Sisukma\V2\Models\Gallery;
+use Sisukma\V2\Contracts\Rekap\Tahun;
 
 class WebController extends Controller
 {
@@ -17,7 +18,8 @@ public function index(Request $request){
         $periode = request('periode', null);
         $tahun = request('tahun', date('Y'));
         $cacheKey = "data_survei_kab_{$jenis_periode}_{$tahun}_{$periode}";
-      
+
+        // return (new Tahun)->getRekap9(318, null, $jenis_periode, $tahun, $periode);
         if($request->isMethod('post')){
             if (!Cache::has($cacheKey)) {
                 $baru = true;
@@ -50,9 +52,13 @@ function detail_ikm_kabupaten(){
 }
 public function survei(Request $request,$skpd,$layanan=null){
 
+    $status_form = Cache::has('form_survei') ? Cache::get('form_survei') : null;
     $skpd = Skpd::with('layanans')->findOrFail(base64_decode($skpd));
 
     if(!empty($layanan) &&  $data  = $skpd->layanans->where('id',base64_decode($layanan))->first()){
+        if(!$status_form && $status_form=='nonaktif'){
+            return redirect('survei/'.base64_encode($skpd->id))->with('warning','Survei Layanan saat ini ditutup');
+        }
         if($skpd->dibatasi=='Y' && !checkwaktu(now())){
               return redirect('survei/'.base64_encode($skpd->id))->with('warning','Survei Layanan tidak bisa dilakukan karena diluar jam kerja');
           }
