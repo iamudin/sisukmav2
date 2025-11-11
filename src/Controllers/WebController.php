@@ -56,7 +56,7 @@ public function survei(Request $request,$skpd,$layanan=null){
     $skpd = Skpd::with('layanans')->findOrFail(base64_decode($skpd));
 
     if(!empty($layanan) &&  $data  = $skpd->layanans->where('id',base64_decode($layanan))->first()){
-        if(!$status_form && $status_form=='nonaktif'){
+        if($status_form && $status_form=='nonaktif'){
             return redirect('survei/'.base64_encode($skpd->id))->with('warning','Survei Layanan saat ini ditutup');
         }
         if($skpd->dibatasi=='Y' && !checkwaktu(now())){
