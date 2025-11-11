@@ -832,7 +832,7 @@ public function destroyDateResponden(Request $request, Layanan $layanan){
                 }
             }
                if ($p = $request->pemberitahuan) {
-                if(strlen($p)>0){
+                if(strlen($p)>1){
                     Cache::put('pemberitahuan', $p);
 
                 }else{
