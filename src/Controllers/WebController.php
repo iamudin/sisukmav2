@@ -19,7 +19,7 @@ public function index(Request $request){
         $tahun = request('tahun', date('Y'));
         $cacheKey = "data_survei_kab_{$jenis_periode}_{$tahun}_{$periode}";
 
-        // return (new Tahun)->getRekap9(318, null, $jenis_periode, $tahun, $periode);
+     
         if($request->isMethod('post')){
             if (!Cache::has($cacheKey)) {
                 $baru = true;

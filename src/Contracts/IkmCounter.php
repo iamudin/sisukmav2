@@ -5,6 +5,9 @@ use Sisukma\V2\Models\Respon;
 use Illuminate\Support\Facades\DB;
 
 class   IkmCounter {
+
+
+
     function getDataIKM9($skpd = null, $id_layanan = null, $periode = 'tahun', $tahun = null, $bulan = null)
     {
         $query = Respon::query()
@@ -162,9 +165,6 @@ class   IkmCounter {
             'data_responden' => $dataRespondenGabungan,
         ];
     }
-
-
-
     function getStatistik9($skpd = null, $id_layanan = null, $periode = 'tahun', $tahun = null, $bulan = null)
     {
         $query = Respon::query()
@@ -228,9 +228,7 @@ class   IkmCounter {
 
         return $hasil;
     }
-
-
-     function hitungStatistikPerKumpulanGabungan9($records, $skpdId = null, $namaSkpd = null) 
+    function hitungStatistikPerKumpulanGabungan9($records, $skpdId = null, $namaSkpd = null) 
     {
         $groupedByLayanan = $records->groupBy('id_layanan');
 
@@ -548,9 +546,7 @@ class   IkmCounter {
             'statistik_responden' => $statistik,
         ];
     }
-
-
-    function getDataUnsur($skpd = null, $id_layanan = null, $periode = 'tahun', $tahun = null, $bulan = null)
+   /* function getDataUnsur($skpd = null, $id_layanan = null, $periode = 'tahun', $tahun = null, $bulan = null)
     {
         $query = Respon::query()
             ->join('layanans', 'respons.layanan_id', '=', 'layanans.id')
@@ -683,4 +679,5 @@ class   IkmCounter {
             'predikat_ikm' => $predikat_ikm,
         ];
     }
+    */
 }

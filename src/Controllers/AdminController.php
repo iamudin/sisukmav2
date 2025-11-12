@@ -3,7 +3,6 @@
 namespace Sisukma\V2\Controllers;
 
 use Illuminate\Support\Str;
-use Sisukma\V2\Contracts\IkmCounter;
 use Sisukma\V2\Models\Skpd;
 use Sisukma\V2\Models\Unit;
 use Illuminate\Http\Request;
@@ -17,9 +16,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Maatwebsite\Excel\Facades\Excel;
+use Sisukma\V2\Contracts\IkmCounter;
 use Sisukma\V2\Contracts\IkmManager;
 use Sisukma\V2\Models\KategoriUnsur;
 use Illuminate\Support\Facades\Cache;
+use Sisukma\V2\Contracts\Rekap\Tahun;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\Snappy\Facades\SnappyImage;
 use Illuminate\Validation\Rules\Password;
@@ -81,6 +82,15 @@ function cetakrekap9v2(Request $request, $skpd=null){
         // 🔹 Download file
         return $pdf->stream('rekap-data-9-unsur-' . Str::slug($nama_skpd . ' ' . getNamaPeriode($jenis_periode, $periode, $tahun)) . '.pdf'
         );
+}
+
+function rekapTahunan(){
+        $tahun = request('tahun', date('Y'));
+
+        $data = json_decode(json_encode((new Tahun)->getRekap9(null, null, 'tahun', $tahun, null)));
+        // return $data;
+        $pdf = PDF::loadView('sisukma::dashboard.v2.rekapitulasi.tahun', ['data' => $data])->setOption('page-width', '215')->setOption('page-height', '330')->setOrientation('landscape');
+        return $pdf->stream('rekap-tahun-kabupaten-' . $tahun . '.pdf');
 }
     function cetakrekapv2(Request $request, $skpd = null)
     {

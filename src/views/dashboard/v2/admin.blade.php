@@ -126,6 +126,12 @@
                                         Rekapitulasi IKM Kabupaten
                                     </button>
                                 </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link " id="rekaptahun-tab" data-bs-toggle="tab" data-bs-target="#rekaptahun" type="button"
+                                        role="tab">
+                                        Rekapitulasi Tahunan
+                                    </button>
+                                </li>
                             </ul>
                             <div class="tab-content mt-3" id="ikmTabsContent">
                                 <div class="tab-pane fade" id="rekapitulasi" role="tabpanel">
@@ -133,6 +139,10 @@
                                         src="{{ route('cetakrekap9v2') . '?' . request()->getQueryString() }}"
                                         frameborder="0"></iframe>
                                 </div>
+                                    <div class="tab-pane fade" id="rekaptahun" role="tabpanel">
+                                        <iframe style="width:100%;height:80vh" src="{{ route('rekaptahunan') . '?' . request()->getQueryString() }}"
+                                            frameborder="0"></iframe>
+                                    </div>
                                 <div class="tab-pane fade  show active" id="statistik" role="tabpanel">
                                     @php $opd = $main; @endphp
                                     <div class="row">
