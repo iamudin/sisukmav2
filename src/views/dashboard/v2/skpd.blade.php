@@ -171,9 +171,9 @@
                                                     <div class="tab-pane fade" id="pengolahan" role="tabpanel">
                                                         <iframe style="width:100%;height:80vh" src="{{ route('cetakolahan9v2', auth()->user()->skpd->id) . '?' . request()->getQueryString() }}" frameborder="0"></iframe>
                                                     </div>
-                                                        <div class="tab-pane fade" id="pengolahan" role="tabpanel">
+                                                        <div class="tab-pane fade" id="rekapitulasi" role="tabpanel">
                                                             <iframe style="width:100%;height:80vh"
-                                                                src="{{ route('cetakolahan9v2', auth()->user()->skpd->id) . '?' . request()->getQueryString() }}"
+                                                                src="{{ route('cetakrekap9v2', auth()->user()->skpd->id) . '?' . request()->getQueryString() }}"
                                                                 frameborder="0"></iframe>
                                                         </div>
                                                           <div class="tab-pane fade" id="nikm" role="tabpanel">
