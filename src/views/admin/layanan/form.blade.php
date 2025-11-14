@@ -35,7 +35,7 @@
               <label for="">Nama Layanan</label>
               <input class="form-control" name="nama_layanan" placeholder="Masukkan Nama Layanan" value="{{ $edit->nama_layanan ?? null }}" required>
             </div>
-            @if($edit->exists)
+            @if(1==2)
               <div class="form-group mt-4">
                <label for=""><b>Evaluasi</b></label>
                 <table class="table">
@@ -70,7 +70,7 @@
                 </div>
     <!-- Tombol untuk membuka modal -->
 
-  @if($edit->exists)
+  @if(1==2)
     <!-- Modal -->
     <div class="modal fade" id="evaluasiModal" tabindex="-1" role="dialog" aria-labelledby="evaluasiModalLabel"
       aria-hidden="true">

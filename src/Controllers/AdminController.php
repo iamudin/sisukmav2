@@ -226,15 +226,28 @@ function rekapTahunan(){
                 return response()->json(['msg' => 'old']);
             }
 
-            // // 🔹 Gunakan Cache::remember untuk menyimpan hasil query selama 30 menit
           
     }
         
             return view('sisukma::dashboard.v2.admin', ['periode' => $nama_periode, 'data' => Cache::get($cacheKey) ?? []]);
         } else {
+            $nilaiakhir = collect((new Tahun)->getRekap9(auth()->user()->skpd->id, null, 'tahun', 2025, null));
+
+            $perbaikan_unsur = nilaiTerendah($nilaiakhir['nilai_akhir_perunsur']);
+            if($request->isMethod('post')){
+               
+
+               auth()->user()->skpd->evaluasi()->updateOrCreate(['tahun'=>request('tahun',date('Y'))],[
+                'rencana_tindak_lanjut' => $request->rtl,
+                'unsur_perbaikan' => unsur(array_keys($perbaikan_unsur['detail'])[0]),
+                'persentase_tindak_lanjut_sebelumnya' => $request->tl_sebelumnya,
+               ]);
+               return back()->with('success','Rencana tindak lanjut berhasil disimpan');
+            }
+         
             $data = json_decode(json_encode(getStatistik(auth()->user()->skpd->id,null,$jenis_periode, $tahun, $periode)));
             $data9 = json_decode(json_encode((new IkmCounter)->getStatistik9(auth()->user()->skpd->id,null,$jenis_periode, $tahun, $periode)));
-            return view('sisukma::dashboard.v2.skpd',compact('data','nama_periode','data9'));
+            return view('sisukma::dashboard.v2.skpd',compact('data','nama_periode','data9','perbaikan_unsur'));
         }
     }
     public function account(Request $request){

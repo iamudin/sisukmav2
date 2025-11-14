@@ -16,7 +16,13 @@ class Skpd extends Model
     public function units(){
         return $this->hasMany(Unit::class);
     }
-
+    public function evaluasi()
+    {
+        return $this->hasMany(Evaluasi::class);
+    }
+    public function sudahEvaluasi($tahun){
+        return $this->evaluasi->where('tahun',$tahun)->first();
+    }
     public function periode_aktif(){
         return $this->hasMany(Periode::class);
     }

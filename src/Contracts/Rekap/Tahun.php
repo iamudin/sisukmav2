@@ -20,7 +20,20 @@ class Tahun
             )
             ->whereHas('layanan.skpd.periode_aktif', function ($q) use ($tahun) {
                 $q->where('tahun', $tahun ?? date('Y'));
-            });
+            })
+            ->with([
+                'layanan.skpd.evaluasi' => function ($q)use($tahun){ 
+                    // pilih hanya kolom evaluasi yang diperlukan
+                    $q->select(
+                        'id',
+                        'skpd_id',
+                        'unsur_perbaikan',
+                        'rencana_tindak_lanjut',
+                        'persentase_tindak_lanjut_sebelumnya',
+                        'tahun'
+                    )->where('tahun', $tahun ?? date('Y'));
+                }
+            ]);
 
 
         if ($skpd)
@@ -176,6 +189,7 @@ class Tahun
             'rata_perunsur' => $JumlahRataPerunsur,
             'total_perunsur' => $JumlahTotalPerunsur,
             'nilai_akhir_perunsur' => $NilaiAkhirPerUnsur,
+            'perbaikan' => $records->first()->layanan->skpd->evaluasi->first() ?? null,
             'nilai_akhir_ikm' => array_sum($nilai_akhir_ikm),
         ];
     }

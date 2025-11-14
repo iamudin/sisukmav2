@@ -2,7 +2,7 @@
 @section('content')
                     <div class="container-fluid px-4">
                         <h3 class="mt-4"><i class="fas fa-tachometer-alt"></i> Dashboard</h3>
-                       <p style="font-size:30px;">Periode <b class="periode-title">{{ $periode ?? date('Y')}}</b> <button onclick="$('.periode').modal('show')" class="btn btn-sm btn-danger float-end mt-2"> <i class="fa fa-edit"></i> Ganti Periode</button></p>
+                       <p style="font-size:30px;">Periode <b class="periode-title">{{ $nama_periode ?? date('Y')}}</b> <button onclick="$('.periode').modal('show')" class="btn btn-sm btn-danger float-end mt-2"> <i class="fa fa-edit"></i> Ganti Periode</button></p>
     <!-- Nav Tabs -->
                         @if(Cache::has('pemberitahuan'))
                             <div class="alert alert-info" style="border-left: 4px solid blue">
@@ -106,7 +106,27 @@
                                                             </div>
                                                         </div>
                                                     </div>
-
+                                            @php $evaluasi = auth()->user()->skpd->sudahEvaluasi(request('tahun', date('Y'))) @endphp
+                                            @if($perbaikan_unsur)
+                                                <div class="col-lg-12">
+                                                    <form action="" class="alert alert-warning" action="{{ URL::full() }}" method="post">
+                                                        @csrf
+                                                        <h5>Berdasarkan Hasil Perhitungan Rekapitulasi Pertahun {{ request('tahun', date('Y')) }} yang menjadi unsur perbaikan pada OPP anda : <b class="text-danger"> {{unsur(array_keys($perbaikan_unsur['detail'])[0])}}</b></h5>
+                                                       <div class="form-group">
+                                                        <label for="">Rencana Tidak Lanjut</label>
+                                                        <input type="text" class="form-control" name="rtl" placeholder="Tulis rencana tindak lanjut" value="{{ $evaluasi->rencana_tindak_lanjut ?? '' }}">
+                                                       </div>
+                                                        <div class="form-group">
+                                                            <label for="">% Tindak Lanjut Periode Sebelumbnya</label>
+                                                            <input type="text" class="form-control" name="tl_sebelumnya" placeholder="Masukkan persentase " value="{{ $evaluasi->persentase_tindak_lanjut_sebelumnya ?? '' }}">
+                                                            <small class="text-danger">*) Diisi berdasarkan laporan tidak lanjut periode sebelumnya</small>
+                                                        </div>
+                                                        <div class="form-group mt-3">
+                                                            <button class="btn btn-sm btn-primary">Simpan</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            @endif
                                             <div class="col-lg-12">
                                                 <!-- Nav Tabs -->
                                                 <ul class="nav nav-tabs" id="ikmTabs" role="tablist">
@@ -117,6 +137,11 @@
                                                             Statistik Responden
                                                         </button>
                                                     </li>
+                                                            <li class="nav-item" role="presentation">
+                                                            <button class="nav-link " id="nikm-tab" data-bs-toggle="tab" data-bs-target="#nikm" type="button" role="tab">
+                                                                Nilai IKM
+                                                            </button>
+                                                        </li>
                                                         <li class="nav-item" role="presentation">
                                                             <button class="nav-link " id="layanan-tab" data-bs-toggle="tab" data-bs-target="#layanan" type="button" role="tab">
                                                                 IKM Perlayanan
@@ -146,8 +171,13 @@
                                                     <div class="tab-pane fade" id="pengolahan" role="tabpanel">
                                                         <iframe style="width:100%;height:80vh" src="{{ route('cetakolahan9v2', auth()->user()->skpd->id) . '?' . request()->getQueryString() }}" frameborder="0"></iframe>
                                                     </div>
-                                                          <div class="tab-pane fade" id="rekapitulasi" role="tabpanel">
-                                                        <iframe style="width:100%;height:80vh" src="{{ route('cetakrekap9v2', auth()->user()->skpd->id) . '?' . request()->getQueryString() }}" frameborder="0"></iframe>
+                                                        <div class="tab-pane fade" id="pengolahan" role="tabpanel">
+                                                            <iframe style="width:100%;height:80vh"
+                                                                src="{{ route('cetakolahan9v2', auth()->user()->skpd->id) . '?' . request()->getQueryString() }}"
+                                                                frameborder="0"></iframe>
+                                                        </div>
+                                                          <div class="tab-pane fade" id="nikm" role="tabpanel">
+                                                        <iframe style="width:100%;height:80vh" src="{{ route('ikm.skpd', auth()->user()->skpd->id) . '?' . request()->getQueryString() }}" frameborder="0"></iframe>
                                                     </div>
                                                     <div class="tab-pane fade" id="saran" role="tabpanel">
                                                         <div class="table-responsive">

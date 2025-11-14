@@ -1,4 +1,50 @@
 <?php
+function unsur($key) {
+    $mapping = [
+        'u1' => 'Persyaratan',
+        'u2' => 'Prosedur',
+        'u3' => 'Waktu',
+        'u4' => 'Biaya',
+        'u5' => 'Produk',
+        'u6' => 'Kompetensi',
+        'u7' => 'Perilaku',
+        'u8' => 'Aduan',
+        'u9' => 'Sarpras',
+    ];
+
+    return $mapping[$key] ?? $key; // jika tidak ditemukan, kembalikan key aslinya
+}
+if (!function_exists('nilaiTerendah')) {
+function nilaiTerendah($data) {
+    // Ambil hanya nilai u1 - u9
+    $nilai = [];
+    for ($i = 1; $i <= 9; $i++) {
+        $key = 'u' . $i;
+        if (isset($data[$key])) {
+            $nilai[$key] = $data[$key];
+        }
+    }
+
+    // Cari nilai minimum
+    $min = min($nilai);
+
+    // Cari semua kunci (u1-u9) yang nilainya sama dengan minimum
+    $terendah = [];
+    foreach ($nilai as $key => $val) {
+        if ($val == $min) {
+            $terendah[$key] = $val;
+        }
+    }
+
+    return [
+        'nilai_terendah' => $min,
+        'kolom_terendah' => array_keys($terendah),
+        'detail' => $terendah
+    ];
+}
+}
+
+
 if (!function_exists('sample')) {
     function get_sample(int $populasi){
         $num1 = 3.841 * $populasi * 0.25;

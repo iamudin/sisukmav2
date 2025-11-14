@@ -106,9 +106,9 @@ $avgIKM = round($rows->avg('nilai_akhir_ikm'), 2);
                     <td>{{ round($row->nilai_akhir_ikm, 2) }}</td>
                     <td>{{ $row->sample_diambil }}</td>
                     <td>Online</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>{{ $row->perbaikan?->unsur_perbaikan ?? null}}</td>
+                    <td>{{ $row->perbaikan?->rencana_tindak_lanjut ?? null}}</td>
+                    <td>{{ $row->perbaikan?->persentase_tindak_lanjut_sebelumnya ?? null}}</td>
                 </tr>
 
                 @foreach($row->hasil_perlayanan as $r)

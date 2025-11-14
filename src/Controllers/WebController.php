@@ -10,7 +10,7 @@ use Sisukma\V2\Contracts\IkmManager;
 use Illuminate\Support\Facades\Cache;
 use Sisukma\V2\Models\Gallery;
 use Sisukma\V2\Contracts\Rekap\Tahun;
-
+use PDF;
 class WebController extends Controller
 {
 public function index(Request $request){
@@ -42,9 +42,16 @@ public function index(Request $request){
     return view('sisukma::front.index',['namaperiode'=>getNamaPeriode($jenis_periode,$periode,$tahun),'data'=>Cache::get($cacheKey) ?? []]);
 }
 
-function dataikm(Request $request){
-    $data = (new IkmManager)->getSurveyRekap($request);
-        return $data;
+function dataikm(Request $request,Skpd $skpd){
+        $skpd = $skpd->id;
+        $jenis_periode = request('jenis_periode', 'tahun');
+        $jperiode = request('periode', null);
+        $tahun = request('tahun', date('Y'));
+        $periode = str(getNamaPeriode($jenis_periode,$jperiode,$tahun))->upper();
+
+    $row = json_decode(json_encode((new IkmCounter)->getStatistik9($skpd, null, $jenis_periode, $tahun, $jperiode)));
+    $pdf = PDF::loadview('sisukma::report.ikm_skpd',compact('row','periode'));
+    return $pdf->stream('ikm_skpd.pdf');
 }
 
 function detail_ikm_kabupaten(){

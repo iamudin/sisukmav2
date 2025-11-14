@@ -1,85 +1,108 @@
-@if(isset($ikm))
-<!doctype html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<table style="width:100%; border:4px solid #000; border-collapse:collapse; background:#fff;">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  </head>
-  <body>
-@endif
-<div class="row"  @isset($fs) style="font-size:small" @endisset >
-    <div class="col-lg-12 text-center">
-        <h4>INDEKS KEPUASAN MASYARAKAT (IKM)<br>{{ str($skpd)->upper() }}<br>
-            KABUPATEN BENGKALIS<br>PERIODE {{ str($periode)->upper() }}</h4>
-    </div>
-    <div class="col-lg-6 col-6" style="float:left">
-        <center>
-            <h3 style="border:4px solid #000;padding:10px">NILAI IKM</h3>
-        </center>
-        <div style="border:4px solid #000;min-height:400px;text-align:center">
-            <h1 style="font-size :100px;margin-top:20%;">{{ round($data->ikm, 2) }}</h1>
-            <p class="text-center">
-            <h5>Mutu Pelayanan </h5>
-            <h1>{{ prediket(round($data->ikm, 2), true) }}</h1> ({{ prediket(round($data->ikm, 2)) }})
+    <!-- Baris Judul SKPD -->
+    <tr>
+        <td colspan="2"
+            style="text-align:center; padding:15px; border:1px solid #000;border-bottom:4px solid #000; background-color:#f3f4f6;">
+            <h3 style="color:#161719; font-size:20px; margin:0; font-weight:bold;">
+                INDEKS KEPUASAN MASYARAKAT (IKM)
+                <br>
+                {{str($row->nama_skpd)->upper()}}
+                <br>
+                KABUPATEN BENGKALIS
+                <br>
+                PERIODE {{ $periode }}
+            </h3>
+        </td>
+    </tr>
+   
+
+    <tr>
+        <!-- Kolom Kiri: Nilai IKM -->
+        <td style="width:50%; vertical-align:top; border:1px solid #000; text-align:center; padding:20px;border-right:4px solid #000;vertical-align:middle;">
+            <p style="color:#555; font-weight:600; margin:0;">Nilai IKM</p>
+            <p style="font-size:100px; font-weight:bold; color:#000000; margin:10px 0;">
+                {{ round($row->nilai_konversi, 2) }}
             </p>
-        </div>
-    </div>
-    <div class="col-lg-6 col-6" style="float:right">
-        <center>
-            <h3 style="border:4px solid #000;padding:10px">RESPONDEN</h3>
-        </center>
-        <div style="border:4px solid #000;min-height:400px;vertical-align:center;padding:30px">
-            <table style="width:100%">
-                <tr>
-                    <td width="40%">JUMLAH <span style="float:right">:</span></td>
-                    <td colspan="3"> {{ $data->jumlah }} Orang</td>
-                </tr>
-                <tr>
-                    <td>JUMLAH<span style="float:right">:</span></td>
-                    <td colspan="3">L = {{ $data->l }} Orang / P = {{ $data->p }} Orang</td>
-                </tr>
 
-                @foreach (['Non Pendidikan', 'SD', 'SMP', 'SMA', 'DIII', 'S1', 'S2', 'S3'] as $k => $r)
+            <p style="color:#333; font-weight:600; margin-top:10px;">Mutu Pelayanan</p>
+            <p style="color:#000000; font-weight:bold; font-size:22px; margin:5px 0;">
+                {{ $row->predikat_mutu_layanan }}
+            </p>
+
+            <p style="color:#666; font-size:14px; margin-top:5px;">
+                ({{ prediket($row->nilai_konversi) }})
+            </p>
+        </td>
+
+        <!-- Kolom Kanan: Statistik -->
+        <td style="width:50%; vertical-align:top; border:1px solid #000; padding:15px;">
+<center><span style="font-size: 24px">Responden</span></center>
+<br>
+            <table style="width:100%; font-size:14px; border-collapse:collapse;">
+
+                <tbody>
+
                     <tr>
-                        <td>
-                            @if ($k == 0)
-                                PENDIDIKAN
-                                <span style="float:right">:</span>
-                            @endif
+                        <td style="padding:4px; font-weight:600;">Jumlah </td>
+                        <td style="padding:4px;">:
+                            <strong>{{ $row->sample_diambil }} Orang</strong>
                         </td>
-                        <td>{{ $r }} </td>
-                        <td>= </td>
-                        @php $pd = Str::lower(str_replace(' ','_',$r));@endphp
-                        <td> {{ $data->pendidikan->$pd ?? 0 }} <span style="float:right">Orang</span></td>
                     </tr>
-                @endforeach
 
-                <tr>
+                    <tr>
+                        <td style="padding:4px; font-weight:600;">Jenis Kelamin</td>
+                        <td style="padding:4px;">:
+                            L = {{ $row->statistik_responden->jenis_kelamin->L->jumlah ?? 0 }}
+                            /
+                            P = {{ $row->statistik_responden->jenis_kelamin->P->jumlah ?? 0 }}
+                        </td>
+                    </tr>
 
-                    <td colspan="4" style="padding-top:20px" align="center">
-                        Periode Survei = {{ str($periode)->upper() }}
-                    </td>
-                </tr>
+                    <!-- Pendidikan -->
+                    <tr>
+                        <td colspan="2" style="padding-top:10px; font-weight:600;">Pendidikan</td>
+                    </tr>
+
+                    @foreach($row->statistik_responden->pendidikan as $key => $pd)
+                        <tr>
+                            <td style="padding:4px;">{{ $key }}</td>
+                            <td style="padding:4px;">: {{ $pd->jumlah }} Orang</td>
+                        </tr>
+                    @endforeach
+
+                    <!-- Non Disabilitas -->
+                    <tr>
+                        <td style="padding-top:10px; font-weight:600;">Non Disabilitas</td>
+                        <td style="padding-top:10px;">:
+                            <strong>{{ $row->statistik_responden->kategori_pengguna->non_disabilitas->jumlah ?? 0 }}
+                                Orang</strong>
+                        </td>
+                    </tr>
+
+                    <!-- Disabilitas -->
+                    <tr>
+                        <td colspan="2" style="padding-top:10px; font-weight:600;">Disabilitas</td>
+                    </tr>
+
+                    @foreach($row->statistik_responden->kategori_pengguna->disabilitas as $d)
+                        <tr>
+                            <td style="padding:4px;">{{ $d->label }}</td>
+                            <td style="padding:4px;">: {{ $d->jumlah }} Orang</td>
+                        </tr>
+                    @endforeach
+
+                </tbody>
             </table>
-        </div>
-    </div>
-    <div class="col-lg-12 text-center mt-3">
 
-        <h5>TERIMA KASIH ATAS PENILAIAN TELAH ANDA BERIKAN<br>
-            MASUKAN ANDA SANGAT BERMANFAAT UNTUK KEMAJUAN UNIT KAMI AGAR TERUS MEMPERBAIKI DAN MENINGKATKAN
-            KUALITAS PELAYANAN BAGI MASYARAKAT</h5>
-    </div>
-</div>
-@if(isset($ikm))
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-  </body>
-</html>
-@endif
+        </td>
+
+    </tr>
+<tr>
+    <td colspan="2" align="center" style="border-top:4px solid #000;padding:20px;vertical-align:middle">
+        <h3>TERIMA KASIH ATAS PENILAIAN YANG TELAH ANDA BERIKAN
+        MASUKAN ANDA SANGAT BERMANFAAT UNTUK KEMAJUAN UNIT KAMI AGAR TERUS<br>
+        MEMPERBAIKI DAN MENINGKATKAN KUALITAS PELAYANAN BAGI MASYARAKAT</h3>
+    </td>
+</tr>
+</table>
