@@ -231,7 +231,7 @@ function rekapTahunan(){
         
             return view('sisukma::dashboard.v2.admin', ['periode' => $nama_periode, 'data' => Cache::get($cacheKey) ?? []]);
         } else {
-            $nilaiakhir = collect((new Tahun)->getRekap9(auth()->user()->skpd->id, null, 'tahun', 2025, null));
+            $nilaiakhir = collect((new Tahun)->getRekap9(auth()->user()->skpd->id, null, 'tahun', $tahun, null));
 
             $perbaikan_unsur = nilaiTerendah($nilaiakhir['nilai_akhir_perunsur']);
             if($request->isMethod('post')){
