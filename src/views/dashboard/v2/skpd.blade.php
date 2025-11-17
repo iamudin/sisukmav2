@@ -107,18 +107,21 @@
                                                         </div>
                                                     </div>
                                             @php $evaluasi = auth()->user()->skpd->sudahEvaluasi(request('tahun', date('Y'))) @endphp
-                                            @if($perbaikan_unsur)
+                                            @if(1==2)
                                                 <div class="col-lg-12">
                                                     <form action="" class="alert alert-warning" action="{{ URL::full() }}" method="post">
                                                         @csrf
-                                                        <h5>Berdasarkan Hasil Perhitungan Rekapitulasi Pertahun {{ request('tahun', date('Y')) }} yang menjadi unsur perbaikan pada OPP anda : <b class="text-danger"> {{unsur(array_keys($perbaikan_unsur['detail'])[0])}}</b></h5>
+                                                        <h5>Berdasarkan Hasil Perhitungan Rekapitulasi Pertahun {{ request('tahun', date('Y')) }} yang menjadi unsur perbaikan pada OPP anda : <b class="text-danger"> 
+                                                        {{ unsur(array_keys($perbaikan_unsur['detail'])[0]) }} <small class="text-primary">dan</small> {{ unsur(array_keys($perbaikan_unsur['detail'])[1]) }}
+                                                        </b></h5>
                                                        <div class="form-group">
-                                                        <label for="">Rencana Tidak Lanjut</label>
-                                                        <input type="text" class="form-control" name="rtl" placeholder="Tulis rencana tindak lanjut" value="{{ $evaluasi->rencana_tindak_lanjut ?? '' }}">
+                                                        <label for="">Rencana Tidak Lanjut untuk {{ unsur(array_keys($perbaikan_unsur['detail'])[0]) }} dan 
+                                                        {{ unsur(array_keys($perbaikan_unsur['detail'])[1]) }}</label>
+                                                        <input type="text" class="form-control" name="rtl" placeholder="Tulis rencana tindak lanjut. pisahkan dengan tanda koma (,) contoh: Evaluasi, Surat peringatan" value="{{ $evaluasi->rencana_tindak_lanjut ?? '' }}">
                                                        </div>
                                                         <div class="form-group">
                                                             <label for="">% Tindak Lanjut Periode Sebelumbnya</label>
-                                                            <input type="text" class="form-control" name="tl_sebelumnya" placeholder="Masukkan persentase " value="{{ $evaluasi->persentase_tindak_lanjut_sebelumnya ?? '' }}">
+                                                            <input type="text" class="form-control" name="tl_sebelumnya" placeholder="Masukkan persentase tindak lanjiut periode sebelumnuya. Pisahkan dengan tanda (,) koma. misal : 20%, 29% " value="{{ $evaluasi->persentase_tindak_lanjut_sebelumnya ?? '' }}">
                                                             <small class="text-danger">*) Diisi berdasarkan laporan tidak lanjut periode sebelumnya</small>
                                                         </div>
                                                         <div class="form-group mt-3">

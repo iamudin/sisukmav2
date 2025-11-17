@@ -239,7 +239,7 @@ function rekapTahunan(){
 
                auth()->user()->skpd->evaluasi()->updateOrCreate(['tahun'=>request('tahun',date('Y'))],[
                 'rencana_tindak_lanjut' => $request->rtl,
-                'unsur_perbaikan' => unsur(array_keys($perbaikan_unsur['detail'])[0]),
+                'unsur_perbaikan' => unsur(array_keys($perbaikan_unsur['detail'])[0]).', '. unsur(array_keys($perbaikan_unsur['detail'])[1]),
                 'persentase_tindak_lanjut_sebelumnya' => $request->tl_sebelumnya,
                ]);
                return back()->with('success','Rencana tindak lanjut berhasil disimpan');

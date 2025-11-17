@@ -15,33 +15,74 @@ function unsur($key) {
     return $mapping[$key] ?? $key; // jika tidak ditemukan, kembalikan key aslinya
 }
 if (!function_exists('nilaiTerendah')) {
-function nilaiTerendah($data) {
-    // Ambil hanya nilai u1 - u9
+// function nilaiTerendah($data) {
+//     // Ambil hanya nilai u1 - u9
+//     $nilai = [];
+//     for ($i = 1; $i <= 9; $i++) {
+//         $key = 'u' . $i;
+//         if (isset($data[$key])) {
+//             $nilai[$key] = $data[$key];
+//         }
+//     }
+
+//     // Cari nilai minimum
+//     $min = min($nilai);
+
+//     // Cari semua kunci (u1-u9) yang nilainya sama dengan minimum
+//     $terendah = [];
+//     foreach ($nilai as $key => $val) {
+//         if ($val == $min) {
+//             $terendah[$key] = $val;
+//         }
+//     }
+
+//     return [
+//         'nilai_terendah' => $min,
+//         'kolom_terendah' => array_keys($terendah),
+//         'detail' => $terendah
+//     ];
+// }
+  function nilaiTerendah(array $data)
+  {
+    // Kumpulkan hanya nilai u1 - u9
     $nilai = [];
     for ($i = 1; $i <= 9; $i++) {
-        $key = 'u' . $i;
-        if (isset($data[$key])) {
-            $nilai[$key] = $data[$key];
-        }
+      $key = "u{$i}";
+      if (array_key_exists($key, $data)) {
+        $nilai[$key] = $data[$key];
+      }
     }
 
-    // Cari nilai minimum
-    $min = min($nilai);
+    if (empty($nilai)) {
+      return [
+        'dua_nilai_terendah' => [],
+        'kolom' => [],
+        'detail' => []
+      ];
+    }
 
-    // Cari semua kunci (u1-u9) yang nilainya sama dengan minimum
-    $terendah = [];
+    // Ambil nilai unik lalu sort
+    $uniqueValues = array_unique(array_values($nilai));
+    sort($uniqueValues);
+
+    // Ambil 1 atau 2 nilai terendah tergantung yang tersedia
+    $ambil = array_slice($uniqueValues, 0, 2);
+
+    // Ambil semua kolom yang nilainya termasuk 2 nilai terendah
+    $kolom = [];
     foreach ($nilai as $key => $val) {
-        if ($val == $min) {
-            $terendah[$key] = $val;
-        }
+      if (in_array($val, $ambil)) {
+        $kolom[$key] = $val;
+      }
     }
 
     return [
-        'nilai_terendah' => $min,
-        'kolom_terendah' => array_keys($terendah),
-        'detail' => $terendah
+      'dua_nilai_terendah' => $ambil,
+      'kolom' => array_keys($kolom),
+      'detail' => $kolom
     ];
-}
+  }
+
 }
 
 
