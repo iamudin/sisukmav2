@@ -233,7 +233,7 @@ function rekapTahunan(){
         } else {
             $nilaiakhir = collect((new Tahun)->getRekap9(auth()->user()->skpd->id, null, 'tahun', $tahun, null));
 
-            $perbaikan_unsur = nilaiTerendah($nilaiakhir['nilai_akhir_perunsur']);
+           /* $perbaikan_unsur = nilaiTerendah($nilaiakhir['nilai_akhir_perunsur']);
             if($request->isMethod('post')){
                
 
@@ -243,7 +243,7 @@ function rekapTahunan(){
                 'persentase_tindak_lanjut_sebelumnya' => $request->tl_sebelumnya,
                ]);
                return back()->with('success','Rencana tindak lanjut berhasil disimpan');
-            }
+            }*/
          
             $data = json_decode(json_encode(getStatistik(auth()->user()->skpd->id,null,$jenis_periode, $tahun, $periode)));
             $data9 = json_decode(json_encode((new IkmCounter)->getStatistik9(auth()->user()->skpd->id,null,$jenis_periode, $tahun, $periode)));
