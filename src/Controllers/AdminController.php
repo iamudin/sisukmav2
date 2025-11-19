@@ -233,7 +233,8 @@ function rekapTahunan(){
         } else {
             $nilaiakhir = collect((new Tahun)->getRekap9(auth()->user()->skpd->id, null, 'tahun', $tahun, null));
 
-           /* $perbaikan_unsur = nilaiTerendah($nilaiakhir['nilai_akhir_perunsur']);
+           $perbaikan_unsur = null; //nilaiTerendah($nilaiakhir['nilai_akhir_perunsur']);
+           /*
             if($request->isMethod('post')){
                
 
