@@ -301,7 +301,7 @@ class   IkmCounter {
             })->toArray();
 
             // Kategori Pengguna (Disabilitas / Non Disabilitas)
-            $nonDisabilitasCount = $sampleData->where('disabilitas', 'non_disabilitas')->count();
+            $nonDisabilitasCount = $sampleData->where('disabilitas', 'Non Disabilitas')->count();
             $disabilitasJenis = [
                 'Fisik' => $sampleData->where('jenis_disabilitas', 'Disabilitas Fisik')->count(),
                 'Mental' => $sampleData->where('jenis_disabilitas', 'Disabilitas Mental')->count(),
@@ -361,7 +361,7 @@ class   IkmCounter {
                             'jenis_kelamin' => $item->jenis_kelamin=='L' ? 'Laki-laki' : 'Perempuan',
                             'pekerjaan' => $item->pekerjaan ?? '-',
                             'usia' => $item->usia ?? '-',
-                            'disabilitas' => $item->disabilitas == 'non_disabilitas'
+                            'disabilitas' => $item->disabilitas == 'Non Disabilitas'
                                 ? 'Non Disabilitas'
                                 : ($item->jenis_disabilitas ?? '-'),
                             'saran' => $item->saran ?? '-',
@@ -477,7 +477,7 @@ class   IkmCounter {
         })->toArray();
 
         // Hitung jumlah Non Disabilitas
-        $nonDisabilitasCount = $allSampled->where('disabilitas', 'non_disabilitas')->count();
+        $nonDisabilitasCount = $allSampled->where('disabilitas', 'Non Disabilitas')->count();
 
         // Hitung per jenis disabilitas
         $disabilitasJenis = [
