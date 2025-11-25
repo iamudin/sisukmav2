@@ -136,19 +136,36 @@ function rekapTahunan(){
         );
     }
 
-        function cetakolahan9v2(Request $request, $skpd = null)
+        function cetakolahan9v2(Request $request, $skpd = null,$layanan=null)
         {
             $nama_skpd = nama_skpd($skpd);
             $tahun = request('tahun', date('Y'));
             $periode = request('periode', null);
             $jenis_periode = request('jenis_periode', 'tahun');
-            $data = (new IkmCounter)->getDataIkm9($skpd, null,$jenis_periode, $tahun, $periode);
+
+            $data = (new IkmCounter)->getDataIkm9($skpd, $layanan,$jenis_periode, $tahun, $periode);
             $data = !$skpd ? json_decode($data) : json_decode(json_encode($data));
+            $layanan = $layanan ? Layanan::find($layanan)?->nama_layanan : null;
+            if($request->as_xls){
+
+                return response()
+                    ->view('sisukma::dashboard.v2.report.pengolahan-data-opd-9', [
+                    'data' => $data,
+                    'jenis_periode' => $jenis_periode,
+                    'tahun' => $tahun,
+                    'periode' => $periode,
+                    'layanan' => $layanan,
+                    'nama_skpd' => $nama_skpd,
+                ])
+                    ->header('Content-Type', 'application/vnd.ms-excel')
+                    ->header('Content-Disposition', 'attachment; filename="'.$layanan.'.xls"');
+            }
             $pdf = Pdf::loadView('sisukma::dashboard.v2.report.pengolahan-data-opd-9', [
                 'data' => $data,
                 'jenis_periode' => $jenis_periode,
                 'tahun' => $tahun,
                 'periode' => $periode,
+                'layanan'=>$layanan ,
                 'nama_skpd' => $nama_skpd,
             ])->setOrientation('landscape');
 

@@ -3,6 +3,9 @@
 
 @if(isset($nama_skpd))
 <h4>Unit Pelayanan : {{ $nama_skpd }}<br>Periode : {{ getNamaPeriode($jenis_periode, $periode, $tahun) }}</h4>@endif
+@if($layanan)
+<h4>{{ $layanan }}</h4>
+@endif
     
 </center>
 

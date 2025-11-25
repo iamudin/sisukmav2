@@ -297,11 +297,68 @@
                                                     </td>
                                                     <td>
                                                         <div class="btn-group">
-                                                            <a download
-                                                                href="{{ route('cetakolahan9v2', $opd->skpd_id) . '?' . request()->getQueryString()  }}"
-                                                                class="btn btn-sm btn-success">
-                                                                <i class="fa fa-print"></i> Responden
-                                                            </a>
+                                                        <div class="btn-group">
+                                                            <button type="button" class="btn btn-sm btn-success dropdown-toggle" data-bs-toggle="dropdown"
+                                                                aria-expanded="false">
+                                                                <i class="fa fa-print"></i> Responden (PDF)
+                                                            </button>
+
+                                                            <ul class="dropdown-menu">
+
+                                                                <!-- Semua Layanan -->
+                                                                <li>
+                                                                    <a download class="dropdown-item"
+                                                                        href="{{ route('cetakolahan9v2', $opd->skpd_id) }}?{{ request()->getQueryString() }}">
+                                                                        Semua Layanan
+                                                                    </a>
+                                                                </li>
+
+                                                              @foreach($opd->hasil_perlayanan as $row)
+
+                                                                <!-- Layanan 2 -->
+                                                                <li>
+                                                                    <a download class="dropdown-item"
+                                                                        href="{{ route('cetakolahan9v2', [$opd->skpd_id, $row->id_layanan]) }}?{{ request()->getQueryString() }}">
+                                                                        {{ $row->nama_layanan }}
+                                                                    </a>
+                                                                </li>
+                                                            @endforeach
+
+                                                                <!-- Tambah sesuai kebutuhan -->
+                                                                <!-- <li><a class="dropdown-item" href="...">Layanan 3</a></li> -->
+                                                            </ul>
+                                                        </div>
+                                                        <div class="btn-group">
+                                                            <button type="button" class="btn btn-sm btn-info dropdown-toggle" data-bs-toggle="dropdown"
+                                                                aria-expanded="false">
+                                                                <i class="fa fa-print"></i> Responden (Excel)
+                                                            </button>
+
+                                                            <ul class="dropdown-menu">
+
+                                                                <!-- Semua Layanan -->
+                                                                <li>
+                                                                    <a download class="dropdown-item"
+                                                                        href="{{ route('cetakolahan9v2', $opd->skpd_id) }}?as_xls=true&{{ request()->getQueryString() }}">
+                                                                        Semua Layanan
+                                                                    </a>
+                                                                </li>
+
+                                                                @foreach($opd->hasil_perlayanan as $row)
+
+                                                                    <!-- Layanan 2 -->
+                                                                    <li>
+                                                                        <a download class="dropdown-item"
+                                                                            href="{{ route('cetakolahan9v2', [$opd->skpd_id, $row->id_layanan]) }}?as_xls=true&{{ request()->getQueryString() }}">
+                                                                            {{ $row->nama_layanan }}
+                                                                        </a>
+                                                                    </li>
+                                                                @endforeach
+
+                                                                <!-- Tambah sesuai kebutuhan -->
+                                                                <!-- <li><a class="dropdown-item" href="...">Layanan 3</a></li> -->
+                                                            </ul>
+                                                        </div>
                                                             <a href="{{ route('cetakrekap9v2', $opd->skpd_id) . '?' . request()->getQueryString()  }}"
                                                                 class="btn btn-sm btn-warning">
                                                                 <i class="fa fa-print"></i> Rekapitulasi
