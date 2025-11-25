@@ -57,6 +57,9 @@
             padding: 8px;
         }
     }
+    tr {
+        page-break-inside: avoid;
+    }
 </style>
 
 @php
