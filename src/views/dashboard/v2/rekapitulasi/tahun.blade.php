@@ -70,11 +70,11 @@ $totalSample = $rows->sum('sample_diambil');
 $avgUnsur = [];
 for ($i = 1; $i <= 9; $i++) {
     $k = "u$i";
-    $avgUnsur[$k] = round($rows->avg(fn($r) => $r->nilai_akhir_perunsur->$k), 2);
+    $avgUnsur[$k] = round($rows->avg(fn($r) => $r->nilai_akhir_perunsur->$k));
 }
 
 // Hitung rata-rata nilai IKM
-$avgIKM = round($rows->avg('nilai_akhir_ikm'), 2);
+$avgIKM = round($rows->avg('nilai_akhir_ikm'));
 @endphp
 
     <table>
@@ -119,9 +119,9 @@ $avgIKM = round($rows->avg('nilai_akhir_ikm'), 2);
                         <td style="text-align:left !important">{{ $r->nama_layanan }}</td>
                         @for($i = 1; $i <= 9; $i++)
                             @php $k = "u$i"; @endphp
-                            <td>{{ round($r->nilai_perunsur->$k, 2) }}</td>
+                            <td>{{ round($r->nilai_perunsur->$k) }}</td>
                         @endfor
-                        <td>{{ round($r->nilai_konversi, 2) }}</td>
+                        <td>{{ round($r->nilai_konversi) }}</td>
                         <td>{{ $r->sample_diambil }}</td>
                         <td></td>
                         <td></td>
