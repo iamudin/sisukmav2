@@ -5,4 +5,5 @@ Route::match(['get','post'],'survei/{skpd}/{layanan?}', [WebController::class, '
 Route::match(['get','post'],'/', [WebController::class, 'index']);
 Route::get('gallery/{slug?}', [WebController::class, 'gallery']);
 Route::get('ikmskpd/{skpd}', [WebController::class, 'dataikm'])->name('ikm.skpd');
+Route::get('ikmkab', [WebController::class, 'dataikmkab'])->name('ikm.kab');
 

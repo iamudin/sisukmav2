@@ -53,7 +53,21 @@ function dataikm(Request $request,Skpd $skpd){
     $pdf = PDF::loadview('sisukma::report.ikm_skpd',compact('row','periode'));
     return $pdf->stream('ikm_skpd.pdf');
 }
+    function dataikmkab(Request $request)
+    {
+        $jenis_periode = request('jenis_periode', 'tahun');
+        $periodes = request('periode', null);
+        $tahun = request('tahun', date('Y'));
 
+        $cacheKey = "data_survei_kab_{$jenis_periode}_{$tahun}_{$periodes}";
+
+        $periode = str(getNamaPeriode($jenis_periode, $periodes, $tahun))->upper();
+
+        $row = Cache::has($cacheKey) ? collect(Cache::get($cacheKey)) : collect(json_decode(json_encode((new IkmCounter)->getStatistik9(null, null, $jenis_periode, $tahun, $periodes))));
+        $row = $row->where('skpd_id', '=', null)->first();
+        $pdf = PDF::loadview('sisukma::report.ikm_kab', compact('row', 'periode'));
+        return $pdf->stream('ikm_kab.pdf');
+    }
 function detail_ikm_kabupaten(){
 
 }
