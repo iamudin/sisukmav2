@@ -25,7 +25,7 @@
         <div class="tab-content mt-3" id="ikmTabContent">
             <!-- Tab 1: Nilai IKM -->
             <div class="tab-pane fade show active" id="ikm" role="tabpanel" aria-labelledby="ikm-tab">
-                @if($data)
+                @if($data && count($data) > 0)
                     @php $main = $data->where('skpd_id', null)->first(); @endphp
                     <div class="row">
                         <div class="col-xl-3 col-md-6 mb-4">
