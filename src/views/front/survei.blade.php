@@ -1,14 +1,9 @@
 @extends('sisukma::front.layout')
 @section('content')
     @php
-  if (Cache::has('layanan_ujicoba') && Cache::get('layanan_ujicoba') == $data->id) {
-    $unsur16 = true;
+
     $query = Sisukma\V2\Models\Unsur::with('kategoriUnsur')->orderBy('urutan')->get();
-  } elseif ($skpd->total_unsur == 11) {
-    $query = Sisukma\V2\Models\Unsur::with('kategoriUnsur')->orderBy('urutan')->limit(11)->get();
-  } else {
-    $query = Sisukma\V2\Models\Unsur::with('kategoriUnsur')->orderBy('urutan')->limit(9)->get();
-  }
+
     @endphp
       <style>
       </style>
@@ -254,12 +249,12 @@
          </div>
         @endforeach
       </div>
-      <div class="w-100 @if(count($query) == 16) q-17 @else @if($skpd->total_unsur == 11) q-12 @else q-10 @endif @endif" style="display:none;min-width:80vw;text-align:center">
+      <div class="w-100 q-17" style="display:none;min-width:80vw;text-align:center">
           <h3>Saran</h3>
           <textarea style="height:200px;text-align:center;font-size:25px;min-width:90%;font-weight:bold;border:5px solid lightblue" name="saran" type="text" class="form-control keyboard-input" placeholder="Tuliskan saran anda..."></textarea>
           <br>
           <div>
-          <button class="btn btn-danger btn-md float-start" type="button"  value="true" style="font-weight:bold" @if($skpd->total_unsur == 11) onclick="$('.q-12').hide();$('.q-11').show()" @else onclick="$('.q-10').hide();$('.q-9').show()" @endif>Sebelumnya</button>
+          <button class="btn btn-danger btn-md float-start" type="button"  value="true" style="font-weight:bold" onclick="$('.q-17').hide();$('.q-16').show()">Sebelumnya</button>
           <button class="btn btn-primary btn-md float-end btn-submit" type="button" onclick="return alert_confirm()" name="kirim_survei" value="true" style="font-weight:bold">Kirim Survei</button>
           </div>
       </div>
