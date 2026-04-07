@@ -10,11 +10,16 @@ Route::prefix($path)->group(function()use($path){
     Route::match(['get', 'post'], 'dashboard-v2/cetak-rekap/{skpd?}', [AdminController::class, 'cetakrekapv2'])->name('cetakrekapv2');
 
     Route::match(['get', 'post'], 'dashboard-v2/cetak-rekap9/{skpd?}', [AdminController::class, 'cetakrekap9v2'])->name('cetakrekap9v2');
+    Route::match(['get', 'post'], 'dashboard-v2/cetak-rekap16/{skpd?}', [AdminController::class, 'cetakrekap16v2'])->name('cetakrekap16v2');
 
     Route::match(['get', 'post'], 'dashboard-v2/statistik', [AdminController::class, 'statsresp'])->name('statsresp');
 
     Route::match(['get', 'post'], 'dashboard-v2/cetak-olahan/{skpd?}', [AdminController::class, 'cetakolahanv2'])->name('cetakolahanv2');
+    
     Route::match(['get', 'post'], 'dashboard-v2/cetak-olahan9/{skpd?}/{layanan?}', [AdminController::class, 'cetakolahan9v2'])->name('cetakolahan9v2');
+    
+    Route::match(['get', 'post'], 'dashboard-v2/cetak-olahan16/{skpd?}/{layanan?}', [AdminController::class, 'cetakolahan16v2'])->name('cetakolahan16v2');
+
     Route::match(['get', 'post'], 'dashboard-v2/rekaptahun', [AdminController::class, 'rekapTahunan'])->name('rekaptahunan');
     Route::match(['get', 'post'], 'pengaturan', [AdminController::class, 'pengaturan'])->name('pengaturan');
 

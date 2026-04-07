@@ -13,6 +13,7 @@ use Sisukma\V2\Contracts\Rekap\Tahun;
 use PDF;
 class WebController extends Controller
 {
+    
 public function index(Request $request){
         $jenis_periode = request('jenis_periode', 'tahun');
         $periode = request('periode', null);
