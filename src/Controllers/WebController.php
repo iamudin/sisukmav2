@@ -44,8 +44,8 @@ function dataikm(Request $request,Skpd $skpd){
         $jperiode = request('periode', null);
         $tahun = request('tahun', date('Y'));
         $periode = str(getNamaPeriode($jenis_periode,$jperiode,$tahun))->upper();
-
-    $row = json_decode(json_encode((new IkmCounter)->getStatistik9($skpd, null, $jenis_periode, $tahun, $jperiode)));
+        $jenis_unsur = $tahun < 2026 ? 9 : 16;
+    $row = $jenis_unsur == 9 ? json_decode(json_encode((new IkmCounter)->getStatistik9($skpd, null, $jenis_periode, $tahun, $jperiode))) : json_decode(json_encode((new IkmCounter)->getStatistik16($skpd, null, $jenis_periode, $tahun, $jperiode)));
     $pdf = PDF::loadview('sisukma::report.ikm_skpd',compact('row','periode'));
     return $pdf->stream('ikm_skpd.pdf');
 }
@@ -54,12 +54,13 @@ function dataikm(Request $request,Skpd $skpd){
         $jenis_periode = request('jenis_periode', 'tahun');
         $periodes = request('periode', null);
         $tahun = request('tahun', date('Y'));
+        $jenis_unsur = $tahun < 2026 ? 9 : 11;
 
-        $cacheKey = "data_survei_kab_{$jenis_periode}_{$tahun}_{$periodes}";
+        $cacheKey = "data_survei_kab_{$jenis_periode}_{$tahun}_{$periodes}_{$jenis_unsur}";
 
         $periode = str(getNamaPeriode($jenis_periode, $periodes, $tahun))->upper();
 
-        $row = Cache::has($cacheKey) ? collect(Cache::get($cacheKey)) : collect(json_decode(json_encode((new IkmCounter)->getStatistik9(null, null, $jenis_periode, $tahun, $periodes))));
+        $row = Cache::has($cacheKey) ? collect(Cache::get($cacheKey)) : ( $jenis_unsur == 9 ? collect(json_decode(json_encode((new IkmCounter)->getStatistik9(null, null, $jenis_periode, $tahun, $periodes)))) : collect(json_decode(json_encode((new IkmCounter)->getStatistik16(null, null, $jenis_periode, $tahun, $periodes)))));
         $row = $row->where('skpd_id', '=', null)->first();
         $pdf = PDF::loadview('sisukma::report.ikm_kab', compact('row', 'periode'));
         return $pdf->stream('ikm_kab.pdf');
