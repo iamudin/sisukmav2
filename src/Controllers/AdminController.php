@@ -38,7 +38,7 @@ class AdminController extends Controller  implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('auth',null, ['cetakQR']),
+            new Middleware('auth',null, ['cetakQR','cetakrekap16v2']),
         ];
     }
 
