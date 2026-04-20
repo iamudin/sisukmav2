@@ -71,7 +71,7 @@ function cetakrekap9v2(Request $request, $skpd=null){
         $jenis_periode = request('jenis_periode', 'tahun');
         $data = (new IkmCounter)->getDataIkm9($skpd, null,$jenis_periode, $tahun, $periode);
         $data = json_decode(json_encode($data));
-        $pdf = Pdf::loadView($skpd ? 'sisukma::dashboard.v2.report.rekapitulasi-opd-9' : 'sisukma::dashboard.v2.report.rekapitulasi-kab-9', [
+        $pdf = PDF::loadView($skpd ? 'sisukma::dashboard.v2.report.rekapitulasi-opd-9' : 'sisukma::dashboard.v2.report.rekapitulasi-kab-9', [
             'data' => $data,
             'jenis_periode' => $jenis_periode,
             'tahun' => $tahun,
@@ -80,7 +80,7 @@ function cetakrekap9v2(Request $request, $skpd=null){
         ])->setOrientation('landscape');
 
         // 🔹 Download file
-        return $pdf->stream('rekap-data-9-unsur-' . Str::slug($nama_skpd . ' ' . getNamaPeriode($jenis_periode, $periode, $tahun)) . '.pdf'
+        return $pdf->download('rekap-data-9-unsur-' . Str::slug($nama_skpd . ' ' . getNamaPeriode($jenis_periode, $periode, $tahun)) . '.pdf'
         );
 }
     function cetakrekap16v2(Request $request, $skpd = null)
@@ -91,7 +91,7 @@ function cetakrekap9v2(Request $request, $skpd=null){
         $jenis_periode = request('jenis_periode', 'tahun');
         $data =  (new IkmCounter)->getDataIkm16($skpd, null, $jenis_periode, $tahun, $periode);
         $data = json_decode(json_encode($data));
-        $pdf = Pdf::loadView($skpd ? 'sisukma::dashboard.v2.report.rekapitulasi-opd-16' : 'sisukma::dashboard.v2.report.rekapitulasi-kab-16', [
+        $pdf = PDF::loadView($skpd ? 'sisukma::dashboard.v2.report.rekapitulasi-opd-16' : 'sisukma::dashboard.v2.report.rekapitulasi-kab-16', [
             'data' => $data,
             'jenis_periode' => $jenis_periode,
             'tahun' => $tahun,
@@ -100,7 +100,7 @@ function cetakrekap9v2(Request $request, $skpd=null){
         ])->setOrientation('landscape');
 
         // 🔹 Download file
-        return $pdf->stream(
+        return $pdf->download(
             'rekap-data-9-unsur-' . Str::slug($nama_skpd . ' ' . getNamaPeriode($jenis_periode, $periode, $tahun)) . '.pdf'
         );
     }
@@ -200,7 +200,7 @@ function rekapTahunan(){
         $jenis_periode = request('jenis_periode', 'tahun');
 
         $data = (new IkmCounter)->getDataIkm16($skpd, $layanan, $jenis_periode, $tahun, $periode);
-        $data = !$skpd ? json_decode($data) : json_decode(json_encode($data));
+        $data = !$skpd ? json_decode($data,true) : json_decode(json_encode($data));
         $layanan = $layanan ? Layanan::find($layanan)?->nama_layanan : null;
         if ($request->as_xls) {
 
