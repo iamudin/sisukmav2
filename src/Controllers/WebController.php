@@ -18,26 +18,21 @@ public function index(Request $request){
         $jenis_periode = request('jenis_periode', 'tahun');
         $periode = request('periode', null);
         $tahun = request('tahun', date('Y'));
-        $cacheKey = "data_survei_kab_{$jenis_periode}_{$tahun}_{$periode}";
-
-     
-        if($request->isMethod('post')){
+         $cachefor = $tahun < 2026 ? 9 : 16;
+        $cacheKey = "data_survei_kab_{$jenis_periode}_{$tahun}_{$periode}_".$cachefor;
+      if($request->isMethod('post')){
             if (!Cache::has($cacheKey)) {
                 $baru = true;
             }
-               Cache::remember($cacheKey, now()->addMinutes(30), function () use ($jenis_periode, $tahun, $periode) {
-                    return collect(json_decode(json_encode((new IkmCounter)->getStatistik9(null, null, $jenis_periode, $tahun, $periode))));
+               Cache::remember($cacheKey, now()->addMinutes(1), function () use ($jenis_periode, $tahun, $periode,$cachefor) {
+                    return $cachefor== 9 ? collect(json_decode(json_encode((new IkmCounter)->getStatistik9(null, null, $jenis_periode, $tahun, $periode)))) : collect(json_decode(json_encode((new IkmCounter)->getStatistik16(null, null, $jenis_periode, $tahun, $periode))));
                 });
                if(Cache::has($cacheKey)){
                 if(isset($baru)){
                     return response()->json(['msg' => 'new']);
-
                 }
                 return response()->json(['msg' => 'old']);
-            }
-
-            // // 🔹 Gunakan Cache::remember untuk menyimpan hasil query selama 30 menit
-          
+            }          
     }
        
     return view('sisukma::front.index',['namaperiode'=>getNamaPeriode($jenis_periode,$periode,$tahun),'data'=>Cache::get($cacheKey) ?? []]);

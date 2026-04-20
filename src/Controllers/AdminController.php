@@ -101,7 +101,7 @@ function cetakrekap9v2(Request $request, $skpd=null){
 
         // 🔹 Download file
         return $pdf->download(
-            'rekap-data-9-unsur-' . Str::slug($nama_skpd . ' ' . getNamaPeriode($jenis_periode, $periode, $tahun)) . '.pdf'
+            'rekap-data-16-unsur-' . Str::slug($nama_skpd . ' ' . getNamaPeriode($jenis_periode, $periode, $tahun)) . '.pdf'
         );
     }
 function rekapTahunan(){
@@ -284,22 +284,19 @@ function rekapTahunan(){
         $cacheKey = "data_survei_kab_{$jenis_periode}_{$tahun}_{$periode}_".$cachefor;
         $nama_periode = getNamaPeriode($jenis_periode, $periode, $tahun);
         if ($request->user()->isAdmin()) {
-                 if($request->isMethod('post')){
+        if($request->isMethod('post')){
             if (!Cache::has($cacheKey)) {
                 $baru = true;
             }
                Cache::remember($cacheKey, now()->addMinutes(1), function () use ($jenis_periode, $tahun, $periode,$cachefor) {
-                    return $cachefor==9 ? collect(json_decode(json_encode((new IkmCounter)->getStatistik9(null, null, $jenis_periode, $tahun, $periode)))) : collect(json_decode(json_encode((new IkmCounter)->getStatistik16(null, null, $jenis_periode, $tahun, $periode))));
+                    return $cachefor== 9 ? collect(json_decode(json_encode((new IkmCounter)->getStatistik9(null, null, $jenis_periode, $tahun, $periode)))) : collect(json_decode(json_encode((new IkmCounter)->getStatistik16(null, null, $jenis_periode, $tahun, $periode))));
                 });
                if(Cache::has($cacheKey)){
                 if(isset($baru)){
                     return response()->json(['msg' => 'new']);
-
                 }
                 return response()->json(['msg' => 'old']);
-            }
-
-          
+            }          
     }
             return view('sisukma::dashboard.v2.admin', 
             ['periode' => $nama_periode, 
