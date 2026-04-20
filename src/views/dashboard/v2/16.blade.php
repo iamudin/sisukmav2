@@ -109,8 +109,26 @@
                 </ul>
                 <div class="tab-content mt-3" id="ikmTabsContent16">
                     <div class="tab-pane fade" id="rekapitulasi" role="tabpanel">
-                        <iframe style="width:100%;height:80vh"
-                            src="{{ route('cetakrekap16v2') . '?' . request()->getQueryString() }}" frameborder="0"></iframe>
+                
+                            @php
+    $ip = request()->ip();
+@endphp
+
+@if(in_array($ip, ['127.0.0.1', '::1']))
+    {{-- LOCAL --}}
+    <iframe style="width:100%;height:80vh"
+        src="{{ route('cetakrekap16v2') . '?' . request()->getQueryString() }}"
+        frameborder="0">
+    </iframe>
+@else
+    {{-- NON LOCAL --}}
+    <iframe
+        src="https://docs.google.com/gview?url={{ route('cetakrekap16v2') . '?' . request()->getQueryString() }}&embedded=true"
+        type="application/pdf"
+        width="100%"
+        height="600px">
+    </iframe>
+@endif
                     </div>
                     <div class="tab-pane fade" id="rekaptahun" role="tabpanel">
                         {{-- <iframe style="width:100%;height:80vh"
